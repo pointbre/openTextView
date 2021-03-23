@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:open_textview/component/BottomNav.dart';
+import 'package:open_textview/component/FloatingButton.dart';
 import 'package:open_textview/controller/MainCtl.dart';
+import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MainPage extends GetView<MainCtl> {
@@ -89,45 +92,46 @@ class MainPage extends GetView<MainCtl> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 1,
-            color: Colors.grey[400],
-          ),
-        ),
-        // padding: EdgeInsets.all(8.8),
-        child: Obx(
-          () => Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  controller.contents.clear();
-                  controller.update();
-                  for (int i = 0; i < 500; i++) {
-                    controller.contents.add('Item00 $i');
-                  }
-                },
-                padding: EdgeInsets.zero,
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  controller.contents.clear();
-                  controller.update();
-                  for (int i = 0; i < 100; i++) {
-                    controller.contents.add('Item-- $i');
-                  }
-                },
-                padding: EdgeInsets.zero,
-              ),
-              ...controller.bottomNavBtns.map((element) => element).toList()
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: BottomNav(),
+      //  Container(
+      //   decoration: BoxDecoration(
+      //     border: Border.all(
+      //       width: 1,
+      //       color: Colors.grey[400],
+      //     ),
+      //   ),
+      //   // padding: EdgeInsets.all(8.8),
+      //   child: Obx(
+      //     () => Row(
+      //       mainAxisAlignment: MainAxisAlignment.start,
+      //       children: [
+      //         IconButton(
+      //           icon: Icon(Icons.settings),
+      //           onPressed: () {
+      //             controller.contents.clear();
+      //             controller.update();
+      //             for (int i = 0; i < 500; i++) {
+      //               controller.contents.add('Item00 $i');
+      //             }
+      //           },
+      //           padding: EdgeInsets.zero,
+      //         ),
+      //         IconButton(
+      //           icon: Icon(Icons.settings),
+      //           onPressed: () {
+      //             controller.contents.clear();
+      //             controller.update();
+      //             for (int i = 0; i < 100; i++) {
+      //               controller.contents.add('Item-- $i');
+      //             }
+      //           },
+      //           padding: EdgeInsets.zero,
+      //         ),
+      //         ...controller.bottomNavBtns.map((element) => element).toList()
+      //       ],
+      //     ),
+      //   ),
+      // ),
 
       // BottomNavigationBar(
       //   // showSelectedLabels: false,
@@ -135,11 +139,8 @@ class MainPage extends GetView<MainCtl> {
 
       //   // items: [BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')],
       // ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.volume_up),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButton: FloatingButton(),
     ));
   }
 }

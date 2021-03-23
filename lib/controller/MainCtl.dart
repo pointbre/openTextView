@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:open_textview/items/NavItems.dart';
+import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MainCtl extends GetxController {
@@ -10,6 +10,9 @@ class MainCtl extends GetxController {
   final curPos = 0.obs;
 
   final contents = [];
+
+  // 기능 영역
+  final isBottomSheetOpen = false.obs;
 
   @override
   void onInit() {
