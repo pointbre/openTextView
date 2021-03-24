@@ -2,6 +2,12 @@ import 'package:get/get.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+class FindObj {
+  FindObj({this.pos, this.contents});
+  int pos;
+  String contents;
+}
+
 class MainCtl extends GetxController {
   final itemScrollctl = ItemScrollController();
   final itemPosListener = ItemPositionsListener.create();
@@ -12,7 +18,9 @@ class MainCtl extends GetxController {
   final contents = [];
 
   // 기능 영역
-  final isBottomSheetOpen = false.obs;
+  // final isBottomSheetOpen = false.obs;
+  final findText = "".obs;
+  final findList = List<FindObj>.empty().obs;
 
   @override
   void onInit() {
@@ -29,5 +37,17 @@ class MainCtl extends GetxController {
       curPos.value = min;
       curPos.update((val) {});
     });
+  }
+
+  void runFindContents(String text) {
+    findList.clear();
+    this.contents.asMap().forEach((key, value) {
+      if (value.toString().indexOf(text) >= 0) {
+        findList.add(FindObj(pos: key, contents: value));
+      }
+    });
+    print('${text} ,, $findList ,,, ');
+    findText.value = text;
+    findText.update((val) {});
   }
 }
