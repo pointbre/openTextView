@@ -11,7 +11,7 @@ import 'package:open_textview/controller/MainCtl.dart';
 
 class BottomSheet_Find extends GetView<MainCtl> {
   void OpenBottomSheet() {
-    Future<void> future = showModalBottomSheet(
+    showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
         isDismissible: false,

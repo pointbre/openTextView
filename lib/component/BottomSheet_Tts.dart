@@ -4,14 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 // var isOpen = false;
 
 class BottomSheet_Tts extends GetView<MainCtl> {
-  void OpenBottomSheet() {
-    Future<void> future = showModalBottomSheet(
+  FlutterTts flutterTts = FlutterTts();
+  void OpenBottomSheet() async {
+    var langs = await flutterTts.getLanguages;
+
+    print(langs);
+    showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
         isDismissible: false,
