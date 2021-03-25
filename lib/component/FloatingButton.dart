@@ -6,7 +6,6 @@ import 'package:open_textview/controller/MainCtl.dart';
 class FloatingButton extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
-    print(Get.isBottomSheetOpen);
     return FloatingActionButton(
         elevation: 2.0,
         onPressed: () {

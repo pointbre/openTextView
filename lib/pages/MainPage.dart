@@ -47,10 +47,11 @@ class MainPage extends GetView<MainCtl> {
                   itemBuilder: (context, index) {
                     String contens = controller.contents[index];
                     String findText = controller.findText.value;
-                    print(findText);
-                    int startIdx = contens.indexOf(findText);
-                    int endIdx = startIdx + findText.length;
-                    if (findText != "" || contens.indexOf(findText) >= 0) {
+
+                    if (findText != "" && contens.indexOf(findText) >= 0) {
+                      int startIdx = contens.indexOf(findText);
+                      int endIdx = startIdx + findText.length;
+
                       var deco = contens.substring(startIdx, endIdx);
                       var contensS = contens.substring(0, startIdx);
                       var contensE = contens.substring(endIdx);

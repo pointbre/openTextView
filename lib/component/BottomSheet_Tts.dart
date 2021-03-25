@@ -9,7 +9,7 @@ import 'package:open_textview/controller/MainCtl.dart';
 
 // var isOpen = false;
 
-class BottomSheet_Find extends GetView<MainCtl> {
+class BottomSheet_Tts extends GetView<MainCtl> {
   void OpenBottomSheet() {
     Future<void> future = showModalBottomSheet(
         context: Get.context,
@@ -104,19 +104,36 @@ class BottomSheet_Find extends GetView<MainCtl> {
 
   @override
   Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
+    TESTOPENBOTTOMSHEET();
 
     // TODO: implement build
     return IconButton(
-        padding: EdgeInsets.zero,
-        icon: Icon(
-          Icons.find_in_page,
-        ),
-        iconSize: 20,
         onPressed: () {
-          // final btns = Get.find<MainCtl>().bottomNavBtns;
           OpenBottomSheet();
-          // btns.add(NAVBUTTON['find1']);
-        });
+        },
+        icon: Stack(
+          children: [
+            Icon(
+              Icons.volume_mute_rounded,
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, top: 4),
+                child: Icon(
+                  Icons.settings_rounded,
+                  size: 15,
+                )),
+          ],
+        ));
+    // IconButton(
+    //     padding: EdgeInsets.zero,
+    //     icon: Icon(
+    //       Icons.find_in_page,
+    //     ),
+    //     iconSize: 20,
+    //     onPressed: () {
+    //       // final btns = Get.find<MainCtl>().bottomNavBtns;
+    //       OpenBottomSheet();
+    //       // btns.add(NAVBUTTON['find1']);
+    //     });
   }
 }

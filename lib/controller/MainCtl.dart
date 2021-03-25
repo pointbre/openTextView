@@ -8,19 +8,32 @@ class FindObj {
   String contents;
 }
 
+class TtsConfig {
+  TtsConfig(
+      {this.language, this.speechRate, this.volume, this.pitch, this.voice});
+  String language;
+  double speechRate;
+  double volume;
+  double pitch;
+  var voice;
+}
+
 class MainCtl extends GetxController {
   final itemScrollctl = ItemScrollController();
   final itemPosListener = ItemPositionsListener.create();
 
-  final bottomNavBtns = [NAVBUTTON['find']].obs;
+  final bottomNavBtns = [NAVBUTTON['find'], NAVBUTTON['tts']].obs;
   final curPos = 0.obs;
 
   final contents = [];
 
   // 기능 영역
-  // final isBottomSheetOpen = false.obs;
+  // --- 검색기능 ---
   final findText = "".obs;
   final findList = List<FindObj>.empty().obs;
+
+  // --- tts기능 ---
+  final ttsConfig = TtsConfig().obs;
 
   @override
   void onInit() {
@@ -39,15 +52,16 @@ class MainCtl extends GetxController {
     });
   }
 
-  void runFindContents(String text) {
-    findList.clear();
-    this.contents.asMap().forEach((key, value) {
-      if (value.toString().indexOf(text) >= 0) {
-        findList.add(FindObj(pos: key, contents: value));
-      }
-    });
-    print('${text} ,, $findList ,,, ');
-    findText.value = text;
-    findText.update((val) {});
-  }
+  // void runFindContents(String text) {
+  //   findList.clear();
+  //   if (text != "") {
+  //     this.contents.asMap().forEach((key, value) {
+  //       if (value.toString().indexOf(text) >= 0) {
+  //         findList.add(FindObj(pos: key, contents: value));
+  //       }
+  //     });
+  //   }
+  //   findText.value = text;
+  //   update();
+  // }
 }
