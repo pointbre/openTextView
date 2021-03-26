@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +7,45 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/controller/MainCtl.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:open_textview/items/Languages.dart';
 
 // var isOpen = false;
 
 class BottomSheet_Tts extends GetView<MainCtl> {
   FlutterTts flutterTts = FlutterTts();
-  void OpenBottomSheet() async {
-    var langs = await flutterTts.getLanguages;
+  BuildContext context = null;
+  void openSettingLanguage() async {
+    List<dynamic> langs = await flutterTts.getLanguages;
+    Picker(
+        height: 300,
+        adapter: PickerDataAdapter<String>(
+          data: langs.map((e) {
+            var tmplang = LANG[e.toString()];
+            return PickerItem(
+              text: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: Alignment.center,
+                    child: Text(e.toString()),
+                  )),
+                  Expanded(child: Text(tmplang['ko'])),
+                ],
+              ),
+              value: e.toString(),
+            );
+          }).toList(),
+        ),
+        selectedTextStyle: TextStyle(color: Colors.blue),
+        onConfirm: (Picker picker, List value) {
+          print(value.toString());
+          print(picker.adapter.text);
+        }).showModal(Get.overlayContext);
+  }
 
-    print(langs);
+  void openBottomSheet() {
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
@@ -38,44 +68,64 @@ class BottomSheet_Tts extends GetView<MainCtl> {
                     child: Column(
                       children: [
                         Icon(Icons.keyboard_arrow_down_sharp),
-                        CupertinoSearchTextField(
-                          placeholder: "검색할 단어 / 문장을 입력해 주세요.",
-                          onSubmitted: (value) {
-                            runFindContents(value);
-                          },
-                        ),
+                        SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                openSettingLanguage();
+                              },
+                              child: Text('현재 설정 언어 : ko_KR (한국어) '),
+                            )),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 1, child: Text('speechRate : ')),
+                              Expanded(
+                                flex: 4,
+                                child: Slider(
+                                  value: 0,
+                                  min: 0,
+                                  max: 100,
+                                  divisions: 5,
+                                  label: 0.round().toString(),
+                                  onChanged: (double value) {},
+                                ),
+                              ),
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 1, child: Text('volume : ')),
+                              Expanded(
+                                flex: 4,
+                                child: Slider(
+                                  value: 0,
+                                  min: 0,
+                                  max: 100,
+                                  divisions: 1,
+                                  label: 0.round().toString(),
+                                  onChanged: (double value) {},
+                                ),
+                              ),
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 1, child: Text('pitch : ')),
+                              Expanded(
+                                flex: 4,
+                                child: Slider(
+                                  value: 0,
+                                  min: 0,
+                                  max: 100,
+                                  divisions: 5,
+                                  label: 0.round().toString(),
+                                  onChanged: (double value) {},
+                                ),
+                              ),
+                            ]),
                       ],
                     )),
-                Expanded(
-                  child: Obx(() => ListView.builder(
-                      itemCount: controller.findList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                            onTap: () {
-                              controller.itemScrollctl.jumpTo(
-                                  index: controller.findList[index].pos);
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                  bottom: BorderSide(
-                                      width: 1.0, color: Colors.grey),
-                                )),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '내용 : ${controller.findList[index].contents}',
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                        '위치 : ${controller.findList[index].pos} 라인')
-                                  ],
-                                )));
-                      })),
-                ),
               ]));
         }).whenComplete(() {
       runFindContents("");
@@ -90,7 +140,7 @@ class BottomSheet_Tts extends GetView<MainCtl> {
     // return;
     // }
     Future.delayed(const Duration(milliseconds: 300), () {
-      OpenBottomSheet();
+      openBottomSheet();
     });
   }
 
@@ -110,11 +160,12 @@ class BottomSheet_Tts extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     TESTOPENBOTTOMSHEET();
+    this.context = context;
 
     // TODO: implement build
     return IconButton(
         onPressed: () {
-          OpenBottomSheet();
+          openBottomSheet();
         },
         icon: Stack(
           children: [
