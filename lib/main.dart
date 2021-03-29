@@ -8,6 +8,7 @@ void main() {
   // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
   Get.lazyPut(() => MainCtl());
   runApp(GetMaterialApp(
+    theme: ThemeData(dialogTheme: DialogTheme(backgroundColor: Colors.white)),
     getPages: [
       GetPage(name: '/', page: () => MainPage()),
     ],

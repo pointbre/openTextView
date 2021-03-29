@@ -11,41 +11,40 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:open_textview/items/Languages.dart';
 
 // var isOpen = false;
+const List<dynamic> DFFILTER = [
+  {"name": "중국어(한자) 필터", "expr": true, "filter": "", "to": ''},
+  {"name": "일본어(일어) 필터", "expr": true, "filter": "", "to": ''},
+  {"name": "아포스트로피(홀따음표) 필터", "expr": false, "filter": "", "to": ''},
+  {"name": "물음표 여러개 필터", "expr": false, "filter": "??", "to": '?'},
+  {"name": "느낌표 여러개 필터", "expr": false, "filter": "!!", "to": '!'},
+  {"name": "다시다시다시(----)", "expr": false, "filter": "--", "to": ''},
+  {"name": "는는는(===)", "expr": false, "filter": "==", "to": ''},
+];
 
-class BottomSheet_Tts extends GetView<MainCtl> {
-  FlutterTts flutterTts = FlutterTts();
+class BottomSheet_Filter extends GetView<MainCtl> {
   BuildContext context = null;
-  void openSettingLanguage() async {
-    List<dynamic> langs = await flutterTts.getLanguages;
-    Picker(
-        height: 300,
-        adapter: PickerDataAdapter<String>(
-          data: langs.map((e) {
-            var tmplang = LANG[e.toString()];
-            return PickerItem(
-              text: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: Align(
-                    alignment: Alignment.center,
-                    child: Text(e.toString()),
-                  )),
-                  Expanded(child: Text(tmplang['ko'])),
-                ],
-              ),
-              value: e.toString(),
-            );
-          }).toList(),
-        ),
-        selectedTextStyle: TextStyle(color: Colors.blue),
-        onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.adapter.text);
-        }).showModal(Get.overlayContext);
+  void openFilterList() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return FractionallySizedBox(
+            widthFactor: 0.8,
+            heightFactor: 0.9,
+            child: Container(
+              color: context.theme.dialogTheme.backgroundColor,
+              child: ListView(
+                  children: DFFILTER.map((e) {
+                return Text(e['name']);
+              }).toList()),
+            ));
+      },
+    );
   }
 
   void openBottomSheet() {
+    // print(context.theme.dialogTheme.backgroundColor);
+
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
@@ -68,13 +67,16 @@ class BottomSheet_Tts extends GetView<MainCtl> {
                     child: Column(
                       children: [
                         Icon(Icons.keyboard_arrow_down_sharp),
+                        Container(
+                          child: Text('TTS 필터'),
+                        ),
                         SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () async {
-                                openSettingLanguage();
+                                openFilterList();
                               },
-                              child: Text('현재 설정 언어 : ko_KR (한국어) '),
+                              child: Text('기본 제공 되는 TTS 필터 리스트 보기'),
                             )),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -130,6 +132,7 @@ class BottomSheet_Tts extends GetView<MainCtl> {
         }).whenComplete(() {
       runFindContents("");
     });
+    openFilterList();
 
     // isOpen = true;
   }
@@ -159,27 +162,29 @@ class BottomSheet_Tts extends GetView<MainCtl> {
 
   @override
   Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
+    TESTOPENBOTTOMSHEET();
     this.context = context;
 
     // TODO: implement build
     return IconButton(
-        onPressed: () {
-          openBottomSheet();
-        },
-        icon: Stack(
-          children: [
-            Icon(
-              Icons.volume_mute_rounded,
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 15, top: 4),
-                child: Icon(
-                  Icons.settings_rounded,
-                  size: 15,
-                )),
-          ],
-        ));
+      onPressed: () {
+        openBottomSheet();
+      },
+      icon: Stack(
+        children: [
+          Icon(
+            Icons.volume_mute_rounded,
+          ),
+          Container(
+              margin: EdgeInsets.only(left: 15, top: 4),
+              child: Icon(
+                Icons.filter_list_outlined,
+                size: 15,
+              )),
+        ],
+      ),
+      // Text('tts필터')
+    );
     // IconButton(
     //     padding: EdgeInsets.zero,
     //     icon: Icon(
