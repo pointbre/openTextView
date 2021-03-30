@@ -32,12 +32,32 @@ class BottomSheet_Filter extends GetView<MainCtl> {
             widthFactor: 0.8,
             heightFactor: 0.9,
             child: Container(
-              color: context.theme.dialogTheme.backgroundColor,
-              child: ListView(
-                  children: DFFILTER.map((e) {
-                return Text(e['name']);
-              }).toList()),
-            ));
+                padding: EdgeInsets.all(10),
+                color: context.theme.dialogTheme.backgroundColor,
+                child: Column(
+                  children: [
+                    Text('https://github.com/khjde1207/openTextView/issues'),
+                    Text('추가 되면 좋다겠다 생각 되는 필터는 위 링크에서 이슈로 등록해주세요.'),
+                    Text('확인후 유용하다 판단될경우 다음 업데이트시 넣겠습니다.'),
+                    Text('제공 필터 목록 : '),
+                    Expanded(
+                      child: ListView(
+                          children: DFFILTER.map((e) {
+                        return GestureDetector(
+                          onTap: () {},
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(e['name']),
+                                Text(e['filter']),
+                                Text(e['to']),
+                              ]),
+                        );
+                      }).toList()),
+                    )
+                  ],
+                )));
       },
     );
   }
