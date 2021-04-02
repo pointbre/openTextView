@@ -33,6 +33,7 @@ dependencies:
   scrollable_positioned_list: ^0.1.10
   flutter_picker: ^2.0.0
   flutter_tts:
+  url_launcher:
 
 
 dev_dependencies:
