@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/component/BottomSheet_FilePicker.dart';
 import 'package:open_textview/component/BottomSheet_Filter.dart';
 import 'package:open_textview/component/BottomSheet_Find.dart';
 import 'package:open_textview/component/BottomSheet_Tts.dart';
@@ -9,4 +10,5 @@ var NAVBUTTON = {
   "find": BottomSheet_Find(),
   "tts": BottomSheet_Tts(),
   "filter": BottomSheet_Filter(),
+  "filepicker": BottomSheet_FilePicker(),
 };

@@ -186,9 +186,7 @@ class BottomSheet_Filter extends GetView<MainCtl> {
           //             ],
           //           )),
           //     ]));
-        }).whenComplete(() {
-      runFindContents("");
-    });
+        }).whenComplete(() {});
     // openFilterList();
 
     // isOpen = true;
@@ -204,22 +202,9 @@ class BottomSheet_Filter extends GetView<MainCtl> {
     });
   }
 
-  void runFindContents(String text) {
-    Get.find<MainCtl>().findList.clear();
-    if (text != "") {
-      Get.find<MainCtl>().contents.asMap().forEach((key, value) {
-        if (value.toString().indexOf(text) >= 0) {
-          Get.find<MainCtl>().findList.add(FindObj(pos: key, contents: value));
-        }
-      });
-    }
-    Get.find<MainCtl>().findText.value = text;
-    Get.find<MainCtl>().update();
-  }
-
   @override
   Widget build(BuildContext context) {
-    TESTOPENBOTTOMSHEET();
+    // TESTOPENBOTTOMSHEET();
     this.context = context;
 
     // TODO: implement build
@@ -242,17 +227,6 @@ class BottomSheet_Filter extends GetView<MainCtl> {
       ),
       // Text('tts필터')
     );
-    // IconButton(
-    //     padding: EdgeInsets.zero,
-    //     icon: Icon(
-    //       Icons.find_in_page,
-    //     ),
-    //     iconSize: 20,
-    //     onPressed: () {
-    //       // final btns = Get.find<MainCtl>().bottomNavBtns;
-    //       OpenBottomSheet();
-    //       // btns.add(NAVBUTTON['find1']);
-    //     });
   }
 }
 

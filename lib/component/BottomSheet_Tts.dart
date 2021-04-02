@@ -127,9 +127,7 @@ class BottomSheet_Tts extends GetView<MainCtl> {
                       ],
                     )),
               ]));
-        }).whenComplete(() {
-      runFindContents("");
-    });
+        }).whenComplete(() {});
 
     // isOpen = true;
   }
@@ -142,19 +140,6 @@ class BottomSheet_Tts extends GetView<MainCtl> {
     Future.delayed(const Duration(milliseconds: 300), () {
       openBottomSheet();
     });
-  }
-
-  void runFindContents(String text) {
-    Get.find<MainCtl>().findList.clear();
-    if (text != "") {
-      Get.find<MainCtl>().contents.asMap().forEach((key, value) {
-        if (value.toString().indexOf(text) >= 0) {
-          Get.find<MainCtl>().findList.add(FindObj(pos: key, contents: value));
-        }
-      });
-    }
-    Get.find<MainCtl>().findText.value = text;
-    Get.find<MainCtl>().update();
   }
 
   @override
@@ -180,16 +165,5 @@ class BottomSheet_Tts extends GetView<MainCtl> {
                 )),
           ],
         ));
-    // IconButton(
-    //     padding: EdgeInsets.zero,
-    //     icon: Icon(
-    //       Icons.find_in_page,
-    //     ),
-    //     iconSize: 20,
-    //     onPressed: () {
-    //       // final btns = Get.find<MainCtl>().bottomNavBtns;
-    //       OpenBottomSheet();
-    //       // btns.add(NAVBUTTON['find1']);
-    //     });
   }
 }
