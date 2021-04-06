@@ -77,6 +77,14 @@ class BottomSheet_Filter extends GetView<MainCtl> {
                   child: Column(
                     children: [
                       Icon(Icons.keyboard_arrow_down_sharp),
+                      SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              openFilterList();
+                            },
+                            child: Text('제공 되는 TTS 필터 리스트 보기'),
+                          )),
                       Text(
                         '적용된 필터 목록',
                         style: Get.context.textTheme.headline6,
