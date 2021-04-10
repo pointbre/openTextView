@@ -34,7 +34,7 @@ class BottomNav extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTOPENBOTTOMSHEET();
+    // TESTOPENBOTTOMSHEET();
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       child: Obx(

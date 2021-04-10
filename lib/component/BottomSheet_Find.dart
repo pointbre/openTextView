@@ -5,12 +5,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/component/BottomSheetBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 // var isOpen = false;
 
-class BottomSheet_Find extends GetView<MainCtl> {
-  void OpenBottomSheet() {
+class BottomSheet_Find extends BottomSheetBase {
+  void TESTOPENBOTTOMSHEET() {
+    // if (!isOpen) {
+    Get.back();
+    // return;
+    // }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      openBottomSheet();
+    });
+  }
+
+  void runFindContents(String text) {
+    Get.find<MainCtl>().findList.clear();
+    if (text != "") {
+      Get.find<MainCtl>().contents.asMap().forEach((key, value) {
+        if (value.toString().indexOf(text) >= 0) {
+          Get.find<MainCtl>().findList.add(FindObj(pos: key, contents: value));
+        }
+      });
+    }
+    Get.find<MainCtl>().findText.value = text;
+    Get.find<MainCtl>().update();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TESTOPENBOTTOMSHEET();
+    // TODO: implement build
+    return IconButton(
+      onPressed: () {
+        openBottomSheet();
+      },
+      icon: buildIcon(context),
+    );
+  }
+
+  @override
+  Widget buildIcon(BuildContext context) {
+    return Icon(
+      Icons.find_in_page,
+    );
+  }
+
+  @override
+  void openBottomSheet() {
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
@@ -75,48 +119,5 @@ class BottomSheet_Find extends GetView<MainCtl> {
         }).whenComplete(() {
       runFindContents("");
     });
-
-    // isOpen = true;
-  }
-
-  void TESTOPENBOTTOMSHEET() {
-    // if (!isOpen) {
-    Get.back();
-    // return;
-    // }
-    Future.delayed(const Duration(milliseconds: 300), () {
-      OpenBottomSheet();
-    });
-  }
-
-  void runFindContents(String text) {
-    Get.find<MainCtl>().findList.clear();
-    if (text != "") {
-      Get.find<MainCtl>().contents.asMap().forEach((key, value) {
-        if (value.toString().indexOf(text) >= 0) {
-          Get.find<MainCtl>().findList.add(FindObj(pos: key, contents: value));
-        }
-      });
-    }
-    Get.find<MainCtl>().findText.value = text;
-    Get.find<MainCtl>().update();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
-
-    // TODO: implement build
-    return IconButton(
-        padding: EdgeInsets.zero,
-        icon: Icon(
-          Icons.find_in_page,
-        ),
-        iconSize: 20,
-        onPressed: () {
-          // final btns = Get.find<MainCtl>().bottomNavBtns;
-          OpenBottomSheet();
-          // btns.add(NAVBUTTON['find1']);
-        });
   }
 }

@@ -6,15 +6,15 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:open_textview/component/BottomSheetBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:open_textview/items/Languages.dart';
 
 // var isOpen = false;
 
-class BottomSheet_Tts extends BottomSheetBase {
-  final flutterTts = FlutterTts();
+class BottomSheet_Tts extends GetView<MainCtl> {
+  FlutterTts flutterTts = FlutterTts();
+  BuildContext context = null;
   void openSettingLanguage() async {
     List<dynamic> langs = await flutterTts.getLanguages;
     Picker(
@@ -45,7 +45,6 @@ class BottomSheet_Tts extends BottomSheetBase {
         }).showModal(Get.overlayContext);
   }
 
-  @override
   void openBottomSheet() {
     showModalBottomSheet(
         context: Get.context,
@@ -129,32 +128,42 @@ class BottomSheet_Tts extends BottomSheetBase {
                     )),
               ]));
         }).whenComplete(() {});
-    // TODO: implement OpenBottomSheet
+
+    // isOpen = true;
+  }
+
+  void TESTOPENBOTTOMSHEET() {
+    // if (!isOpen) {
+    Get.back();
+    // return;
+    // }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      openBottomSheet();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
+    TESTOPENBOTTOMSHEET();
+
+    // TODO: implement build
     return IconButton(
         onPressed: () {
           openBottomSheet();
         },
-        icon: buildIcon(context));
-  }
-
-  @override
-  Widget buildIcon(BuildContext context) {
-    return Stack(
-      children: [
-        Icon(
-          Icons.volume_mute_rounded,
-        ),
-        Container(
-            margin: EdgeInsets.only(left: 15, top: 4),
-            child: Icon(
-              Icons.settings_rounded,
-              size: 15,
-            )),
-      ],
-    );
+        icon: Stack(
+          children: [
+            Icon(
+              Icons.volume_mute_rounded,
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, top: 4),
+                child: Icon(
+                  Icons.settings_rounded,
+                  size: 15,
+                )),
+          ],
+        ));
   }
 }
