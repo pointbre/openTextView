@@ -14,6 +14,9 @@ import 'package:open_textview/items/Languages.dart';
 // var isOpen = false;
 
 class BottomSheet_Tts extends BottomSheetBase {
+  @override
+  String get name => 'tts 설정';
+
   final flutterTts = FlutterTts();
   void openSettingLanguage() async {
     List<dynamic> langs = await flutterTts.getLanguages;
@@ -52,82 +55,76 @@ class BottomSheet_Tts extends BottomSheetBase {
         barrierColor: Colors.transparent,
         isDismissible: false,
         builder: (BuildContext context) {
-          return Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.grey,
-                  )),
-              width: double.infinity,
-              height: 400,
-              child: Column(children: [
-                Container(
-                    padding: EdgeInsets.all(5),
-                    child: Column(
-                      children: [
-                        Icon(Icons.keyboard_arrow_down_sharp),
-                        SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                openSettingLanguage();
-                              },
-                              child: Text('현재 설정 언어 : ko_KR (한국어) '),
-                            )),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(flex: 2, child: Text('speechRate : ')),
-                              Expanded(
-                                flex: 6,
-                                child: Slider(
-                                  value: 0,
-                                  min: 0,
-                                  max: 100,
-                                  divisions: 5,
-                                  label: 0.round().toString(),
-                                  onChanged: (double value) {},
-                                ),
-                              ),
-                            ]),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(flex: 2, child: Text('volume : ')),
-                              Expanded(
-                                flex: 6,
-                                child: Slider(
-                                  value: 0,
-                                  min: 0,
-                                  max: 100,
-                                  divisions: 1,
-                                  label: 0.round().toString(),
-                                  onChanged: (double value) {},
-                                ),
-                              ),
-                            ]),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(flex: 2, child: Text('pitch : ')),
-                              Expanded(
-                                flex: 6,
-                                child: Slider(
-                                  value: 0,
-                                  min: 0,
-                                  max: 100,
-                                  divisions: 5,
-                                  label: 0.round().toString(),
-                                  onChanged: (double value) {},
-                                ),
-                              ),
-                            ]),
-                      ],
-                    )),
-              ]));
+          return FractionallySizedBox(
+              heightFactor: 1,
+              child: Card(
+                  elevation: 5,
+                  child: Column(children: [
+                    Container(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            Icon(Icons.keyboard_arrow_down_sharp),
+                            SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    openSettingLanguage();
+                                  },
+                                  child: Text('현재 설정 언어 : ko_KR (한국어) '),
+                                )),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                      flex: 2, child: Text('speechRate : ')),
+                                  Expanded(
+                                    flex: 6,
+                                    child: Slider(
+                                      value: 0,
+                                      min: 0,
+                                      max: 100,
+                                      divisions: 5,
+                                      label: 0.round().toString(),
+                                      onChanged: (double value) {},
+                                    ),
+                                  ),
+                                ]),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(flex: 2, child: Text('volume : ')),
+                                  Expanded(
+                                    flex: 6,
+                                    child: Slider(
+                                      value: 0,
+                                      min: 0,
+                                      max: 100,
+                                      divisions: 1,
+                                      label: 0.round().toString(),
+                                      onChanged: (double value) {},
+                                    ),
+                                  ),
+                                ]),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(flex: 2, child: Text('pitch : ')),
+                                  Expanded(
+                                    flex: 6,
+                                    child: Slider(
+                                      value: 0,
+                                      min: 0,
+                                      max: 100,
+                                      divisions: 5,
+                                      label: 0.round().toString(),
+                                      onChanged: (double value) {},
+                                    ),
+                                  ),
+                                ]),
+                          ],
+                        )),
+                  ])));
         }).whenComplete(() {});
     // TODO: implement OpenBottomSheet
   }
@@ -138,11 +135,11 @@ class BottomSheet_Tts extends BottomSheetBase {
         onPressed: () {
           openBottomSheet();
         },
-        icon: buildIcon(context));
+        icon: buildIcon());
   }
 
   @override
-  Widget buildIcon(BuildContext context) {
+  Widget buildIcon() {
     return Stack(
       children: [
         Icon(

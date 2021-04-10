@@ -19,6 +19,9 @@ class BottomSheet_FilePicker extends BottomSheetBase {
   BuildContext context = null;
 
   @override
+  String get name => '파일 탐색기';
+
+  @override
   Widget build(BuildContext context) {
     // TESTOPENBOTTOMSHEET();
     this.context = context;
@@ -29,18 +32,17 @@ class BottomSheet_FilePicker extends BottomSheetBase {
         FilePickerResult result = await FilePicker.platform.pickFiles();
         // openBottomSheet();
       },
-      icon: Icon(
-        Icons.folder_open,
-      ),
-
+      icon: buildIcon(),
       // Text('tts필터')
     );
   }
 
   @override
-  Widget buildIcon(BuildContext context) {
+  Widget buildIcon() {
     // TODO: implement buildIcon
-    throw UnimplementedError();
+    return Icon(
+      Icons.folder_open,
+    );
   }
 
   @override

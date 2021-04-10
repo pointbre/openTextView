@@ -31,6 +31,9 @@ const List<dynamic> DFFILTER = [
 ];
 
 class BottomSheet_Filter extends BottomSheetBase {
+  @override
+  String get name => 'tts 필터';
+
   BuildContext context = null;
   void openFilterList() async {
     showDialog(
@@ -73,7 +76,7 @@ class BottomSheet_Filter extends BottomSheetBase {
         isDismissible: false,
         builder: (BuildContext context) {
           return FractionallySizedBox(
-              heightFactor: 0.9,
+              heightFactor: 1,
               child: Card(
                   elevation: 5,
                   child: Column(
@@ -140,12 +143,12 @@ class BottomSheet_Filter extends BottomSheetBase {
       onPressed: () {
         openBottomSheet();
       },
-      icon: buildIcon(context),
+      icon: buildIcon(),
     );
   }
 
   @override
-  Widget buildIcon(BuildContext context) {
+  Widget buildIcon() {
     // TODO: implement buildIcon
     return Stack(
       children: [

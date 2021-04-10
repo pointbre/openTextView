@@ -11,6 +11,9 @@ import 'package:open_textview/controller/MainCtl.dart';
 // var isOpen = false;
 
 class BottomSheet_Find extends BottomSheetBase {
+  @override
+  String get name => '페이지 검색';
+
   void TESTOPENBOTTOMSHEET() {
     // if (!isOpen) {
     Get.back();
@@ -42,12 +45,12 @@ class BottomSheet_Find extends BottomSheetBase {
       onPressed: () {
         openBottomSheet();
       },
-      icon: buildIcon(context),
+      icon: buildIcon(),
     );
   }
 
   @override
-  Widget buildIcon(BuildContext context) {
+  Widget buildIcon() {
     return Icon(
       Icons.find_in_page,
     );
@@ -60,62 +63,57 @@ class BottomSheet_Find extends BottomSheetBase {
         barrierColor: Colors.transparent,
         isDismissible: false,
         builder: (BuildContext context) {
-          return Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.grey,
-                  )),
-              width: double.infinity,
-              height: 400,
-              child: Column(children: [
-                Container(
-                    padding: EdgeInsets.all(5),
-                    child: Column(
-                      children: [
-                        Icon(Icons.keyboard_arrow_down_sharp),
-                        CupertinoSearchTextField(
-                          placeholder: "검색할 단어 / 문장을 입력해 주세요.",
-                          onSubmitted: (value) {
-                            runFindContents(value);
-                          },
-                        ),
-                      ],
-                    )),
-                Expanded(
-                  child: Obx(() => ListView.builder(
-                      itemCount: controller.findList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                            onTap: () {
-                              controller.itemScrollctl.jumpTo(
-                                  index: controller.findList[index].pos);
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                  bottom: BorderSide(
-                                      width: 1.0, color: Colors.grey),
-                                )),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '내용 : ${controller.findList[index].contents}',
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                        '위치 : ${controller.findList[index].pos} 라인')
-                                  ],
-                                )));
-                      })),
-                ),
-              ]));
+          return FractionallySizedBox(
+              heightFactor: 1,
+              child: Card(
+                  elevation: 5,
+                  child: Column(children: [
+                    Container(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            Icon(Icons.keyboard_arrow_down_sharp),
+                            CupertinoSearchTextField(
+                              placeholder: "검색할 단어 / 문장을 입력해 주세요.",
+                              onSubmitted: (value) {
+                                runFindContents(value);
+                              },
+                            ),
+                          ],
+                        )),
+                    Expanded(
+                      child: Obx(() => ListView.builder(
+                          itemCount: controller.findList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return InkWell(
+                                onTap: () {
+                                  controller.itemScrollctl.jumpTo(
+                                      index: controller.findList[index].pos);
+                                },
+                                child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                      bottom: BorderSide(
+                                          width: 1.0, color: Colors.grey),
+                                    )),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '내용 : ${controller.findList[index].contents}',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                            '위치 : ${controller.findList[index].pos} 라인')
+                                      ],
+                                    )));
+                          })),
+                    ),
+                  ])));
         }).whenComplete(() {
       runFindContents("");
     });

@@ -11,9 +11,32 @@ class BottomNav extends GetView<MainCtl> {
       builder: (BuildContext context) {
         return SimpleDialog(
           title: Text('설정'),
+          contentPadding: EdgeInsets.all(10),
           children: [
             ...controller.bottomNavBtns.map((element) {
-              return element;
+              print(element.buildIcon());
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 10),
+                    child: element.buildIcon(),
+                  ),
+                  Expanded(
+                    child: Text(element.name),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      element.openBottomSheet();
+                    },
+                    icon: Icon(Icons.settings),
+                  ),
+                  Switch(
+                    value: true,
+                    onChanged: (bool v) {},
+                  ),
+                ],
+              );
             }).toList()
           ],
         );
@@ -34,7 +57,7 @@ class BottomNav extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    // TESTOPENBOTTOMSHEET();
+    TESTOPENBOTTOMSHEET();
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       child: Obx(
