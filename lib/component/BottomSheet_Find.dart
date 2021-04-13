@@ -14,13 +14,13 @@ class BottomSheet_Find extends BottomSheetBase {
   @override
   String get name => '페이지 검색';
 
-  void TESTOPENBOTTOMSHEET() {
+  void TESTopenSetting() {
     // if (!isOpen) {
     Get.back();
     // return;
     // }
     Future.delayed(const Duration(milliseconds: 300), () {
-      openBottomSheet();
+      openSetting();
     });
   }
 
@@ -39,11 +39,11 @@ class BottomSheet_Find extends BottomSheetBase {
 
   @override
   Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
+    // TESTopenSetting();
     // TODO: implement build
     return IconButton(
       onPressed: () {
-        openBottomSheet();
+        openSetting();
       },
       icon: buildIcon(),
     );
@@ -57,7 +57,7 @@ class BottomSheet_Find extends BottomSheetBase {
   }
 
   @override
-  void openBottomSheet() {
+  void openSetting() {
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,

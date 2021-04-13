@@ -49,7 +49,7 @@ class BottomSheet_Tts extends BottomSheetBase {
   }
 
   @override
-  void openBottomSheet() {
+  void openSetting() {
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
@@ -126,14 +126,14 @@ class BottomSheet_Tts extends BottomSheetBase {
                         )),
                   ])));
         }).whenComplete(() {});
-    // TODO: implement OpenBottomSheet
+    // TODO: implement openSetting
   }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () {
-          openBottomSheet();
+          openSetting();
         },
         icon: buildIcon());
   }

@@ -23,14 +23,14 @@ class BottomSheet_FilePicker extends BottomSheetBase {
 
   @override
   Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
+    // TESTopenSetting();
     this.context = context;
 
     // TODO: implement build
     return IconButton(
-      onPressed: () async {
-        FilePickerResult result = await FilePicker.platform.pickFiles();
-        // openBottomSheet();
+      onPressed: () {
+        openSetting();
+        // openSetting();
       },
       icon: buildIcon(),
       // Text('tts필터')
@@ -46,7 +46,7 @@ class BottomSheet_FilePicker extends BottomSheetBase {
   }
 
   @override
-  void openBottomSheet() {
-    // TODO: implement openBottomSheet
+  void openSetting() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
   }
 }

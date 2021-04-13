@@ -45,7 +45,7 @@ class BottomSheet_Tts extends GetView<MainCtl> {
         }).showModal(Get.overlayContext);
   }
 
-  void openBottomSheet() {
+  void openSetting() {
     showModalBottomSheet(
         context: Get.context,
         barrierColor: Colors.transparent,
@@ -132,25 +132,25 @@ class BottomSheet_Tts extends GetView<MainCtl> {
     // isOpen = true;
   }
 
-  void TESTOPENBOTTOMSHEET() {
+  void TESTopenSetting() {
     // if (!isOpen) {
     Get.back();
     // return;
     // }
     Future.delayed(const Duration(milliseconds: 300), () {
-      openBottomSheet();
+      openSetting();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTOPENBOTTOMSHEET();
+    TESTopenSetting();
 
     // TODO: implement build
     return IconButton(
         onPressed: () {
-          openBottomSheet();
+          openSetting();
         },
         icon: Stack(
           children: [

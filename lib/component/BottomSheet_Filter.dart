@@ -67,7 +67,7 @@ class BottomSheet_Filter extends BottomSheetBase {
   }
 
   @override
-  void openBottomSheet() {
+  void openSetting() {
     // print(context.theme.dialogTheme.backgroundColor);
 
     showModalBottomSheet(
@@ -123,25 +123,25 @@ class BottomSheet_Filter extends BottomSheetBase {
         }).whenComplete(() {});
   }
 
-  void TESTOPENBOTTOMSHEET() {
+  void TESTopenSetting() {
     // if (!isOpen) {
     Get.back();
     // return;
     // }
     Future.delayed(const Duration(milliseconds: 300), () {
-      openBottomSheet();
+      openSetting();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TESTOPENBOTTOMSHEET();
+    // TESTopenSetting();
     this.context = context;
 
     // TODO: implement build
     return IconButton(
       onPressed: () {
-        openBottomSheet();
+        openSetting();
       },
       icon: buildIcon(),
     );

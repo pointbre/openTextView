@@ -22,12 +22,7 @@ class MainCtl extends GetxController {
   final itemScrollctl = ItemScrollController();
   final itemPosListener = ItemPositionsListener.create();
 
-  final bottomNavBtns = [
-    NAVBUTTON['filepicker'],
-    NAVBUTTON['find'],
-    NAVBUTTON['tts'],
-    NAVBUTTON['filter'],
-  ].obs;
+  final bottomNavBtns = [...NAVBUTTON].obs;
   final curPos = 0.obs;
 
   final contents = [];

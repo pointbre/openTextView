@@ -5,7 +5,7 @@ import 'package:open_textview/controller/MainCtl.dart';
 abstract class BottomSheetBase extends GetView<MainCtl> {
   BuildContext context;
   String get name;
-  void openBottomSheet();
+  void openSetting();
   Widget buildIcon();
   Widget build(BuildContext context);
 }
