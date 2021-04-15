@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:open_textview/component/BottomSheetBase.dart';
+import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
+
+class bottomnavCtl extends GetxController {
+  ScrollController scrollctl = ScrollController();
+}
 
 class BottomNav extends GetView<MainCtl> {
   BuildContext context = null;
@@ -156,39 +161,132 @@ class BottomNav extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTopenSetting();
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                // controller.contents.clear();
-                // controller.update();
-                // for (int i = 0; i < 500; i++) {
-                //   controller.contents.add('Item00 $i');
-                // }
-              },
-              padding: EdgeInsets.zero,
-            ),
-            // IconButton(
-            //   icon: Icon(Icons.settings),
-            //   onPressed: () {},
-            //   padding: EdgeInsets.zero,
-            // ),
-            ...controller.bottomNavBtns.map((element) => element).toList()
-          ],
+
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Expanded(
+        flex: 1,
+        child: IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            openOptions();
+          },
+          padding: EdgeInsets.zero,
         ),
       ),
-      // showSelectedLabels: false,
-      // showUnselectedLabels: false,
-      // items: [
-      //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
-      //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')
-      // ],
-    );
+      Expanded(
+        flex: 8,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              ...controller.bottomNavBtns.map((element) => element).toList(),
+              // ...controller.bottomNavBtns.map((element) => element).toList(),
+              // ...controller.bottomNavBtns.map((element) => element).toList(),
+            ],
+          ),
+        ),
+      ),
+      Expanded(flex: 2, child: SizedBox()
+          // IconButton(
+          //   icon: Icon(Icons.settings),
+          //   onPressed: () {},
+          //   padding: EdgeInsets.zero,
+          // )
+          ),
+    ]);
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     IconButton(
+    //       icon: Icon(Icons.add),
+    //       onPressed: () {
+    //         // controller.contents.clear();
+    //         // controller.update();
+    //         // for (int i = 0; i < 500; i++) {
+    //         //   controller.contents.add('Item00 $i');
+    //         // }
+    //       },
+    //     ),
+    //     Expanded(
+    //         child: ListView.builder(
+    //       scrollDirection: Axis.horizontal,
+    //       itemCount: 10,
+    //       itemBuilder: (context, index) => Text('asdf'),
+    //     ))
+    //     // SizedBox(
+    //     //   width: double.infinity,
+    //     //   child: ListView.builder(
+    //     //     // scrollDirection: Axis.horizontal,
+    //     //     // shrinkWrap: true,
+    //     //     itemCount: 10,
+    //     //     itemBuilder: (context, index) => Text('asdf'),
+    //     //     //   (){
+    //     //     //     return element
+    //     //     //   })
+    //     //     // (
+    //     //     //     scrollDirection: Axis.horizontal,
+    //     //     //     shrinkWrap: true,
+    //     //     //     children: [
+    //     //     //   ...controller.bottomNavBtns.map((element) => element).toList(),
+    //     //     // ]
+    //     //   ),
+    //     // ),
+    //     // IconButton(
+    //     //   icon: Icon(Icons.volume_up),
+    //     //   onPressed: () {},
+    //     // ),
+    //   ],
+    // );
+    // TESTopenSetting();
+    //   return BottomAppBar(
+    //     shape: CircularNotchedRectangle(),
+    //     child: Obx(
+    //       () => Row(
+    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //         children: [
+    //           IconButton(
+    //             icon: Icon(Icons.add),
+    //             onPressed: () {
+    //               // controller.contents.clear();
+    //               // controller.update();
+    //               // for (int i = 0; i < 500; i++) {
+    //               //   controller.contents.add('Item00 $i');
+    //               // }
+    //             },
+    //             padding: EdgeInsets.zero,
+    //           ),
+    //           // IconButton(
+    //           //   icon: Icon(Icons.settings),
+    //           //   onPressed: () {},
+    //           //   padding: EdgeInsets.zero,
+    //           // ),
+    //           SizedBox(
+    //               height: 10,
+    //               width: double.infinity,
+    //               child: Container(color: Colors.red)),
+    //           // ListView(
+    //           //   children: [
+    //           //     ...controller.bottomNavBtns
+    //           //         .map((element) => element)
+    //           //         .toList(),
+    //           //   ],
+    //           // ),
+
+    //           // ...controller.bottomNavBtns.map((element) => element).toList(),
+    //           // ...controller.bottomNavBtns.map((element) => element).toList(),
+    //           IconButton(
+    //             icon: Icon(Icons.volume_up),
+    //             onPressed: () {},
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     // showSelectedLabels: false,
+    //     // showUnselectedLabels: false,
+    //     // items: [
+    //     //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
+    //     //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')
+    //     // ],
+    //   );
   }
 }

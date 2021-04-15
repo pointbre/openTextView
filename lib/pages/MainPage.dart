@@ -95,6 +95,7 @@ class MainPage extends GetView<MainCtl> {
         ),
       ),
       bottomNavigationBar: BottomNav(),
+
       //  Container(
       //   decoration: BoxDecoration(
       //     border: Border.all(

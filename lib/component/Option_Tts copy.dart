@@ -12,7 +12,7 @@ import 'package:open_textview/items/Languages.dart';
 
 // var isOpen = false;
 
-class BottomSheet_Tts extends GetView<MainCtl> {
+class Option_Tts extends GetView<MainCtl> {
   FlutterTts flutterTts = FlutterTts();
   BuildContext context = null;
   void openSettingLanguage() async {

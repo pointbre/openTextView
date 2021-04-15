@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:open_textview/component/BottomSheetBase.dart';
+import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 // var isOpen = false;
 
-class BottomSheet_Find extends BottomSheetBase {
+class Option_Find extends OptionsBase {
   @override
   String get name => '페이지 검색';
 

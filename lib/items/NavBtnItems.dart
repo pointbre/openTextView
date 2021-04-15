@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:open_textview/component/BottomSheet_FilePicker.dart';
-import 'package:open_textview/component/BottomSheet_Filter.dart';
-import 'package:open_textview/component/BottomSheet_Find.dart';
-import 'package:open_textview/component/BottomSheet_Tts.dart';
+import 'package:open_textview/component/Option_FilePicker.dart';
+import 'package:open_textview/component/Option_Filter.dart';
+import 'package:open_textview/component/Option_Find.dart';
+import 'package:open_textview/component/Option_Tts.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 var NAVBUTTON = [
-  BottomSheet_Find(),
-  BottomSheet_Tts(),
-  BottomSheet_Filter(),
-  BottomSheet_FilePicker(),
+  Option_FilePicker(),
+  Option_Find(),
+  Option_Tts(),
+  Option_Filter(),
 ];
 
 // var NAVBUTTON = {
-//   "find": BottomSheet_Find(),
-//   "tts": BottomSheet_Tts(),
-//   "filter": BottomSheet_Filter(),
-//   "filepicker": BottomSheet_FilePicker(),
+//   "find": Option_Find(),
+//   "tts": Option_Tts(),
+//   "filter": Option_Filter(),
+//   "filepicker": Option_FilePicker(),
 // };

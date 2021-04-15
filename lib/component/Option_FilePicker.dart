@@ -8,14 +8,14 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:open_textview/component/BottomSheetBase.dart';
+import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:open_textview/items/Languages.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class BottomSheet_FilePicker extends BottomSheetBase {
+class Option_FilePicker extends OptionsBase {
   BuildContext context = null;
 
   @override
