@@ -32,21 +32,26 @@ class BottomNav extends GetView<MainCtl> {
                     Card(
                       key: ValueKey(idx),
                       elevation: 2,
-                      child: ListTile(
-                        leading: el.buildIcon(),
-                        title: Text(el.name),
-                        trailing: el.buildIcon(),
-                        // Switch(
-                        //   value: true,
-                        //   onChanged: (bool v) {
-                        //     controller.bottomNavBtns.removeAt(idx);
-                        //     controller.update();
-                        //   },
-                        // ),
-                        onTap: () {
-                          el.openSetting();
-                        },
-                      ),
+                      child: ListTileTheme(
+                          iconColor: Theme.of(Get.context).accentColor,
+                          child: ListTile(
+                            leading: el.buildIcon(),
+                            title: Text(el.name),
+                            trailing: Checkbox(
+                              value: true,
+                              onChanged: (value) {},
+                            ),
+                            // Switch(
+                            //   value: true,
+                            //   onChanged: (bool v) {
+                            //     controller.bottomNavBtns.removeAt(idx);
+                            //     controller.update();
+                            //   },
+                            // ),
+                            onTap: () {
+                              el.openSetting();
+                            },
+                          )),
                     ));
               })
               .values

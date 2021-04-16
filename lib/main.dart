@@ -15,19 +15,38 @@ void main() {
       bottomSheetTheme:
           BottomSheetThemeData(backgroundColor: Color(testColor[0])),
       cardTheme: CardTheme(color: Color(testColor[0])),
-
-      primarySwatch: MaterialColor(testColor[1], {
-        50: Color(testColor[1]),
-        100: Color(testColor[1]),
-        200: Color(testColor[1]),
-        300: Color(testColor[1]),
-        400: Color(testColor[1]),
-        500: Color(testColor[1]),
-        600: Color(testColor[1]),
-        700: Color(testColor[1]),
-        800: Color(testColor[1]),
-        900: Color(testColor[1])
-      }),
+      hintColor: Color(testColor[1]),
+      colorScheme: ColorScheme.light(
+        primary: Color(testColor[1]),
+        primaryVariant: Color(testColor[1]),
+        secondary: Color(testColor[1]),
+        secondaryVariant: Color(testColor[1]),
+        surface: Color(testColor[0]),
+        // background: Color(testColor[0]),
+        // error: Color(testColor[0]),
+        onPrimary: Color(testColor[0]),
+        onSecondary: Color(testColor[0]),
+        onSurface: Color(testColor[1]),
+      ),
+      accentColor: Color(testColor[1]),
+      // onBackground: Color(testColor[0]),
+      // onError: Color(testColor[0]),
+      // brightness: Brightness.light),
+      // colorScheme: ColorScheme.highContrastLight(
+      //     //   onSurface: Color(testColor[1]),
+      //     ),
+      // primarySwatch: MaterialColor(testColor[1], {
+      //   50: Color(testColor[1]),
+      //   100: Color(testColor[1]),
+      //   200: Color(testColor[1]),
+      //   300: Color(testColor[1]),
+      //   400: Color(testColor[1]),
+      //   500: Color(testColor[1]),
+      //   600: Color(testColor[1]),
+      //   700: Color(testColor[1]),
+      //   800: Color(testColor[1]),
+      //   900: Color(testColor[1])
+      // }),
 
       // primaryColor: Color(testColor[0]),
       // dividerColor: Color(testColor[1]),
@@ -54,6 +73,8 @@ void main() {
       //   foregroundColor: Color(testColor[0]),
       // ),
       //
+      accentIconTheme: IconThemeData(color: Color(testColor[1])),
+      primaryIconTheme: IconThemeData(color: Color(testColor[1])),
 
       checkboxTheme: CheckboxThemeData(
           fillColor: MaterialStateProperty.all(Color(testColor[1])),
@@ -75,7 +96,7 @@ void main() {
 
       // accentIconTheme: IconThemeData(color: Color(testColor[1])),
       // primaryIconTheme: IconThemeData(color: Color(testColor[1])),
-      // accentColor: Color(testColor[1]),
+
       // backgroundColor: Color(testColor[1]),
       // hintColor: Color(testColor[1]),
       // focusColor: Color(testColor[1]),
