@@ -20,13 +20,7 @@ class MainPage extends GetView<MainCtl> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey[400],
-                ),
-              ),
+              padding: EdgeInsets.only(left: 5, right: 5, bottom: 3, top: 3),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -40,7 +34,7 @@ class MainPage extends GetView<MainCtl> {
             ),
             Expanded(
                 child: Container(
-              padding: EdgeInsets.only(left: 5, right: 5, top: 2),
+              padding: EdgeInsets.only(left: 5, right: 5, top: 5),
               child: GetBuilder<MainCtl>(builder: (ctl) {
                 return ScrollablePositionedList.builder(
                   itemCount: controller.contents.length,

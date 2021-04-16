@@ -10,8 +10,20 @@ void main() {
   runApp(GetMaterialApp(
     theme: ThemeData(
         scaffoldBackgroundColor: Color(0xFF02343F),
+        dialogBackgroundColor: Color(0xFF02343F),
+        primaryColor: Color(0xFF02343F),
+        dividerColor: Color(0xFFF0EDCC),
+        bottomSheetTheme:
+            BottomSheetThemeData(backgroundColor: Color(0xFF02343F)),
         cardTheme: CardTheme(color: Color(0xFF02343F)),
         iconTheme: IconThemeData(color: Color(0xFFF0EDCC)),
+        backgroundColor: Color(0xFFF0EDCC),
+        textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+                backgroundColor: Color(0xFFF0EDCC),
+                textStyle: TextStyle(color: Color(0xFF02343F)))),
+        buttonTheme: ButtonThemeData(
+            buttonColor: Color(0xFFF0EDCC), textTheme: ButtonTextTheme.primary),
         textTheme: TextTheme(
           headline3: TextStyle(color: Color(0xFFF0EDCC)),
           headline4: TextStyle(color: Color(0xFFF0EDCC)),

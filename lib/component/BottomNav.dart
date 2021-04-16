@@ -88,6 +88,7 @@ class BottomNav extends GetView<MainCtl> {
       builder: (BuildContext context) {
         return SimpleDialog(title: Text('설정'),
             // contentPadding: EdgeInsets.all(1),
+
             children: [
               SizedBox(
                   height: Get.height * 0.7,
