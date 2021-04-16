@@ -129,8 +129,19 @@ class Option_Tts extends OptionsBase {
     // TODO: implement openSetting
   }
 
+  void TESTopenSetting() {
+    // if (!isOpen) {
+    Get.back();
+    // return;
+    // }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      openSetting();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // TESTopenSetting();
     return IconButton(
         onPressed: () {
           openSetting();
@@ -144,12 +155,14 @@ class Option_Tts extends OptionsBase {
       children: [
         Icon(
           Icons.volume_mute_rounded,
+          color: Theme.of(Get.context).textTheme.subtitle2.color,
         ),
         Container(
             margin: EdgeInsets.only(left: 15, top: 4),
             child: Icon(
               Icons.settings_rounded,
               size: 15,
+              color: Theme.of(Get.context).textTheme.subtitle2.color,
             )),
       ],
     );

@@ -33,15 +33,16 @@ class BottomNav extends GetView<MainCtl> {
                       key: ValueKey(idx),
                       elevation: 2,
                       child: ListTile(
-                        leading: Container(child: el.buildIcon()),
+                        leading: el.buildIcon(),
                         title: Text(el.name),
-                        trailing: Switch(
-                          value: true,
-                          onChanged: (bool v) {
-                            controller.bottomNavBtns.removeAt(idx);
-                            controller.update();
-                          },
-                        ),
+                        trailing: el.buildIcon(),
+                        // Switch(
+                        //   value: true,
+                        //   onChanged: (bool v) {
+                        //     controller.bottomNavBtns.removeAt(idx);
+                        //     controller.update();
+                        //   },
+                        // ),
                         onTap: () {
                           el.openSetting();
                         },
@@ -53,34 +54,34 @@ class BottomNav extends GetView<MainCtl> {
         ]);
   }
 
-  Widget staticList() {
-    return ListView(children: [
-      ...NAVBUTTON.where((el) {
-        int idx = controller.bottomNavBtns.indexOf(el);
-        return idx < 0;
-      }).map((el) {
-        int idx = NAVBUTTON.indexOf(el);
-        return Card(
-          key: ValueKey('0$idx'),
-          elevation: 2,
-          child: ListTile(
-            leading: Container(child: el.buildIcon()),
-            title: Text(el.name),
-            trailing: Switch(
-              value: false,
-              onChanged: (bool v) {
-                controller.bottomNavBtns.add(el);
-                controller.update();
-              },
-            ),
-            onTap: () {
-              el.openSetting();
-            },
-          ),
-        );
-      }).toList()
-    ]);
-  }
+  // Widget staticList() {
+  //   return ListView(children: [
+  //     ...NAVBUTTON.where((el) {
+  //       int idx = controller.bottomNavBtns.indexOf(el);
+  //       return idx < 0;
+  //     }).map((el) {
+  //       int idx = NAVBUTTON.indexOf(el);
+  //       return Card(
+  //         key: ValueKey('0$idx'),
+  //         elevation: 2,
+  //         child: ListTile(
+  //           leading: Container(child: el.buildIcon()),
+  //           title: Text(el.name),
+  //           trailing: Switch(
+  //             value: false,
+  //             onChanged: (bool v) {
+  //               controller.bottomNavBtns.add(el);
+  //               controller.update();
+  //             },
+  //           ),
+  //           onTap: () {
+  //             el.openSetting();
+  //           },
+  //         ),
+  //       );
+  //     }).toList()
+  //   ]);
+  // }
 
   void openOptions() async {
     showDialog(
@@ -96,8 +97,8 @@ class BottomNav extends GetView<MainCtl> {
                   child: Container(
                     child: Column(children: [
                       Expanded(child: dragList()),
-                      Divider(),
-                      Expanded(child: staticList())
+                      // Divider(),
+                      // Expanded(child: staticList())
                     ]),
                   )
                   // Expanded(
@@ -162,7 +163,7 @@ class BottomNav extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-
+    // TESTopenSetting();
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Expanded(
         flex: 1,

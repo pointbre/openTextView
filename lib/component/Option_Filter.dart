@@ -102,14 +102,17 @@ class Option_Filter extends OptionsBase {
                           return Card(
                             child: ListTile(
                               title: Text(e['name']),
-                              trailing: Switch(
-                                onChanged: (e) {},
-                                value: true,
-                              ),
+                              trailing:
+                                  Checkbox(value: true, onChanged: (b) {}),
+                              // Switch(
+                              //   onChanged: (e) {},
+                              //   value: true,
+                              // ),
                               subtitle: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    // Checkbox(value: true, onChanged: (b) {}),
                                     Text(e['filter']),
                                     Icon(Icons.arrow_right),
                                     Text(e['to'] == "" ? '없음' : e['to'])
@@ -135,8 +138,8 @@ class Option_Filter extends OptionsBase {
 
   @override
   Widget build(BuildContext context) {
-    // TESTopenSetting();
     this.context = context;
+    // TESTopenSetting();
 
     // TODO: implement build
     return IconButton(
