@@ -104,48 +104,6 @@ class Option_Theme extends OptionsBase {
   String get name => '테마설정';
 
   BuildContext context = null;
-  void setTheme(color1, color2) {
-    Get.changeTheme(ThemeData(
-      scaffoldBackgroundColor: Color(color1),
-      dialogBackgroundColor: Color(color1),
-      bottomSheetTheme: BottomSheetThemeData(backgroundColor: Color(color1)),
-      cardTheme: CardTheme(color: Color(color1)),
-      hintColor: Color(color2),
-      colorScheme: ColorScheme.light(
-        primary: Color(color2),
-        primaryVariant: Color(color2),
-        secondary: Color(color2),
-        secondaryVariant: Color(color2),
-        surface: Color(color1),
-        // background: Color(color1),
-        // error: Color(color1),
-        onPrimary: Color(color1),
-        onSecondary: Color(color1),
-        onSurface: Color(color2),
-      ),
-      accentColor: Color(color2),
-      iconTheme: IconThemeData(color: Color(color2)),
-      accentIconTheme: IconThemeData(color: Color(color2)),
-      primaryIconTheme: IconThemeData(color: Color(color2)),
-      checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.all(Color(color2)),
-          checkColor: MaterialStateProperty.all(Color(color1))),
-      textTheme: TextTheme(
-        headline3: TextStyle(color: Color(color2)),
-        headline4: TextStyle(color: Color(color2)),
-        headline5: TextStyle(color: Color(color2)),
-        headline6: TextStyle(color: Color(color2)),
-        headline1: TextStyle(color: Color(color2)),
-        headline2: TextStyle(color: Color(color2)),
-        bodyText1: TextStyle(color: Color(color2)),
-        bodyText2: TextStyle(color: Color(color2)),
-        subtitle1: TextStyle(color: Color(color2)),
-        subtitle2: TextStyle(color: Color(color2)),
-        overline: TextStyle(color: Color(color2)),
-        caption: TextStyle(color: Color(color2)),
-      ),
-    ));
-  }
 
   @override
   void openSetting() {
@@ -156,57 +114,70 @@ class Option_Theme extends OptionsBase {
         // barrierColor: Colors.transparent,
         // isDismissible: false,
         builder: (BuildContext context) {
-          return SimpleDialog(title: Text(name), children: [
-            SizedBox(
-                height: Get.height * 0.7,
-                width: Get.width * 0.9,
-                child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: Column(
-                      children: [
-                        Expanded(
-                            child:
-                                ListView(padding: EdgeInsets.all(5), children: [
-                          ...TWOCOLOR.map((e) {
-                            return Card(
-                                child: Row(
-                              children: [
-                                Expanded(
-                                    child: Card(
-                                        child: ListTileTheme(
-                                  tileColor: Color(e[0]),
-                                  child: ListTile(
-                                    title: Text('내용',
-                                        style: TextStyle(
+          return SimpleDialog(
+              title: Text(
+                name,
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              children: [
+                SizedBox(
+                    height: Get.height * 0.75,
+                    width: Get.width * 0.9,
+                    child: Container(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            Expanded(
+                                child: GridView.count(
+                                    shrinkWrap: true,
+                                    crossAxisCount: 2,
+                                    children: [
+                                  ...TWOCOLOR.map((e) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        MaterialButton(
+                                          // padding: EdgeInsets.all(0),
+                                          minWidth: 0,
+                                          color: Color(e[0]),
+                                          child: Icon(
+                                            Icons.volume_up,
                                             color: Color(e[1]),
-                                            fontWeight: FontWeight.bold)),
-                                    onTap: () {
-                                      setTheme(e[0], e[1]);
-                                    },
-                                  ),
-                                ))),
-                                Expanded(
-                                    child: Card(
-                                  child: ListTileTheme(
-                                    tileColor: Color(e[1]),
-                                    child: ListTile(
-                                      title: Text('내용',
-                                          style: TextStyle(
-                                              color: Color(e[0]),
-                                              fontWeight: FontWeight.bold)),
-                                      onTap: () {
-                                        setTheme(e[1], e[0]);
-                                      },
-                                    ),
-                                  ),
-                                )),
-                              ],
-                            ));
-                          }).toList()
-                        ]))
-                      ],
-                    )))
-          ]);
+                                          ),
+                                          shape: CircleBorder(),
+                                          onPressed: () {
+                                            controller.config.update('theme',
+                                                (value) {
+                                              RxList list = value;
+                                              list.assignAll([e[0], e[1]]);
+                                              return value;
+                                            });
+                                          },
+                                        ),
+                                        MaterialButton(
+                                          // padding: EdgeInsets.all(0),
+                                          minWidth: 0,
+                                          color: Color(e[1]),
+                                          child: Icon(Icons.volume_up,
+                                              color: Color(e[0])),
+                                          shape: CircleBorder(),
+                                          onPressed: () {
+                                            controller.config.update('theme',
+                                                (value) {
+                                              RxList list = value;
+                                              list.assignAll([e[1], e[0]]);
+                                              return value;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  }).toList()
+                                ]))
+                          ],
+                        )))
+              ]);
         }).whenComplete(() {});
   }
 
@@ -223,7 +194,7 @@ class Option_Theme extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTopenSetting();
+    // TESTopenSetting();
 
     // TODO: implement build
     return IconButton(

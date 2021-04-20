@@ -39,7 +39,7 @@ class Option_Find extends OptionsBase {
 
   @override
   Widget build(BuildContext context) {
-    // TESTopenSetting();
+    TESTopenSetting();
     // TODO: implement build
     return IconButton(
       onPressed: () {
@@ -65,7 +65,7 @@ class Option_Find extends OptionsBase {
         builder: (BuildContext context) {
           return SimpleDialog(title: Text(name), children: [
             SizedBox(
-                height: Get.height * 0.7,
+                height: Get.height * 0.8,
                 width: Get.width * 0.9,
                 child: Column(children: [
                   Container(
