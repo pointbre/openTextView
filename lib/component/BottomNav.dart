@@ -10,8 +10,9 @@ class bottomnavCtl extends GetxController {
   ScrollController scrollctl = ScrollController();
 }
 
-class BottomNav extends GetView<MainCtl> {
+class BottomNav extends OptionsBase {
   BuildContext context = null;
+
   Widget dragList() {
     return ReorderableListView(
         onReorder: (int oldIndex, int newIndex) {
@@ -41,13 +42,6 @@ class BottomNav extends GetView<MainCtl> {
                               value: true,
                               onChanged: (value) {},
                             ),
-                            // Switch(
-                            //   value: true,
-                            //   onChanged: (bool v) {
-                            //     controller.bottomNavBtns.removeAt(idx);
-                            //     controller.update();
-                            //   },
-                            // ),
                             onTap: () {
                               el.openSetting();
                             },
@@ -58,35 +52,6 @@ class BottomNav extends GetView<MainCtl> {
               .toList(),
         ]);
   }
-
-  // Widget staticList() {
-  //   return ListView(children: [
-  //     ...NAVBUTTON.where((el) {
-  //       int idx = controller.bottomNavBtns.indexOf(el);
-  //       return idx < 0;
-  //     }).map((el) {
-  //       int idx = NAVBUTTON.indexOf(el);
-  //       return Card(
-  //         key: ValueKey('0$idx'),
-  //         elevation: 2,
-  //         child: ListTile(
-  //           leading: Container(child: el.buildIcon()),
-  //           title: Text(el.name),
-  //           trailing: Switch(
-  //             value: false,
-  //             onChanged: (bool v) {
-  //               controller.bottomNavBtns.add(el);
-  //               controller.update();
-  //             },
-  //           ),
-  //           onTap: () {
-  //             el.openSetting();
-  //           },
-  //         ),
-  //       );
-  //     }).toList()
-  //   ]);
-  // }
 
   void openOptions() async {
     showDialog(
@@ -105,51 +70,7 @@ class BottomNav extends GetView<MainCtl> {
                       // Divider(),
                       // Expanded(child: staticList())
                     ]),
-                  )
-                  // Expanded(
-                  //   child: Column(
-                  //     children: [dragList()],
-                  //     // itemBuilder: (context, index) {
-                  //     //   if (index == 0) {
-                  //     //     return
-                  //     //   }
-                  //     //   return Text('asd');
-                  //     // },
-                  //   ),
-                  // )
-                  // GetBuilder<MainCtl>(builder: (ctl) {
-                  //   return dragList();
-                  // })
-                  // Divider(key: ValueKey('asdf')),
-                  //         ...NAVBUTTON.where((el) {
-                  //           int idx = ctl.bottomNavBtns.indexOf(el);
-                  //           return idx < 0;
-                  //         }).map((el) {
-                  //           int idx = NAVBUTTON.indexOf(el);
-                  //           return Card(
-                  //             key: ValueKey('0$idx'),
-                  //             elevation: 2,
-                  //             child: ListTile(
-                  //               leading: Container(child: el.buildIcon()),
-                  //               title: Text(el.name),
-                  //               trailing: Switch(
-                  //                 value: false,
-                  //                 onChanged: (bool v) {
-                  //                   // if (v == false) {
-                  //                   //   ctl.bottomNavBtns.removeAt(idx);
-                  //                   // } else {
-                  //                   ctl.bottomNavBtns.add(el);
-                  //                   // }
-                  //                   ctl.update();
-                  //                 },
-                  //               ),
-                  //               onTap: () {
-                  //                 el.openSetting();
-                  //               },
-                  //             ),
-                  //           );
-                  //         })
-                  )
+                  ))
             ]);
       },
     );
@@ -168,7 +89,6 @@ class BottomNav extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    // TESTopenSetting();
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Expanded(
         flex: 1,
@@ -295,5 +215,20 @@ class BottomNav extends GetView<MainCtl> {
     //     //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')
     //     // ],
     //   );
+  }
+
+  @override
+  Widget buildIcon() {
+    // TODO: implement buildIcon
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement name
+  String get name => throw UnimplementedError();
+
+  @override
+  void openSetting() {
+    // TODO: implement openSetting
   }
 }

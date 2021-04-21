@@ -102,7 +102,6 @@ const TWOCOLOR = [
 class Option_Theme extends OptionsBase {
   @override
   String get name => '테마설정';
-
   BuildContext context = null;
 
   @override
@@ -207,6 +206,7 @@ class Option_Theme extends OptionsBase {
 
   @override
   Widget buildIcon() {
+    // Get.put(Option_ThemeCtl());
     // TODO: implement buildIcon
     return Stack(
       children: [

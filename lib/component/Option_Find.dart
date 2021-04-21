@@ -39,7 +39,7 @@ class Option_Find extends OptionsBase {
 
   @override
   Widget build(BuildContext context) {
-    TESTopenSetting();
+    // TESTopenSetting();
     // TODO: implement build
     return IconButton(
       onPressed: () {
@@ -74,7 +74,7 @@ class Option_Find extends OptionsBase {
                         children: [
                           TextField(
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              // border: OutlineInputBorder(),
                               labelText: "검색할 단어 / 문장을 입력해 주세요.",
                             ),
                             onSubmitted: (value) {
@@ -98,6 +98,7 @@ class Option_Find extends OptionsBase {
                             onTap: () {
                               controller.itemScrollctl.jumpTo(
                                   index: controller.findList[index].pos);
+                              Get.back();
                             },
                           ));
                         })),

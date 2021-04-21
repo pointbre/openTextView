@@ -178,6 +178,7 @@ class Option_Tts extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     // TESTopenSetting();
+    print('tts load--------');
     return IconButton(
         onPressed: () {
           openSetting();
