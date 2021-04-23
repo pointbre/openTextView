@@ -14,20 +14,25 @@ class BottomNav extends OptionsBase {
   BuildContext context = null;
 
   Widget dragList() {
-    return ReorderableListView(
-        onReorder: (int oldIndex, int newIndex) {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final item = controller.bottomNavBtns.removeAt(oldIndex);
-          controller.bottomNavBtns.insert(newIndex, item);
-          controller.update();
-          // controller.bottomNavBtns.
-        },
+    return ListView(
+        // ReorderableListView(
+        //     onReorder: (int oldIndex, int newIndex) {
+        //       // if (oldIndex < newIndex) {
+        //       //   newIndex -= 1;
+        //       // }
+        //       // final item = controller.bottomNavBtns.removeAt(oldIndex);
+        //       // controller.bottomNavBtns.insert(newIndex, item);
+        //       // controller.update();
+        //       // controller.bottomNavBtns.
+        //     },
         children: [
           ...controller.bottomNavBtns
               .asMap()
               .map((idx, el) {
+                // print((controller.config['nav'] as RxList)
+                //     .where((e) => e.toString() == el.toString())
+                //     .isEmpty);
+                // print(el.toString());
                 return MapEntry(
                     idx,
                     Card(
@@ -38,10 +43,23 @@ class BottomNav extends OptionsBase {
                           child: ListTile(
                             leading: el.buildIcon(),
                             title: Text(el.name),
-                            trailing: Checkbox(
-                              value: true,
-                              onChanged: (value) {},
-                            ),
+                            trailing: Obx(() => Checkbox(
+                                  value: !(controller.config['nav'] as RxList)
+                                      .where(
+                                          (e) => e.toString() == el.toString())
+                                      .isEmpty,
+                                  onChanged: (value) {
+                                    print(value);
+                                    if (value) {
+                                      (controller.config['nav'] as RxList)
+                                          .add(el.toString());
+                                    } else {
+                                      (controller.config['nav'] as RxList)
+                                          .remove(el.toString());
+                                    }
+                                    controller.update();
+                                  },
+                                )),
                             onTap: () {
                               el.openSetting();
                             },
@@ -89,6 +107,18 @@ class BottomNav extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    // print(
+    //     '${controller.config['nav']} , nav ::::::: , ${(controller.config['nav'] as RxList).length}');
+    // print(NAVBUTTON);
+    // OptionsBase el = NAVBUTTON.where((element) {
+    //   print(element.toString() == 'Option_Theme');
+    //   return element.toString() == 'Option_Theme';
+    // }).first;
+    // print('----- ${el.runtimeType}');
+    // NAVBUTTON.forEach((e) {
+    //   print(' >>>>>>> ${e.toString()}');
+    // });
+    // TESTopenSetting();
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Expanded(
         flex: 1,
@@ -104,13 +134,17 @@ class BottomNav extends OptionsBase {
         flex: 8,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              ...controller.bottomNavBtns.map((element) => element).toList(),
-              // ...controller.bottomNavBtns.map((element) => element).toList(),
-              // ...controller.bottomNavBtns.map((element) => element).toList(),
-            ],
-          ),
+          child: Obx(() => Row(
+                children: [
+                  ...(controller.config['nav'] as RxList)
+                      .map((cmpName) => NAVBUTTON.where((element) {
+                            return element.toString() == cmpName;
+                          }).first),
+                  // ...controller.bottomNavBtns.map((element) => element).toList(),
+                  // ...controller.bottomNavBtns.map((element) => element).toList(),
+                  // ...controller.bottomNavBtns.map((element) => element).toList(),
+                ],
+              )),
         ),
       ),
       Expanded(flex: 2, child: SizedBox()

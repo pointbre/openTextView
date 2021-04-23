@@ -19,7 +19,18 @@ class Option_Tts extends OptionsBase {
 
   final flutterTts = FlutterTts();
   void openSettingLanguage() async {
-    List<dynamic> langs = await flutterTts.getLanguages;
+    List<dynamic> langs = [];
+    // 4월 23 일 :
+    // 3월 31 일자 구글 tts 패치후 음성 1번 의 경우 남녀 목소리가 같이 나오는 버그로 인해.
+    // 강제로 버전을 다운그레이드 하여 tts 엔진 사용시 지원 언어가나오지 않는 현상으로 인하여 우회 처리 로직 추가
+
+    try {
+      langs =
+          await flutterTts.getLanguages.timeout(Duration(milliseconds: 300));
+    } catch (e) {
+      langs = LANG.keys.toList();
+    }
+
     Picker(
         backgroundColor: Theme.of(Get.context).scaffoldBackgroundColor,
         headerColor: Theme.of(Get.context).scaffoldBackgroundColor,

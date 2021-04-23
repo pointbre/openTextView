@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -94,29 +95,57 @@ class MainCtl extends GetxController {
     // [*]--------------[*]
     print('loadConfig');
     await storage.ready;
-    print('loadConfig');
+
     // 초기 설정 파일 로드
-    assignConfig(storage.getItem('config'));
+    assignConfig(storage.getItem('config') ?? {});
 
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
     config.keys.forEach((key) {
       debounce(config[key], (v) {
+        print('ConfigChange ${key}');
         storage.setItem('config', config.toJson());
       }, time: Duration(milliseconds: 500));
     });
   }
 
   assignConfig(Map<String, dynamic> tmpConfig) {
+    print('>>>>>>>>>>>>:${tmpConfig}');
     tmpConfig.keys.forEach((key) {
       if (config[key] == null) {
         return;
       }
-      if (config[key].runtimeType == RxList) {
-        (config[key] as RxList).assignAll(tmpConfig[key]);
-      } else {
-        print(' >>>:>:>:>: ${config[key]}');
-        (config[key] as RxMap).assignAll(tmpConfig[key]);
+      // print(
+      //     ' >>>>>>>>>>>>>>>>>>>>>>>>>>>: ${tmpConfig[key]} :: ${config[key].runtimeType == RxList}');
+      try {
+        // if (config[key] is RxList<String>) {
+        //   print('------------------- ${tmpConfig[key].runtimeType}');
+        //   (config[key] as RxList<String>).assignAll(tmpConfig[key]);
+        // } else
+        if (config[key] is RxList) {
+          (config[key] as RxList).assignAll(tmpConfig[key]);
+        } else if (config[key] is RxMap) {
+          (config[key] as RxMap).assignAll(tmpConfig[key]);
+        }
+      } catch (e) {
+        print(e);
       }
+      // switch (config[key].runtimeType) {
+      //   case RxList:
+      //     print('RxList<dynamic>');
+      //     (config[key] as RxList).assignAll(tmpConfig[key]);
+      //     break;
+      //   case RxList<String>:
+      //     print('RxList<dynamic>');
+      //     (config[key] as RxList).assignAll(tmpConfig[key]);
+      //     break;
+      //   // case "RxList<OptionsBase>":
+      //   //   // print('RxList<OptionsBase> ${tmpConfig[key]}');
+      //   //   // (config[key] as RxList<OptionsBase>).assignAll();
+      //   //   break;
+      //   default:
+      //     (config[key] as RxMap).assignAll(tmpConfig[key]);
+      //     break;
+      // }
     });
   }
 
@@ -146,7 +175,7 @@ class MainCtl extends GetxController {
           onSecondary: color1,
           onSurface: color2,
         ),
-        // accentColor: color2,
+        accentColor: color2,
         iconTheme: IconThemeData(color: color2),
         // accentIconTheme: IconThemeData(color: color2),
         primaryIconTheme: IconThemeData(color: color2),
