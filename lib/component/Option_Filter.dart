@@ -83,7 +83,7 @@ class Option_Filter extends OptionsBase {
                 height: Get.height * 0.7,
                 width: Get.width * 0.9,
                 child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                     child: Column(
                       children: [
                         SizedBox(
@@ -133,7 +133,21 @@ class Option_Filter extends OptionsBase {
                               ),
                             );
                           }).toList()
-                        ]))
+                        ])),
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  // openFilterList();
+                                },
+                                child: Icon(Icons.add),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     )))
           ]);
@@ -153,7 +167,7 @@ class Option_Filter extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    // TESTopenSetting();
+    TESTopenSetting();
 
     // TODO: implement build
     return IconButton(

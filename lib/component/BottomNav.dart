@@ -134,17 +134,25 @@ class BottomNav extends OptionsBase {
         flex: 8,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Obx(() => Row(
-                children: [
-                  ...(controller.config['nav'] as RxList)
-                      .map((cmpName) => NAVBUTTON.where((element) {
-                            return element.toString() == cmpName;
-                          }).first),
-                  // ...controller.bottomNavBtns.map((element) => element).toList(),
-                  // ...controller.bottomNavBtns.map((element) => element).toList(),
-                  // ...controller.bottomNavBtns.map((element) => element).toList(),
-                ],
-              )),
+          child: Obx(() {
+            // List<Widget> navList =
+            return Row(
+              children: [
+                ...(controller.config['nav'] as RxList).map((cmpName) {
+                  List<OptionsBase> tmp = NAVBUTTON
+                      .where((element) => element.toString() == cmpName)
+                      .toList();
+                  if (tmp.isNotEmpty) {
+                    return tmp.first;
+                  }
+                  return Container();
+                }),
+                // ...controller.bottomNavBtns.map((element) => element).toList(),
+                // ...controller.bottomNavBtns.map((element) => element).toList(),
+                // ...controller.bottomNavBtns.map((element) => element).toList(),
+              ],
+            );
+          }),
         ),
       ),
       Expanded(flex: 2, child: SizedBox()
