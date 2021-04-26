@@ -150,6 +150,7 @@ class Option_Filter extends OptionsBase {
                             (controller.config['filter'] as RxList)
                                 .add(ctl.filterTmpCtl);
                             controller.update();
+                            Get.back();
                             print(ctl.filterTmpCtl);
                           },
                           child: Text('추가'),
