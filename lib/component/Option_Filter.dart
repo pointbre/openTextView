@@ -16,18 +16,55 @@ import 'package:url_launcher/url_launcher.dart';
 
 // var isOpen = false;
 const List<dynamic> DFFILTER = [
-  {"name": "중국어(한자) 필터", "expr": true, "filter": "[一-龥]", "to": ''},
+  {
+    "name": "중국어(한자) 필터",
+    "expr": true,
+    "filter": "[一-龥]",
+    "to": '',
+    'enable': false
+  },
   {
     "name": "일본어(일어) 필터",
     "expr": true,
     "filter": "[ぁ-ゔ]+|[ァ-ヴー]+[々〆〤]",
-    "to": ''
+    "to": '',
+    'enable': false
   },
-  {"name": "아포스트로피(홀따음표) 필터", "expr": false, "filter": "'", "to": ''},
-  {"name": "물음표 여러개 필터", "expr": true, "filter": "\?{1,}", "to": '?'},
-  {"name": "느낌표 여러개 필터", "expr": true, "filter": "!{1,}", "to": '!'},
-  {"name": "다시다시다시(----)", "expr": false, "filter": "-{2,}", "to": ''},
-  {"name": "는는는(===)", "expr": false, "filter": "={2,}", "to": ''},
+  {
+    "name": "아포스트로피(홀따음표) 필터",
+    "expr": false,
+    "filter": "'",
+    "to": '',
+    'enable': false
+  },
+  {
+    "name": "물음표 여러개 필터",
+    "expr": true,
+    "filter": "\?{1,}",
+    "to": '?',
+    'enable': false
+  },
+  {
+    "name": "느낌표 여러개 필터",
+    "expr": true,
+    "filter": "!{1,}",
+    "to": '!',
+    'enable': false
+  },
+  {
+    "name": "다시다시다시(----)",
+    "expr": false,
+    "filter": "-{2,}",
+    "to": '',
+    'enable': false
+  },
+  {
+    "name": "는는는(===)",
+    "expr": false,
+    "filter": "={2,}",
+    "to": '',
+    'enable': false
+  },
 ];
 
 class Option_FilterCtl extends GetxController {
@@ -62,6 +99,10 @@ class Option_Filter extends OptionsBase {
                     ]),
                 onTap: () {
                   // 필터 적용후 닫기 필요
+
+                  RxList rxlist = controller.config['filter'];
+                  rxlist.add(Map.from(e));
+                  controller.update();
                   Get.back();
                 },
                 // isThreeLine: true,
@@ -97,7 +138,6 @@ class Option_Filter extends OptionsBase {
                                   onChanged: (value) {
                                     ctl.filterTmpCtl['name'] = value;
                                     ctl.update();
-                                    // {"name": "", "expr": false, "filter": "", "to": ''}
                                   },
                                 ),
                                 Divider(),
@@ -108,7 +148,6 @@ class Option_Filter extends OptionsBase {
                                   onChanged: (value) {
                                     ctl.filterTmpCtl['filter'] = value;
                                     ctl.update();
-                                    // {"name": "", "expr": false, "filter": "", "to": ''}
                                   },
                                 ),
                                 Divider(),
@@ -119,7 +158,6 @@ class Option_Filter extends OptionsBase {
                                   onChanged: (value) {
                                     ctl.filterTmpCtl['to'] = value;
                                     ctl.update();
-                                    // {"name": "", "expr": false, "filter": "", "to": ''}
                                   },
                                 ),
                                 Divider(),
@@ -127,8 +165,6 @@ class Option_Filter extends OptionsBase {
                                     title: Text('정규식사용'),
                                     value: ctl.filterTmpCtl['expr'] ?? false,
                                     onChanged: (b) {
-                                      print(
-                                          '>>> : ${b} , ${ctl.filterTmpCtl['expr']}');
                                       ctl.filterTmpCtl['expr'] = b;
                                       ctl.update();
                                     }),
@@ -147,11 +183,12 @@ class Option_Filter extends OptionsBase {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            (controller.config['filter'] as RxList)
-                                .add(ctl.filterTmpCtl);
+                            RxList rxlist = controller.config['filter'];
+                            rxlist.add(ctl.filterTmpCtl.toJson());
+                            // print(controller.config['filter']);
+                            // print(ctl.filterTmpCtl);
                             controller.update();
                             Get.back();
-                            print(ctl.filterTmpCtl);
                           },
                           child: Text('추가'),
                         )
@@ -172,136 +209,87 @@ class Option_Filter extends OptionsBase {
     // });
     // test----
 
-    RxList filterlist = controller.config['filter'];
-    print('filterlistfilterlist : $filterlist');
+    // RxList filterlist = controller.config['filter'];
+    // print('filterlistfilterlist : $filterlist');
     showDialog(
         context: Get.context,
         // barrierColor: Colors.transparent,
         // isDismissible: false,
         builder: (BuildContext context) {
-          return Obx(() => SimpleDialog(title: Text(name), children: [
-                SizedBox(
-                    height: Get.height * 0.7,
-                    width: Get.width * 0.9,
-                    child: Container(
-                        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
+          return GetBuilder<MainCtl>(builder: (ctl) {
+            RxList filterlist = controller.config['filter'];
+            return SimpleDialog(title: Text(name), children: [
+              SizedBox(
+                  height: Get.height * 0.7,
+                  width: Get.width * 0.9,
+                  child: Container(
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  openFilterList();
+                                },
+                                child: Text('제공 되는 TTS 필터 리스트 보기'),
+                              )),
+                          Text(
+                            '적용된 필터 목록 (좌우로 드래그하여 삭제)',
+                            style: Get.context.textTheme.subtitle1,
+                          ),
+                          Divider(),
+                          Expanded(
+                              child: ListView(
+                                  padding: EdgeInsets.all(5),
+                                  children: [
+                                ...filterlist.map((e) {
+                                  int idx = filterlist.indexOf(e);
+                                  print('>>>: ${e} ${filterlist.indexOf(e)}');
+
+                                  return Dismissible(
+                                      key: UniqueKey(),
+                                      background: Container(color: Colors.red),
+                                      onDismissed: (direction) {
+                                        controller.config.update('filter',
+                                            (value) {
+                                          (value as RxList).removeAt(idx);
+                                          return value;
+                                        });
+                                        controller.update();
+                                      },
+                                      child: Card(
+                                          child: Container(
+                                        child: ListTile(
+                                          title: Text(e['name'] ?? "---"),
+                                          trailing: Checkbox(
+                                              value: e['enable'] ?? false,
+                                              onChanged: (b) {
+                                                filterlist[idx]['enable'] = b;
+                                                ctl.update();
+                                              }),
+                                        ),
+                                      )));
+                                }).toList()
+                              ])),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
                                   onPressed: () async {
-                                    openFilterList();
+                                    openCustomFilter();
                                   },
-                                  child: Text('제공 되는 TTS 필터 리스트 보기'),
-                                )),
-                            Text(
-                              '적용된 필터 목록',
-                              style: Get.context.textTheme.headline6,
+                                  child: Icon(Icons.add),
+                                ),
+                              ],
                             ),
-                            Divider(),
-                            Expanded(
-                                child: ListView(
-                                    padding: EdgeInsets.all(5),
-                                    children: [
-                                  ...filterlist.map((e) {
-                                    int idx = filterlist.indexOf(e);
-                                    Map m = e;
-                                    print('>>>: ${e} ${filterlist.indexOf(e)}');
-
-                                    return Dismissible(
-                                        key: Key('${idx}'),
-                                        background:
-                                            Container(color: Colors.red),
-                                        onDismissed: (direction) {
-                                          controller.config.update('filter',
-                                              (value) {
-                                            (value as RxList).removeAt(idx);
-                                            return value;
-                                          });
-                                        },
-                                        child: Card(
-                                            child: Container(
-                                          child: ListTile(
-                                            title: Text(e['name'] ?? "---"),
-                                            trailing: Checkbox(
-                                                value: true, onChanged: (b) {}),
-
-                                            // subtitle: Row(
-                                            //     mainAxisAlignment:
-                                            //         MainAxisAlignment.spaceBetween,
-                                            //     children: [
-                                            //       // Checkbox(value: true, onChanged: (b) {}),
-                                            //       Expanded(
-                                            //           flex: 8,
-                                            //           child:
-                                            //               Text(e['filter'] ?? "")),
-                                            //       Expanded(
-                                            //           flex: 1,
-                                            //           child:
-                                            //               Icon(Icons.arrow_right)),
-                                            //       Expanded(
-                                            //         flex: 2,
-                                            //         child: Center(
-                                            //             child: Text(e['to'] == ""
-                                            //                 ? '없음'
-                                            //                 : e['to'])),
-                                            //       ),
-                                            //     ]),
-                                          ),
-                                        )));
-                                  }).toList()
-                                  // ...DFFILTER.map((e) {
-                                  //   return Card(
-                                  //     child: ListTile(
-                                  //       title: Text(e['name']),
-                                  //       trailing:
-                                  //           Checkbox(value: true, onChanged: (b) {}),
-                                  //       // Switch(
-                                  //       //   onChanged: (e) {},
-                                  //       //   value: true,
-                                  //       // ),
-                                  //       subtitle: Row(
-                                  //           mainAxisAlignment:
-                                  //               MainAxisAlignment.spaceBetween,
-                                  //           children: [
-                                  //             // Checkbox(value: true, onChanged: (b) {}),
-                                  //             Expanded(
-                                  //                 flex: 8, child: Text(e['filter'])),
-                                  //             Expanded(
-                                  //                 flex: 1,
-                                  //                 child: Icon(Icons.arrow_right)),
-                                  //             Expanded(
-                                  //               flex: 2,
-                                  //               child: Center(
-                                  //                   child: Text(e['to'] == ""
-                                  //                       ? '없음'
-                                  //                       : e['to'])),
-                                  //             ),
-                                  //           ]),
-                                  //     ),
-                                  //   );
-                                  // }
-                                  // ).toList()
-                                ])),
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      // openFilterList();
-                                      openCustomFilter();
-                                    },
-                                    child: Icon(Icons.add),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        )))
-              ]));
+                          )
+                        ],
+                      )))
+            ]);
+          });
         }).whenComplete(() {});
   }
 
@@ -318,7 +306,7 @@ class Option_Filter extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTopenSetting();
+    // TESTopenSetting();
 
     // TODO: implement build
     return IconButton(
