@@ -109,18 +109,11 @@ class MainCtl extends GetxController {
   }
 
   assignConfig(Map<String, dynamic> tmpConfig) {
-    print('>>>>>>>>>>>>:${tmpConfig}');
     tmpConfig.keys.forEach((key) {
       if (config[key] == null) {
         return;
       }
-      // print(
-      //     ' >>>>>>>>>>>>>>>>>>>>>>>>>>>: ${tmpConfig[key]} :: ${config[key].runtimeType == RxList}');
       try {
-        // if (config[key] is RxList<String>) {
-        //   print('------------------- ${tmpConfig[key].runtimeType}');
-        //   (config[key] as RxList<String>).assignAll(tmpConfig[key]);
-        // } else
         if (config[key] is RxList) {
           (config[key] as RxList).assignAll(tmpConfig[key]);
         } else if (config[key] is RxMap) {
@@ -129,23 +122,6 @@ class MainCtl extends GetxController {
       } catch (e) {
         print(e);
       }
-      // switch (config[key].runtimeType) {
-      //   case RxList:
-      //     print('RxList<dynamic>');
-      //     (config[key] as RxList).assignAll(tmpConfig[key]);
-      //     break;
-      //   case RxList<String>:
-      //     print('RxList<dynamic>');
-      //     (config[key] as RxList).assignAll(tmpConfig[key]);
-      //     break;
-      //   // case "RxList<OptionsBase>":
-      //   //   // print('RxList<OptionsBase> ${tmpConfig[key]}');
-      //   //   // (config[key] as RxList<OptionsBase>).assignAll();
-      //   //   break;
-      //   default:
-      //     (config[key] as RxMap).assignAll(tmpConfig[key]);
-      //     break;
-      // }
     });
   }
 
