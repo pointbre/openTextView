@@ -39,24 +39,23 @@ class MainPage extends GetView<MainCtl> {
                 return ScrollablePositionedList.builder(
                   itemCount: controller.contents.length,
                   itemBuilder: (context, index) {
-                    String contens = controller.contents[index];
-                    String findText = controller.findText.value;
+                    // String contens = controller.contents[index];
+                    // String findText = controller.findText.value;
+                    // if (findText != "" && contens.indexOf(findText) >= 0) {
+                    //   int startIdx = contens.indexOf(findText);
+                    //   int endIdx = startIdx + findText.length;
 
-                    if (findText != "" && contens.indexOf(findText) >= 0) {
-                      int startIdx = contens.indexOf(findText);
-                      int endIdx = startIdx + findText.length;
-
-                      var deco = contens.substring(startIdx, endIdx);
-                      var contensS = contens.substring(0, startIdx);
-                      var contensE = contens.substring(endIdx);
-                      return Text.rich(TextSpan(children: [
-                        TextSpan(text: contensS),
-                        TextSpan(
-                            text: deco, style: TextStyle(color: Colors.blue)),
-                        TextSpan(text: contensE),
-                      ]));
-                    }
-                    return Text('${contens}');
+                    //   var deco = contens.substring(startIdx, endIdx);
+                    //   var contensS = contens.substring(0, startIdx);
+                    //   var contensE = contens.substring(endIdx);
+                    //   return Text.rich(TextSpan(children: [
+                    //     TextSpan(text: contensS),
+                    //     TextSpan(
+                    //         text: deco, style: TextStyle(color: Colors.blue)),
+                    //     TextSpan(text: contensE),
+                    //   ]));
+                    // }
+                    return Text('${controller.contents[index]}');
                   },
                   itemScrollController: controller.itemScrollctl,
                   itemPositionsListener: controller.itemPosListener,

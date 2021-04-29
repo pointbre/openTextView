@@ -33,7 +33,6 @@ class Option_Find extends OptionsBase {
         }
       });
     }
-    Get.find<MainCtl>().findText.value = text;
     Get.find<MainCtl>().update();
   }
 
