@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:open_textview/component/BottomNav.dart';
 import 'package:open_textview/component/FloatingButton.dart';
 import 'package:open_textview/controller/MainCtl.dart';
-import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MainPage extends GetView<MainCtl> {
@@ -24,11 +22,29 @@ class MainPage extends GetView<MainCtl> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: Text('열린 텍스트 파일 제목'),
-                  ),
-                  Obx(() => Text(
-                      '${(controller.curPos.value / controller.contents.length * 100).toPrecision(2)}%'))
+                  Obx(() {
+                    Map m = controller.config['picker'];
+                    String fileName = '파일 을 열어주세요.';
+                    if (m.isNotEmpty) {
+                      fileName = m['name'];
+                    }
+                    return Expanded(
+                        child: Text(
+                      fileName,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      maxLines: 1,
+                    ));
+                  }),
+                  GetBuilder<MainCtl>(
+                      id: 'scroll',
+                      builder: (ctl) {
+                        if (ctl.contents.length <= 0) {
+                          return Text('0.0%');
+                        }
+                        return Text(
+                            '${(ctl.curPos.value / ctl.contents.length * 100).toPrecision(2)}%');
+                      })
                 ],
               ),
             ),
@@ -36,8 +52,12 @@ class MainPage extends GetView<MainCtl> {
                 child: Container(
               padding: EdgeInsets.only(left: 5, right: 5, top: 5),
               child: GetBuilder<MainCtl>(builder: (ctl) {
+                // print('[[[[[[[[[[[[[${ctl.contents.length}');
+                // if (ctl.contents.length == 0) {
+                //   return Container();
+                // }
                 return ScrollablePositionedList.builder(
-                  itemCount: controller.contents.length,
+                  itemCount: ctl.contents.length,
                   itemBuilder: (context, index) {
                     // String contens = controller.contents[index];
                     // String findText = controller.findText.value;
@@ -62,79 +82,10 @@ class MainPage extends GetView<MainCtl> {
                 );
               }),
             ))
-
-            // GetBuilder<MainCtl>(builder: (ctl) {
-            //   return Expanded(
-            //       child: Container(
-            //     padding: EdgeInsets.only(left: 5, right: 5, top: 2),
-            //     child: ScrollablePositionedList.builder(
-            //       itemCount: controller.contents.length,
-            //       itemBuilder: (context, index) {
-            //         print('aaa : ${context}');
-
-            //         return Text('${controller.contents[index]}');
-            //       },
-            //       itemScrollController: controller.itemScrollctl,
-            //       itemPositionsListener: controller.itemPosListener,
-            //     ),
-            //   ));
-            // }),
-            // Container(
-            //   child: ElevatedButton(
-            //       onPressed: () => {controller.itemScrollctl.jumpTo(index: 100)},
-            //       child: Text('asdf')),
-            // )
           ],
         ),
       ),
       bottomNavigationBar: BottomNav(),
-
-      //  Container(
-      //   decoration: BoxDecoration(
-      //     border: Border.all(
-      //       width: 1,
-      //       color: Colors.grey[400],
-      //     ),
-      //   ),
-      //   // padding: EdgeInsets.all(8.8),
-      //   child: Obx(
-      //     () => Row(
-      //       mainAxisAlignment: MainAxisAlignment.start,
-      //       children: [
-      //         IconButton(
-      //           icon: Icon(Icons.settings),
-      //           onPressed: () {
-      //             controller.contents.clear();
-      //             controller.update();
-      //             for (int i = 0; i < 500; i++) {
-      //               controller.contents.add('Item00 $i');
-      //             }
-      //           },
-      //           padding: EdgeInsets.zero,
-      //         ),
-      //         IconButton(
-      //           icon: Icon(Icons.settings),
-      //           onPressed: () {
-      //             controller.contents.clear();
-      //             controller.update();
-      //             for (int i = 0; i < 100; i++) {
-      //               controller.contents.add('Item-- $i');
-      //             }
-      //           },
-      //           padding: EdgeInsets.zero,
-      //         ),
-      //         ...controller.bottomNavBtns.map((element) => element).toList()
-      //       ],
-      //     ),
-      //   ),
-      // ),
-
-      // BottomNavigationBar(
-      //   // showSelectedLabels: false,
-      //   // showUnselectedLabels: false,
-
-      //   // items: [BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')],
-      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: FloatingButton(),
     ));

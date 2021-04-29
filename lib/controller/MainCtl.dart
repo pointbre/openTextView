@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:open_textview/component/OptionsBase.dart';
@@ -30,7 +34,7 @@ class MainCtl extends GetxController {
   final bottomNavBtns = [...NAVBUTTON].obs;
   final curPos = 0.obs;
 
-  final contents = [];
+  final contents = [].obs;
 
   // 기능 영역
   // --- 검색기능 ---
@@ -41,7 +45,7 @@ class MainCtl extends GetxController {
   final ttsConfig = TtsConfig().obs;
 
   final LocalStorage storage = new LocalStorage('opentextview');
-
+  final history = [].obs;
   final config = {
     "theme": [].obs,
     "tts": {
@@ -60,9 +64,6 @@ class MainCtl extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    for (int i = 0; i < 500; i++) {
-      contents.add('Item $i');
-    }
 
     itemPosListener.itemPositions.addListener(() {
       var min = itemPosListener.itemPositions.value
@@ -71,7 +72,12 @@ class MainCtl extends GetxController {
               position.itemTrailingEdge < min.itemTrailingEdge ? position : min)
           .index;
       curPos.value = min;
-      curPos.update((val) {});
+      update(['scroll']);
+      // print(curPos.value);
+      // curPos.update((val) {
+      //   print(val);
+      //   return min;
+      // });
     });
 
     // 설정 이벤트
@@ -86,7 +92,18 @@ class MainCtl extends GetxController {
     debounce(config['find'], (v) {
       // 검색 히스토리 저장을 위한 로직 , 추후 추가 예정.
     }, time: Duration(seconds: 1));
-    debounce(config['picker'], (v) {
+    debounce(config['picker'], (v) async {
+      if ((v as Map).isNotEmpty) {
+        File file = File(v['path']);
+        if (file.existsSync()) {
+          Uint8List u8list = file.readAsBytesSync();
+          DecodingResult centents = await CharsetDetector.autoDecode(u8list);
+          contents.clear();
+          contents.assignAll(centents.string.split('\n'));
+          update();
+        }
+      }
+
       // 열어본 파일 히스토리 저장을 위한 로직 부분, 추후 추가 예정.
     }, time: Duration(seconds: 1));
 
@@ -98,6 +115,7 @@ class MainCtl extends GetxController {
 
     // 초기 설정 파일 로드
     assignConfig(storage.getItem('config') ?? {});
+    assignHistory(storage.getItem('history') ?? {});
 
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
     config.keys.forEach((key) {
@@ -105,6 +123,23 @@ class MainCtl extends GetxController {
         print('ConfigChange ${key}');
         storage.setItem('config', config.toJson());
       }, time: Duration(milliseconds: 500));
+    });
+  }
+
+  assignHistory(Map<String, dynamic> tmpConfig) {
+    tmpConfig.keys.forEach((key) {
+      if (config[key] == null) {
+        return;
+      }
+      try {
+        if (config[key] is RxList) {
+          (config[key] as RxList).assignAll(tmpConfig[key]);
+        } else if (config[key] is RxMap) {
+          (config[key] as RxMap).assignAll(tmpConfig[key]);
+        }
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -131,6 +166,7 @@ class MainCtl extends GetxController {
     }
     int c1 = v[0];
     int c2 = v[1];
+
     Color color1 = Color(c1);
     Color color2 = Color(c2);
     Get.changeTheme(ThemeData(
@@ -144,7 +180,7 @@ class MainCtl extends GetxController {
           primaryVariant: color2,
           secondary: color2,
           secondaryVariant: color2,
-          surface: color1,
+          surface: getSwatchShade(color1, 750),
           // background: color1,
           // error: color1,
           onPrimary: color1,
@@ -187,6 +223,10 @@ class MainCtl extends GetxController {
             FloatingActionButtonThemeData(backgroundColor: color2)));
   }
 
+  Color getSwatchShade(Color c, int swatchValue) {
+    final hsl = HSLColor.fromColor(c);
+    return hsl.withLightness(1 - (swatchValue / 1000)).toColor();
+  }
   // void runFindContents(String text) {
   //   findList.clear();
   //   if (text != "") {

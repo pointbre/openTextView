@@ -55,17 +55,34 @@ class Option_FilePicker extends OptionsBase {
       allowMultiple: false,
       allowedExtensions: ['txt'],
     );
+    print(result.files.first);
     PlatformFile platformfile = result.files.first;
-
-    print(platformfile.name);
-    print(platformfile.bytes);
-    print(platformfile.size);
-    print(platformfile.extension);
-    print(platformfile.path);
-    File file = File(platformfile.path);
-    Uint8List body = file.readAsBytesSync();
-    DecodingResult centents = await CharsetDetector.autoDecode(body);
-    print(centents.charset); // => e.g. 'SHIFT_JIS'
-    print(centents.string); // => e.g. '日本語'
+    RxMap picker = controller.config['picker'];
+    picker.assignAll({
+      "name": platformfile.name,
+      "bytes": platformfile.bytes,
+      "size": platformfile.size,
+      "extension": platformfile.extension,
+      "path": platformfile.path,
+    });
+    // controller.config['picker'] = {
+    //   "name": platformfile.name,
+    //   "bytes": platformfile.bytes,
+    //   "size": platformfile.size,
+    //   "extension": platformfile.extension,
+    //   "path": platformfile.path,
+    // };
+    print(controller.config['picker']);
+    controller.update();
+    // print(platformfile.name);
+    // print(platformfile.bytes);
+    // print(platformfile.size);
+    // print(platformfile.extension);
+    // print(platformfile.path);
+    // File file = File(platformfile.path);
+    // Uint8List body = file.readAsBytesSync();
+    // DecodingResult centents = await CharsetDetector.autoDecode(body);
+    // print(centents.charset); // => e.g. 'SHIFT_JIS'
+    // print(centents.string); // => e.g. '日本語'
   }
 }

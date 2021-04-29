@@ -15,6 +15,7 @@ class BottomNav extends OptionsBase {
 
   Widget dragList() {
     return ListView(
+
         // ReorderableListView(
         //     onReorder: (int oldIndex, int newIndex) {
         //       // if (oldIndex < newIndex) {
@@ -107,62 +108,53 @@ class BottomNav extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    // print(
-    //     '${controller.config['nav']} , nav ::::::: , ${(controller.config['nav'] as RxList).length}');
-    // print(NAVBUTTON);
-    // OptionsBase el = NAVBUTTON.where((element) {
-    //   print(element.toString() == 'Option_Theme');
-    //   return element.toString() == 'Option_Theme';
-    // }).first;
-    // print('----- ${el.runtimeType}');
-    // NAVBUTTON.forEach((e) {
-    //   print(' >>>>>>> ${e.toString()}');
-    // });
+
     // TESTopenSetting();
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Expanded(
-        flex: 1,
-        child: IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () {
-            openOptions();
-          },
-          padding: EdgeInsets.zero,
-        ),
-      ),
-      Expanded(
-        flex: 8,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Obx(() {
-            // List<Widget> navList =
-            return Row(
-              children: [
-                ...(controller.config['nav'] as RxList).map((cmpName) {
-                  List<OptionsBase> tmp = NAVBUTTON
-                      .where((element) => element.toString() == cmpName)
-                      .toList();
-                  if (tmp.isNotEmpty) {
-                    return tmp.first;
-                  }
-                  return Container();
-                }),
-                // ...controller.bottomNavBtns.map((element) => element).toList(),
-                // ...controller.bottomNavBtns.map((element) => element).toList(),
-                // ...controller.bottomNavBtns.map((element) => element).toList(),
-              ],
-            );
-          }),
-        ),
-      ),
-      Expanded(flex: 2, child: SizedBox()
-          // IconButton(
-          //   icon: Icon(Icons.settings),
-          //   onPressed: () {},
-          //   padding: EdgeInsets.zero,
-          // )
+    return BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        color: Theme.of(Get.context).colorScheme.surface,
+        // notchedShape: CircularNotchedRectangle(),
+        child: Container(
+            // color: Theme.of(Get.context).colorScheme.surface,
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Expanded(
+            flex: 1,
+            child: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                openOptions();
+              },
+              padding: EdgeInsets.zero,
+            ),
           ),
-    ]);
+          Expanded(
+            flex: 8,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Obx(() {
+                // List<Widget> navList =
+                return Row(
+                  children: [
+                    ...(controller.config['nav'] as RxList).map((cmpName) {
+                      List<OptionsBase> tmp = NAVBUTTON
+                          .where((element) => element.toString() == cmpName)
+                          .toList();
+                      if (tmp.isNotEmpty) {
+                        return tmp.first;
+                      }
+                      return Container();
+                    }),
+                    // ...controller.bottomNavBtns.map((element) => element).toList(),
+                    // ...controller.bottomNavBtns.map((element) => element).toList(),
+                    // ...controller.bottomNavBtns.map((element) => element).toList(),
+                  ],
+                );
+              }),
+            ),
+          ),
+          Expanded(flex: 2, child: SizedBox()),
+        ])));
     // return Row(
     //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
     //   children: [
