@@ -78,100 +78,108 @@ class Option_Tts extends OptionsBase {
         // barrierColor: Colors.transparent,
         // isDismissible: false,
         builder: (BuildContext context) {
-          return SimpleDialog(children: [
-            SizedBox(
-                height: Get.height * 0.8,
-                width: Get.width * 0.9,
-                child: Column(children: [
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    child: GetBuilder<MainCtl>(
-                      builder: (context) {
-                        String langCode =
-                            (controller.config['tts'] as Map)['language'];
-                        return Column(
-                          children: [
-                            SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    openSettingLanguage();
-                                  },
-                                  child: Text(
-                                      '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
-                                )),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                      flex: 2, child: Text('speechRate : ')),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Slider(
-                                      value: (controller.config['tts']
-                                          as Map)['speechRate'],
-                                      min: 0,
-                                      max: 100,
-                                      label: 0.round().toString(),
-                                      onChanged: (double v) {
-                                        (controller.config['tts']
-                                            as Map)['speechRate'] = v;
-
-                                        controller.update();
+          return SimpleDialog(
+              title: Text(
+                name,
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              children: [
+                SizedBox(
+                    height: Get.height * 0.8,
+                    width: Get.width * 0.9,
+                    child: Column(children: [
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: GetBuilder<MainCtl>(
+                          builder: (context) {
+                            String langCode =
+                                (controller.config['tts'] as Map)['language'];
+                            return Column(
+                              children: [
+                                SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        openSettingLanguage();
                                       },
-                                    ),
-                                  ),
-                                ]),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(flex: 2, child: Text('volume : ')),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Slider(
-                                      value: (controller.config['tts']
-                                          as Map)['volume'],
-                                      min: 0,
-                                      max: 100,
-                                      // divisions: 1,
-                                      label: 0.round().toString(),
-                                      onChanged: (double v) {
-                                        (controller.config['tts']
-                                            as Map)['volume'] = v;
+                                      child: Text(
+                                          '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
+                                    )),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                          flex: 2,
+                                          child: Text('speechRate : ')),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Slider(
+                                          value: (controller.config['tts']
+                                              as Map)['speechRate'],
+                                          min: 0,
+                                          max: 100,
+                                          label: 0.round().toString(),
+                                          onChanged: (double v) {
+                                            (controller.config['tts']
+                                                as Map)['speechRate'] = v;
 
-                                        controller.update();
-                                      },
-                                    ),
-                                  ),
-                                ]),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(flex: 2, child: Text('pitch : ')),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Slider(
-                                      value: (controller.config['tts']
-                                          as Map)['pitch'],
-                                      min: 0,
-                                      max: 100,
-                                      label: 0.round().toString(),
-                                      onChanged: (double v) {
-                                        (controller.config['tts']
-                                            as Map)['pitch'] = v;
+                                            controller.update();
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                          flex: 2, child: Text('volume : ')),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Slider(
+                                          value: (controller.config['tts']
+                                              as Map)['volume'],
+                                          min: 0,
+                                          max: 100,
+                                          // divisions: 1,
+                                          label: 0.round().toString(),
+                                          onChanged: (double v) {
+                                            (controller.config['tts']
+                                                as Map)['volume'] = v;
 
-                                        controller.update();
-                                      },
-                                    ),
-                                  ),
-                                ]),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ]))
-          ]);
+                                            controller.update();
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                          flex: 2, child: Text('pitch : ')),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Slider(
+                                          value: (controller.config['tts']
+                                              as Map)['pitch'],
+                                          min: 0,
+                                          max: 100,
+                                          label: 0.round().toString(),
+                                          onChanged: (double v) {
+                                            (controller.config['tts']
+                                                as Map)['pitch'] = v;
+
+                                            controller.update();
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ]))
+              ]);
         }).whenComplete(() {});
     // TODO: implement openSetting
   }

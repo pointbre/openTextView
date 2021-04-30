@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/component/Option_Backup.dart';
 import 'package:open_textview/component/Option_FilePicker.dart';
 import 'package:open_textview/component/Option_Filter.dart';
 import 'package:open_textview/component/Option_Find.dart';
@@ -13,6 +14,7 @@ var NAVBUTTON = [
   Option_Tts(),
   Option_Filter(),
   Option_Theme(),
+  Option_Backup(),
 ];
 
 // var NAVBUTTON = {
