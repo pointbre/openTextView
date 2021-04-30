@@ -1,17 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
-import 'package:open_textview/controller/MainCtl.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:open_textview/items/Languages.dart';
 import 'package:path_provider/path_provider.dart';
 
 // var isOpen = false;
@@ -22,22 +20,24 @@ class Option_Backup extends OptionsBase {
 
   @override
   void openSetting() async {
-    // openSettingLanguage();
-    Directory tempDir = await getApplicationDocumentsDirectory();
-    print('${tempDir.path}/opentextview');
-    File db = File('${tempDir.path}/opentextview');
-    String contents = await db.readAsString();
-    print(contents);
-    // DecodingResult centents = await CharsetDetector.autoDecode(u8list);
+    String contents = '''
+        {"config" : ${jsonEncode(controller.config)},"history" : ${jsonEncode(controller.history)}}
+        ''';
 
     showDialog(
         context: Get.context,
         builder: (BuildContext context) {
           return SimpleDialog(
-              title: Text(
-                name,
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
+              title: Text.rich(TextSpan(children: [
+                TextSpan(
+                  text: name,
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                TextSpan(
+                  text: ' (복구후엔 어플을 재실행 해 주세요.)',
+                  style: Theme.of(Get.context).textTheme.bodyText1,
+                ),
+              ])),
               contentPadding: EdgeInsets.all(10),
               children: [
                 ElevatedButton(
@@ -62,25 +62,110 @@ class Option_Backup extends OptionsBase {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Get.back(),
-                      child: Text('파일로 복구'),
+                      onPressed: () async {
+                        FilePickerResult result =
+                            await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowMultiple: false,
+                          allowedExtensions: ['txt'],
+                        );
+
+                        if (result.files.isNotEmpty) {
+                          PlatformFile platformfile = result.files.first;
+                          File file = File(platformfile.path);
+                          Uint8List u8list = file.readAsBytesSync();
+                          DecodingResult decodeContents =
+                              await CharsetDetector.autoDecode(u8list);
+
+                          String contents = decodeContents.string;
+                          try {
+                            var json = jsonDecode(contents);
+                            if ((json['config'] as Map).isEmpty &&
+                                (json['history'] as List).isEmpty) {
+                              return;
+                            }
+                            showDialog(
+                                context: Get.context,
+                                builder: (c) => AlertDialog(
+                                      title: Text('파일 내용'),
+                                      content: SingleChildScrollView(
+                                        child: Text(contents),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text('취소'),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            controller.setConfig(
+                                                (json['config'] as Map),
+                                                (json['history'] as List));
+                                            Get.back(); // 현재 팝업 닫기
+                                            Get.back();
+                                          },
+                                          child: Text('적용'),
+                                        )
+                                      ],
+                                    ));
+                          } catch (e) {}
+                        }
+                      },
+                      child: Text('파일로 복구(txt)'),
                     ),
                     ElevatedButton(
-                      onPressed: () => Get.back(),
+                      onPressed: () async {
+                        ClipboardData contents =
+                            await Clipboard.getData('text/plain');
+                        var json = {};
+                        try {
+                          json = jsonDecode(contents.text);
+                          print(json['config']);
+                          if ((json['config'] as Map).isEmpty &&
+                              (json['history'] as List).isEmpty) {
+                            return;
+                          }
+
+                          showDialog(
+                              context: Get.context,
+                              builder: (c) => AlertDialog(
+                                    title: Text('클립보드 내용'),
+                                    content: SingleChildScrollView(
+                                      child: Text(contents.text),
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () => Get.back(),
+                                        child: Text('취소'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          controller.setConfig(
+                                              json['config'], json['history']);
+
+                                          Get.back(); // 현재 팝업 닫기
+                                          Get.back(); // 백업 복구 팝업 닫기
+                                        },
+                                        child: Text('적용'),
+                                      )
+                                    ],
+                                  ));
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
                       child: Text('클립보드 복구'),
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  onPressed: () => Get.back(),
-                  child: Text('현재 상태 저장 '),
-                ),
                 Container(
                   padding: EdgeInsets.all(10),
-                  child: Text(contents + contents),
+                  child: Text(contents),
                 )
               ]);
-        }).whenComplete(() {});
+        }).whenComplete(() {
+      // controller.reloadConfig();
+    });
     // TODO: implement openSetting
   }
 
@@ -96,7 +181,7 @@ class Option_Backup extends OptionsBase {
 
   @override
   Widget build(BuildContext context) {
-    TESTopenSetting();
+    // TESTopenSetting();
     return IconButton(
         onPressed: () {
           openSetting();

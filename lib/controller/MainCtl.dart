@@ -103,9 +103,10 @@ class MainCtl extends GetxController {
         File file = File(v['path']);
         if (file.existsSync()) {
           Uint8List u8list = file.readAsBytesSync();
-          DecodingResult centents = await CharsetDetector.autoDecode(u8list);
+          DecodingResult decodeContents =
+              await CharsetDetector.autoDecode(u8list);
           contents.clear();
-          contents.assignAll(centents.string.split('\n'));
+          contents.assignAll(decodeContents.string.split('\n'));
           update();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -136,19 +137,29 @@ class MainCtl extends GetxController {
     await storage.ready;
 
     // 초기 설정 파일 로드
-    assignConfig(storage.getItem('config') ?? {});
-    assignHistory(storage.getItem('history') ?? []);
+    print(storage.getItem('config'));
+    try {
+      assignConfig(storage.getItem('config') ?? {});
+      assignHistory(storage.getItem('history') ?? []);
+    } catch (e) {
+      storage.clear();
+    }
 
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
     config.keys.forEach((key) {
-      debounce(config[key], (v) {
-        storage.setItem('config', config.toJson());
-      }, time: Duration(milliseconds: 500));
+      debounce(config[key], (v) async {
+        await storage.setItem('config', config.toJson());
+      }, time: Duration(seconds: 1000));
     });
 
-    debounce(history, (v) {
-      storage.setItem('history', history.toJson());
-    }, time: Duration(milliseconds: 500));
+    debounce(history, (v) async {
+      await storage.setItem('history', history.toJson());
+    }, time: Duration(milliseconds: 1100));
+  }
+
+  setConfig(Map<String, dynamic> config, List history) {
+    assignConfig(config ?? {});
+    assignHistory(history ?? []);
   }
 
   assignHistory(List tmpHistory) {
