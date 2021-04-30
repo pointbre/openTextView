@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
@@ -72,12 +73,17 @@ class MainCtl extends GetxController {
               position.itemTrailingEdge < min.itemTrailingEdge ? position : min)
           .index;
       curPos.value = min;
+      int whereIdx = history.indexWhere((element) {
+        return element['name'] == (config['picker'] as Map)['name'];
+      });
+      DateTime now = DateTime.now();
+      DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+      if (curPos.value > 0) {
+        history[whereIdx]['pos'] = curPos.value;
+      }
+      history[whereIdx]['date'] = formatter.format(now);
+      history.refresh();
       update(['scroll']);
-      // print(curPos.value);
-      // curPos.update((val) {
-      //   print(val);
-      //   return min;
-      // });
     });
 
     // 설정 이벤트
@@ -101,6 +107,23 @@ class MainCtl extends GetxController {
           contents.clear();
           contents.assignAll(centents.string.split('\n'));
           update();
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            int whereIdx = history.indexWhere((element) {
+              return element['name'] == (config['picker'] as Map)['name'];
+            });
+            DateTime now = DateTime.now();
+            DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+
+            if (whereIdx < 0) {
+              history.add(
+                  {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
+              itemScrollctl.jumpTo(index: 0);
+            } else {
+              itemScrollctl.jumpTo(index: history[whereIdx]['pos']);
+              history[whereIdx]['date'] = formatter.format(now);
+            }
+          });
         }
       }
 
@@ -110,37 +133,26 @@ class MainCtl extends GetxController {
     // [*]--------------[*]
     // 옵션 로드 / 공통 이벤트 처리 로직
     // [*]--------------[*]
-    print('loadConfig');
     await storage.ready;
 
     // 초기 설정 파일 로드
     assignConfig(storage.getItem('config') ?? {});
-    assignHistory(storage.getItem('history') ?? {});
+    assignHistory(storage.getItem('history') ?? []);
 
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
     config.keys.forEach((key) {
       debounce(config[key], (v) {
-        print('ConfigChange ${key}');
         storage.setItem('config', config.toJson());
       }, time: Duration(milliseconds: 500));
     });
+
+    debounce(history, (v) {
+      storage.setItem('history', history.toJson());
+    }, time: Duration(milliseconds: 500));
   }
 
-  assignHistory(Map<String, dynamic> tmpConfig) {
-    tmpConfig.keys.forEach((key) {
-      if (config[key] == null) {
-        return;
-      }
-      try {
-        if (config[key] is RxList) {
-          (config[key] as RxList).assignAll(tmpConfig[key]);
-        } else if (config[key] is RxMap) {
-          (config[key] as RxMap).assignAll(tmpConfig[key]);
-        }
-      } catch (e) {
-        print(e);
-      }
-    });
+  assignHistory(List tmpHistory) {
+    history.assignAll(tmpHistory);
   }
 
   assignConfig(Map<String, dynamic> tmpConfig) {

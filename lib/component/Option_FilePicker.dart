@@ -15,6 +15,7 @@ import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:open_textview/items/Languages.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,34 +56,28 @@ class Option_FilePicker extends OptionsBase {
       allowMultiple: false,
       allowedExtensions: ['txt'],
     );
-    print(result.files.first);
-    PlatformFile platformfile = result.files.first;
-    RxMap picker = controller.config['picker'];
-    picker.assignAll({
-      "name": platformfile.name,
-      "bytes": platformfile.bytes,
-      "size": platformfile.size,
-      "extension": platformfile.extension,
-      "path": platformfile.path,
-    });
-    // controller.config['picker'] = {
-    //   "name": platformfile.name,
-    //   "bytes": platformfile.bytes,
-    //   "size": platformfile.size,
-    //   "extension": platformfile.extension,
-    //   "path": platformfile.path,
-    // };
-    print(controller.config['picker']);
-    controller.update();
-    // print(platformfile.name);
-    // print(platformfile.bytes);
-    // print(platformfile.size);
-    // print(platformfile.extension);
-    // print(platformfile.path);
-    // File file = File(platformfile.path);
-    // Uint8List body = file.readAsBytesSync();
-    // DecodingResult centents = await CharsetDetector.autoDecode(body);
-    // print(centents.charset); // => e.g. 'SHIFT_JIS'
-    // print(centents.string); // => e.g. '日本語'
+    if (result.files.isNotEmpty) {
+      PlatformFile platformfile = result.files.first;
+      RxMap picker = controller.config['picker'];
+      picker.assignAll({
+        "name": platformfile.name,
+        "bytes": platformfile.bytes,
+        "size": platformfile.size,
+        "extension": platformfile.extension,
+        "path": platformfile.path,
+      });
+      // ---------- 마지막 연 파일은 캐시에 남기고 다른 캐시 삭제 로직 --------
+      // Directory tempDir = await getTemporaryDirectory();
+      // Directory filpikerDir = Directory(tempDir.path + '/file_picker');
+      // List fileList = filpikerDir.listSync();
+      // fileList.forEach((element) {
+      //   String fileName = element.path.split('/').last;
+      //   if (platformfile.name != fileName) {
+      //     (element as File).delete();
+      //   }
+      // });
+
+      controller.update();
+    }
   }
 }
