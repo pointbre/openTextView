@@ -78,7 +78,7 @@ class MainCtl extends GetxController {
     }
     history[whereIdx]['date'] = formatter.format(now);
     history.refresh();
-    print('-----scroll -----');
+    print('-----scroll ----- ${curPos.value}');
     update(['scroll']);
   }
 
@@ -120,13 +120,16 @@ class MainCtl extends GetxController {
       // 검색 히스토리 저장을 위한 로직 , 추후 추가 예정.
     }, time: Duration(seconds: 1));
     debounce(config['picker'], (v) async {
+      // return;
       if ((v as Map).isNotEmpty) {
         File file = File(v['path']);
         if (file.existsSync()) {
+          print('remove1');
+          itemPosListener.itemPositions.removeListener(onScroll);
+          print('remove2');
           Uint8List u8list = file.readAsBytesSync();
           DecodingResult decodeContents =
               await CharsetDetector.autoDecode(u8list);
-          itemPosListener.itemPositions.removeListener(onScroll);
           contents.clear();
           contents.assignAll(decodeContents.string.split('\n'));
           update();
