@@ -67,6 +67,7 @@ class MainCtl extends GetxController {
         .reduce((ItemPosition min, ItemPosition position) =>
             position.itemTrailingEdge < min.itemTrailingEdge ? position : min)
         .index;
+
     curPos.value = min;
     int whereIdx = history.indexWhere((element) {
       return element['name'] == (config['picker'] as Map)['name'];
@@ -78,7 +79,6 @@ class MainCtl extends GetxController {
     }
     history[whereIdx]['date'] = formatter.format(now);
     history.refresh();
-    print('-----scroll ----- ${curPos.value}');
     update(['scroll']);
   }
 
@@ -86,26 +86,6 @@ class MainCtl extends GetxController {
   void onInit() async {
     super.onInit();
     itemPosListener.itemPositions.addListener(onScroll);
-    //   () {
-    //   var min = itemPosListener.itemPositions.value
-    //       .where((ItemPosition position) => position.itemTrailingEdge > 0)
-    //       .reduce((ItemPosition min, ItemPosition position) =>
-    //           position.itemTrailingEdge < min.itemTrailingEdge ? position : min)
-    //       .index;
-    //   curPos.value = min;
-    //   int whereIdx = history.indexWhere((element) {
-    //     return element['name'] == (config['picker'] as Map)['name'];
-    //   });
-    //   DateTime now = DateTime.now();
-    //   DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
-    //   if (curPos.value > 0) {
-    //     history[whereIdx]['pos'] = curPos.value;
-    //   }
-    //   history[whereIdx]['date'] = formatter.format(now);
-    //   history.refresh();
-    //   print('-----scroll -----');
-    //   update(['scroll']);
-    // });
 
     // 설정 이벤트
     ever(config['theme'], changeTheme);
@@ -124,16 +104,12 @@ class MainCtl extends GetxController {
       if ((v as Map).isNotEmpty) {
         File file = File(v['path']);
         if (file.existsSync()) {
-          print('remove1');
-          itemPosListener.itemPositions.removeListener(onScroll);
-          print('remove2');
           Uint8List u8list = file.readAsBytesSync();
           DecodingResult decodeContents =
               await CharsetDetector.autoDecode(u8list);
-          contents.clear();
+          // contents.clear();
           contents.assignAll(decodeContents.string.split('\n'));
           update();
-          print('-----picker -----');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             int whereIdx = history.indexWhere((element) {
               return element['name'] == (config['picker'] as Map)['name'];
@@ -174,11 +150,13 @@ class MainCtl extends GetxController {
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
     config.keys.forEach((key) {
       debounce(config[key], (v) async {
+        await storage.ready;
         await storage.setItem('config', config.toJson());
       }, time: Duration(seconds: 1000));
     });
 
     debounce(history, (v) async {
+      await storage.ready;
       await storage.setItem('history', history.toJson());
     }, time: Duration(milliseconds: 1100));
   }
