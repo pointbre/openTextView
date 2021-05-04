@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'dart:typed_data';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
@@ -18,21 +19,10 @@ class FindObj {
   String contents;
 }
 
-class TtsConfig {
-  TtsConfig(
-      {this.language, this.speechRate, this.volume, this.pitch, this.voice});
-  String language;
-  double speechRate;
-  double volume;
-  double pitch;
-  var voice;
-}
-
 class MainCtl extends GetxController {
   final itemScrollctl = ItemScrollController();
   final itemPosListener = ItemPositionsListener.create();
 
-  final bottomNavBtns = [...NAVBUTTON].obs;
   final curPos = 0.obs;
 
   final contents = [].obs;
@@ -41,11 +31,13 @@ class MainCtl extends GetxController {
   // --- 검색기능 ---
   final findText = "".obs;
   final findList = List<FindObj>.empty().obs;
+  final audioService = null;
 
+// AudioService.play();
   // --- tts기능 ---
-  final ttsConfig = TtsConfig().obs;
 
   final LocalStorage storage = new LocalStorage('opentextview');
+
   final history = [].obs;
   final config = {
     "theme": [].obs,
@@ -55,12 +47,12 @@ class MainCtl extends GetxController {
       'volume': 0.toDouble(),
       'pitch': 0.toDouble(),
     }.obs,
-    "find": {}.obs,
     "filter": [].obs,
     "nav": [].obs, // 하단 네비게이션바
     "picker": {}.obs,
     "picker3": {}.obs, // 임시
   }.obs;
+
   void onScroll() {
     var min = itemPosListener.itemPositions.value
         .where((ItemPosition position) => position.itemTrailingEdge > 0)
@@ -85,6 +77,7 @@ class MainCtl extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+
     itemPosListener.itemPositions.addListener(onScroll);
 
     // 설정 이벤트
@@ -96,9 +89,6 @@ class MainCtl extends GetxController {
       // tts 음성 시 무시하거나 대체될 로직 부분 ,
     }, time: Duration(seconds: 1));
 
-    debounce(config['find'], (v) {
-      // 검색 히스토리 저장을 위한 로직 , 추후 추가 예정.
-    }, time: Duration(seconds: 1));
     debounce(config['picker'], (v) async {
       // return;
       if ((v as Map).isNotEmpty) {
@@ -258,16 +248,4 @@ class MainCtl extends GetxController {
     // hsl.(saturation)
     return hsl.withSaturation(1 - (swatchValue / 1000)).toColor();
   }
-  // void runFindContents(String text) {
-  //   findList.clear();
-  //   if (text != "") {
-  //     this.contents.asMap().forEach((key, value) {
-  //       if (value.toString().indexOf(text) >= 0) {
-  //         findList.add(FindObj(pos: key, contents: value));
-  //       }
-  //     });
-  //   }
-  //   findText.value = text;
-  //   update();
-  // }
 }

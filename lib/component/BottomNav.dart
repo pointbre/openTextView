@@ -14,62 +14,46 @@ class BottomNav extends OptionsBase {
   BuildContext context = null;
 
   Widget dragList() {
-    return ListView(
-
-        // ReorderableListView(
-        //     onReorder: (int oldIndex, int newIndex) {
-        //       // if (oldIndex < newIndex) {
-        //       //   newIndex -= 1;
-        //       // }
-        //       // final item = controller.bottomNavBtns.removeAt(oldIndex);
-        //       // controller.bottomNavBtns.insert(newIndex, item);
-        //       // controller.update();
-        //       // controller.bottomNavBtns.
-        //     },
-        children: [
-          ...controller.bottomNavBtns
-              .asMap()
-              .map((idx, el) {
-                // print((controller.config['nav'] as RxList)
-                //     .where((e) => e.toString() == el.toString())
-                //     .isEmpty);
-                // print(el.toString());
-                return MapEntry(
-                    idx,
-                    Card(
-                      key: ValueKey(idx),
-                      elevation: 2,
-                      child: ListTileTheme(
-                          iconColor: Theme.of(Get.context).accentColor,
-                          child: ListTile(
-                            leading: el.buildIcon(),
-                            title: Text(el.name),
-                            trailing: Obx(() => Checkbox(
-                                  value: !(controller.config['nav'] as RxList)
-                                      .where(
-                                          (e) => e.toString() == el.toString())
-                                      .isEmpty,
-                                  onChanged: (value) {
-                                    print(value);
-                                    if (value) {
-                                      (controller.config['nav'] as RxList)
-                                          .add(el.toString());
-                                    } else {
-                                      (controller.config['nav'] as RxList)
-                                          .remove(el.toString());
-                                    }
-                                    controller.update();
-                                  },
-                                )),
-                            onTap: () {
-                              el.openSetting();
-                            },
-                          )),
-                    ));
-              })
-              .values
-              .toList(),
-        ]);
+    return ListView(children: [
+      // ...controller.bottomNavBtns
+      ...NAVBUTTON
+          .asMap()
+          .map((idx, el) {
+            return MapEntry(
+                idx,
+                Card(
+                  key: ValueKey(idx),
+                  elevation: 2,
+                  child: ListTileTheme(
+                      iconColor: Theme.of(Get.context).accentColor,
+                      child: ListTile(
+                        leading: el.buildIcon(),
+                        title: Text(el.name),
+                        trailing: Obx(() => Checkbox(
+                              value: !(controller.config['nav'] as RxList)
+                                  .where((e) => e.toString() == el.toString())
+                                  .isEmpty,
+                              onChanged: (value) {
+                                print(value);
+                                if (value) {
+                                  (controller.config['nav'] as RxList)
+                                      .add(el.toString());
+                                } else {
+                                  (controller.config['nav'] as RxList)
+                                      .remove(el.toString());
+                                }
+                                controller.update();
+                              },
+                            )),
+                        onTap: () {
+                          el.openSetting();
+                        },
+                      )),
+                ));
+          })
+          .values
+          .toList(),
+    ]);
   }
 
   void openOptions() async {

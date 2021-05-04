@@ -194,7 +194,7 @@ class Option_Theme extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    TESTopenSetting();
+    // TESTopenSetting();
 
     // TODO: implement build
     return IconButton(
