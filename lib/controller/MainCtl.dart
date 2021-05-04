@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:open_textview/component/OptionsBase.dart';
+import 'package:open_textview/controller/MainAudio.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -31,12 +32,13 @@ class MainCtl extends GetxController {
   // --- 검색기능 ---
   final findText = "".obs;
   final findList = List<FindObj>.empty().obs;
-  final audioService = null;
 
 // AudioService.play();
   // --- tts기능 ---
 
   final LocalStorage storage = new LocalStorage('opentextview');
+
+  final playState = false.obs;
 
   final history = [].obs;
   final config = {
@@ -247,5 +249,22 @@ class MainCtl extends GetxController {
     final hsl = HSLColor.fromColor(c);
     // hsl.(saturation)
     return hsl.withSaturation(1 - (swatchValue / 1000)).toColor();
+  }
+
+  void play() async {
+    if (!AudioService.connected) {
+      await AudioService.connect();
+    }
+    await AudioService.start(
+        backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
+        androidNotificationChannelName: 'openTextView',
+        androidNotificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+        params: {...(config['tts'] as Map), "contents": contents.join('\n')});
+    await AudioService.play();
+  }
+
+  void stop() async {
+    await AudioService.stop();
   }
 }

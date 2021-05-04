@@ -39,7 +39,7 @@ dependencies:
   flutter_charset_detector: ^1.0.1
   intl: ^0.17.0
   path_provider: ^2.0.1
-  audio_session: ^0.1.0
+  audio_session: 
  
 
 

@@ -1,9 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:get/instance_manager.dart';
+import 'package:open_textview/controller/MainCtl.dart';
 
 void textToSpeechTaskEntrypoint() async {
-  print('_textToSpeechTaskEntrypoint');
   AudioServiceBackground.run(() => TextPlayerTask());
 }
 
@@ -15,11 +16,14 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   bool get _playing => AudioServiceBackground.state.playing;
 
+  // final ctl = Get.find<MainCtl>();
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
+    // ctl = Get.find<MainCtl>();
+    print(params);
     session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.speech());
-    print('onStartonStartonStartonStart');
+    print('onStartonStartonStartonStart ${_playing}');
 
     session.interruptionEventStream.listen((event) {
       print(event.begin);
@@ -93,7 +97,14 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPlay() {
-    print('onStartonStartonStartonStart');
+    AudioServiceBackground.setState(controls: [
+      MediaControl.skipToPrevious,
+      MediaControl.pause,
+      MediaControl.stop,
+      MediaControl.skipToNext
+    ], playing: true, processingState: AudioProcessingState.buffering);
+
+    return super.onPlay();
   }
 
   @override
@@ -103,7 +114,12 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onStop() async {
-    print('onStoponStoponStoponStoponStop');
+    super.onStop();
+    AudioServiceBackground.setState(
+        controls: [],
+        playing: false,
+        processingState: AudioProcessingState.none);
+
     // Signal the speech to stop
     // _finished = true;
     // _sleeper.interrupt();
