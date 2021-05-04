@@ -145,9 +145,6 @@ class BottomNav extends OptionsBase {
                       }
                       return Container();
                     }),
-                    // ...controller.bottomNavBtns.map((element) => element).toList(),
-                    // ...controller.bottomNavBtns.map((element) => element).toList(),
-                    // ...controller.bottomNavBtns.map((element) => element).toList(),
                   ],
                 );
               }),

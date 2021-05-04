@@ -8,6 +8,7 @@ import 'package:open_textview/component/OptionsBase.dart';
 
 // 출처 : https://2colors.colorion.co/
 const TWOCOLOR = [
+  [0xFF000000, 0xFFFFFFFF],
   [0xFF02343F, 0xFFF0EDCC],
   [0xFF331B3F, 0xFFACC7B4],
   [0xFF0A174E, 0xFFF5D042],
@@ -20,7 +21,6 @@ const TWOCOLOR = [
   [0xFFFFDFDE, 0xFF6A7BA2],
   [0xFF3B1877, 0xFFDA5A2A],
   [0xFF5F4B8B, 0xFFE69A8D],
-  [0xFF000000, 0xFFFFFFFF],
   [0xFF00203F, 0xFFADEFD1],
   [0xFF606060, 0xFFD6ED17],
   [0xFF2C5F2D, 0xFF97BC62],
@@ -156,9 +156,8 @@ class Option_Theme extends OptionsBase {
                                           onPressed: () {
                                             controller.config.update('theme',
                                                 (value) {
-                                              RxList list = value;
-                                              list.assignAll([e[1], e[0]]);
-                                              return value;
+                                              return (value as RxList)
+                                                ..assignAll([e[1], e[0]]);
                                             });
                                           },
                                         ),

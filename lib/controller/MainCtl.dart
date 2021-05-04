@@ -110,6 +110,7 @@ class MainCtl extends GetxController {
           // contents.clear();
           contents.assignAll(decodeContents.string.split('\n'));
           update();
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             int whereIdx = history.indexWhere((element) {
               return element['name'] == (config['picker'] as Map)['name'];
@@ -152,7 +153,7 @@ class MainCtl extends GetxController {
       debounce(config[key], (v) async {
         await storage.ready;
         await storage.setItem('config', config.toJson());
-      }, time: Duration(seconds: 1000));
+      }, time: Duration(milliseconds: 1000));
     });
 
     debounce(history, (v) async {
@@ -162,8 +163,10 @@ class MainCtl extends GetxController {
   }
 
   setConfig(Map<String, dynamic> config, List history) {
-    assignConfig(config ?? {});
-    assignHistory(history ?? []);
+    try {
+      assignConfig(config ?? {});
+      assignHistory(history ?? []);
+    } catch (e) {}
   }
 
   assignHistory(List tmpHistory) {
@@ -200,14 +203,14 @@ class MainCtl extends GetxController {
         scaffoldBackgroundColor: color1,
         dialogBackgroundColor: color1,
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: color1),
-        cardTheme: CardTheme(color: color1),
+        cardTheme: CardTheme(color: getSwatchShade(color1, 400)), //
         hintColor: color2,
         colorScheme: ColorScheme.light(
           primary: color2,
           primaryVariant: color2,
           secondary: color2,
           secondaryVariant: color2,
-          surface: getSwatchShade(color1, 750),
+          surface: getSwatchShade(color1, 400),
           // background: color1,
           // error: color1,
           onPrimary: color1,
@@ -252,7 +255,8 @@ class MainCtl extends GetxController {
 
   Color getSwatchShade(Color c, int swatchValue) {
     final hsl = HSLColor.fromColor(c);
-    return hsl.withLightness(1 - (swatchValue / 1000)).toColor();
+    // hsl.(saturation)
+    return hsl.withSaturation(1 - (swatchValue / 1000)).toColor();
   }
   // void runFindContents(String text) {
   //   findList.clear();

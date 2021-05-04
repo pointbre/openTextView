@@ -24,7 +24,7 @@ class Option_LineToCtl extends GetxController {
     debounce(curpos, (v) {
       var ctl = Get.find<MainCtl>();
       ctl.itemScrollctl.jumpTo(index: curpos.toInt());
-    }, time: Duration(milliseconds: 500));
+    }, time: Duration(milliseconds: 300));
   }
 }
 
@@ -107,9 +107,12 @@ class Option_LineTo extends OptionsBase {
     // TODO: implement buildIcon
     return Stack(
       children: [
-        Icon(
-          Icons.redo,
-        ),
+        Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(3.14),
+            child: Icon(
+              Icons.low_priority,
+            )),
       ],
     );
   }

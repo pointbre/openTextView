@@ -31,6 +31,11 @@ class Option_History extends OptionsBase {
         builder: (BuildContext context) {
           return GetBuilder<MainCtl>(builder: (ctl) {
             RxList filterlist = controller.config['filter'];
+            List copyList = [...ctl.history];
+            copyList.sort((a, b) {
+              return b['date'].compareTo(a['date']);
+            });
+
             return SimpleDialog(title: Text(name), children: [
               SizedBox(
                   height: Get.height * 0.7,
@@ -39,16 +44,7 @@ class Option_History extends OptionsBase {
                       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: ListView(
                         children: [
-                          ...ctl.history.map((element) {
-                            // Directory filpikerDir =
-                            //     Directory(tempDir.path + '/file_picker');
-                            // List fileList = filpikerDir.listSync();
-                            // var isCache = fileList.firstWhere((_f) {
-                            //   return _f?.path?.split("/")?.last ==
-                            //       element['name'];
-                            // });
-                            // print(isCache);
-
+                          ...copyList.map((element) {
                             return Card(
                               child: ListTile(
                                 title: Text(element['name']),
@@ -57,7 +53,7 @@ class Option_History extends OptionsBase {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text('위치 : ${element['pos']}'),
-                                      Text('날짜 : ${element['date']}')
+                                      Text('마지막 갱신 시간 : ${element['date']}')
                                     ]),
                               ),
                             );
@@ -82,6 +78,7 @@ class Option_History extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    // TESTopenSetting();
     // TODO: implement build
     return IconButton(
       onPressed: () {
