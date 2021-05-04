@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinbox/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
@@ -89,7 +90,7 @@ class Option_Tts extends OptionsBase {
                     width: Get.width * 0.9,
                     child: Column(children: [
                       Container(
-                        padding: EdgeInsets.all(5),
+                        padding: EdgeInsets.all(10),
                         child: GetBuilder<MainCtl>(
                           builder: (context) {
                             String langCode =
@@ -108,9 +109,7 @@ class Option_Tts extends OptionsBase {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                          flex: 2,
-                                          child: Text('speechRate : ')),
+                                      Expanded(flex: 2, child: Text('속도 : ')),
                                       Expanded(
                                         flex: 6,
                                         child: Slider(
@@ -131,8 +130,7 @@ class Option_Tts extends OptionsBase {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                          flex: 2, child: Text('volume : ')),
+                                      Expanded(flex: 2, child: Text('볼륨 : ')),
                                       Expanded(
                                         flex: 6,
                                         child: Slider(
@@ -154,8 +152,7 @@ class Option_Tts extends OptionsBase {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                          flex: 2, child: Text('pitch : ')),
+                                      Expanded(flex: 2, child: Text('피치 : ')),
                                       Expanded(
                                         flex: 6,
                                         child: Slider(
@@ -168,6 +165,39 @@ class Option_Tts extends OptionsBase {
                                             (controller.config['tts']
                                                 as Map)['pitch'] = v;
 
+                                            controller.update();
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                          flex: 2, child: Text('줄단위 읽기: ')),
+                                      Expanded(
+                                        flex: 6,
+                                        child: SpinBox(
+                                          min: 1,
+                                          max: 20,
+                                          incrementIcon: Icon(
+                                            Icons.add,
+                                            color: Theme.of(Get.context)
+                                                .iconTheme
+                                                .color,
+                                          ),
+                                          decrementIcon: Icon(
+                                            Icons.remove,
+                                            color: Theme.of(Get.context)
+                                                .iconTheme
+                                                .color,
+                                          ),
+                                          value: (controller.config['tts']
+                                                  as Map)['groupcnt'] ??
+                                              1,
+                                          onChanged: (value) {
+                                            (controller.config['tts']
+                                                as Map)['groupcnt'] = value;
                                             controller.update();
                                           },
                                         ),
@@ -197,7 +227,7 @@ class Option_Tts extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     // TESTopenSetting();
-    print('tts load--------');
+    // print('tts load--------');
     return IconButton(
         onPressed: () {
           openSetting();

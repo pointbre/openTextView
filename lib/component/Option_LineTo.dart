@@ -52,7 +52,7 @@ class Option_LineTo extends OptionsBase {
                       child: Column(
                         children: [
                           Obx(() => Text(
-                                '현재 위치 : ${controller.curPos.value}',
+                                '현재 위치 : ${controller.curPos.value} / ${(controller.curPos.value / controller.contents.length * 100).toPrecision(2)}%',
                                 style: Get.context.textTheme.subtitle1,
                               )),
                           Divider(),

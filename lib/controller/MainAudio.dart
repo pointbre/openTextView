@@ -5,14 +5,16 @@ import 'package:get/instance_manager.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 void textToSpeechTaskEntrypoint() async {
-  AudioServiceBackground.run(() => TextPlayerTask());
+  AudioServiceBackground.run(() => TextPlayerTask1());
 }
 
-class TextPlayerTask extends BackgroundAudioTask {
-  FlutterTts _tts = FlutterTts();
+class TextPlayerTask1 extends BackgroundAudioTask {
+  FlutterTts tts = FlutterTts();
   AudioSession session;
   bool _finished = false;
   bool _interrupted = false;
+
+  List contents = [];
 
   bool get _playing => AudioServiceBackground.state.playing;
 
@@ -20,16 +22,17 @@ class TextPlayerTask extends BackgroundAudioTask {
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
     // ctl = Get.find<MainCtl>();
-    print(params);
     session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.speech());
-    print('onStartonStartonStartonStart ${_playing}');
 
     session.interruptionEventStream.listen((event) {
       print(event.begin);
       print(event.type);
     });
 
+    tts.awaitSpeakCompletion(true);
+
+    contents = params['contents'];
     // flutter_tts resets the AVAudioSession category to playAndRecord and the
     // options to defaultToSpeaker whenever this background isolate is loaded,
     // so we need to set our preferred audio session configuration here after
@@ -97,6 +100,7 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPlay() {
+    print('---------!!!! ');
     AudioServiceBackground.setState(controls: [
       MediaControl.skipToPrevious,
       MediaControl.pause,
@@ -119,7 +123,7 @@ class TextPlayerTask extends BackgroundAudioTask {
         controls: [],
         playing: false,
         processingState: AudioProcessingState.none);
-
+    super.cacheManager.emptyCache();
     // Signal the speech to stop
     // _finished = true;
     // _sleeper.interrupt();

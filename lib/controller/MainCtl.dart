@@ -48,11 +48,11 @@ class MainCtl extends GetxController {
       'speechRate': 0.toDouble(),
       'volume': 0.toDouble(),
       'pitch': 0.toDouble(),
+      'groupcnt': 1,
     }.obs,
     "filter": [].obs,
     "nav": [].obs, // 하단 네비게이션바
     "picker": {}.obs,
-    "picker3": {}.obs, // 임시
   }.obs;
 
   void onScroll() {
@@ -247,7 +247,6 @@ class MainCtl extends GetxController {
 
   Color getSwatchShade(Color c, int swatchValue) {
     final hsl = HSLColor.fromColor(c);
-    // hsl.(saturation)
     return hsl.withSaturation(1 - (swatchValue / 1000)).toColor();
   }
 
@@ -260,11 +259,12 @@ class MainCtl extends GetxController {
         androidNotificationChannelName: 'openTextView',
         androidNotificationColor: 0xFF2196f3,
         androidNotificationIcon: 'mipmap/ic_launcher',
-        params: {...(config['tts'] as Map), "contents": contents.join('\n')});
+        params: {...(config as Map), "contents": contents});
     await AudioService.play();
   }
 
   void stop() async {
     await AudioService.stop();
+    await AudioService.disconnect();
   }
 }
