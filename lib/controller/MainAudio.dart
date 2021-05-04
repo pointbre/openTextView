@@ -5,10 +5,10 @@ import 'package:get/instance_manager.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 void textToSpeechTaskEntrypoint() async {
-  AudioServiceBackground.run(() => TextPlayerTask1());
+  AudioServiceBackground.run(() => TextPlayerTask());
 }
 
-class TextPlayerTask1 extends BackgroundAudioTask {
+class TextPlayerTask extends BackgroundAudioTask {
   FlutterTts tts = FlutterTts();
   AudioSession session;
   bool _finished = false;
@@ -31,7 +31,7 @@ class TextPlayerTask1 extends BackgroundAudioTask {
     });
 
     tts.awaitSpeakCompletion(true);
-
+    print(params);
     contents = params['contents'];
     // flutter_tts resets the AVAudioSession category to playAndRecord and the
     // options to defaultToSpeaker whenever this background isolate is loaded,
