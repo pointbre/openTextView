@@ -121,16 +121,25 @@ class Option_Theme extends OptionsBase {
                             Expanded(
                                 child: GridView.count(
                                     shrinkWrap: true,
-                                    crossAxisCount: 2,
+                                    crossAxisCount: 1,
+                                    childAspectRatio: 7.0 / 1.0,
                                     children: [
                                   ...TWOCOLOR.map((e) {
+                                    int idx = TWOCOLOR.indexOf(e) + 1;
                                     return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: [
-                                        MaterialButton(
+                                        Expanded(
+                                          child: Container(
+                                              padding:
+                                                  EdgeInsets.only(left: 20),
+                                              child: Text('${idx}번째 테마 : ')),
+                                        ),
+                                        Expanded(
+                                            child: MaterialButton(
                                           // padding: EdgeInsets.all(0),
-                                          minWidth: 0,
+                                          // minWidth: 0,
                                           color: Color(e[0]),
                                           child: Icon(
                                             Icons.volume_up,
@@ -145,10 +154,11 @@ class Option_Theme extends OptionsBase {
                                               return value;
                                             });
                                           },
-                                        ),
-                                        MaterialButton(
+                                        )),
+                                        Expanded(
+                                            child: MaterialButton(
                                           // padding: EdgeInsets.all(0),
-                                          minWidth: 0,
+                                          // minWidth: 0,
                                           color: Color(e[1]),
                                           child: Icon(Icons.volume_up,
                                               color: Color(e[0])),
@@ -160,7 +170,7 @@ class Option_Theme extends OptionsBase {
                                                 ..assignAll([e[1], e[0]]);
                                             });
                                           },
-                                        ),
+                                        )),
                                       ],
                                     );
                                   }).toList()
@@ -184,7 +194,7 @@ class Option_Theme extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    // TESTopenSetting();
+    TESTopenSetting();
 
     // TODO: implement build
     return IconButton(
