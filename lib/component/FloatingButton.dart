@@ -38,25 +38,38 @@ class FloatingButton extends GetView<MainCtl> {
                   tts.stop();
                 } else {
                   bplayTts = true;
-                  print('start');
-                  var en = await tts.getEngines;
-                  List vos = await tts.getVoices;
-
-                  print(vos.where((element) => element['locale'] == 'ko-KR'));
+                  Map params = controller.config;
+                  Map ttsConf = params['tts'];
+                  var filterList = (params['filter'] as List)
+                      .where((element) => element['enable'])
+                      .toList();
                   await tts.awaitSpeakCompletion(true);
-                  print('awaitSpeakCompletion');
-                  await tts.setSpeechRate(2.8);
-                  print('setSpeechRate');
-                  await tts.setVolume(1.0);
-                  print('setVolume');
-                  await tts.setPitch(1.0);
-                  print('setPitch');
-                  await tts
-                      .setVoice({"name": "ko-KR-language", "locale": "ko-KR"});
+                  await tts.setSpeechRate(ttsConf['speechRate']);
+                  await tts.setVolume(ttsConf['volume']);
+                  await tts.setPitch(ttsConf['pitch']);
+                  // print('filter ${filterList}');
 
-                  var aa = await tts
-                      .speak([...controller.contents.getRange(0, 20)].join());
-                  print(aa);
+                  print("야 !!!"
+                      .replaceAllMapped(RegExp("\\!{1,}"), (match) => ""));
+
+                  // await tts
+                  //     .setVoice({"name": "ko-KR-language", "locale": "ko-KR"});
+                  for (var i = 0; i < 600; i += 10) {
+                    String speakText =
+                        controller.contents.getRange(i, i + 10).join('\n');
+                    filterList.forEach((e) {
+                      if (e['expr']) {
+                        print(e);
+                        speakText = speakText.replaceAllMapped(
+                            RegExp('${e["filter"]}'), (match) => e['to']);
+                      }
+                    });
+                    print(speakText);
+
+                    var aa = await tts.speak(speakText);
+
+                    print(aa);
+                  }
 
                   // AudioService.playbackStateStream.listen((event) {
                   // });

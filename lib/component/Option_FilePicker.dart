@@ -45,20 +45,7 @@ class Option_FilePicker extends OptionsBase {
     if (result.files.isNotEmpty) {
       PlatformFile platformfile = result.files.first;
       RxMap picker = controller.config['picker'];
-      // picker.assignAll({
-      //   "name": platformfile.name,
-      //   "bytes": platformfile.bytes,
-      //   "size": platformfile.size,
-      //   "extension": platformfile.extension,
-      //   "path": platformfile.path,
-      // });
-      // {
-      //       "name": platformfile.name,
-      //       "bytes": platformfile.bytes,
-      //       "size": platformfile.size,
-      //       "extension": platformfile.extension,
-      //       "path": platformfile.path,
-      //     }
+
       picker.updateAll((key, value) {
         if (key == 'name') return platformfile.name;
         if (key == 'bytes') return platformfile.bytes;

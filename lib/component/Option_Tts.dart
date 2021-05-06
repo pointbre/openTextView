@@ -116,8 +116,13 @@ class Option_Tts extends OptionsBase {
                                           value: (controller.config['tts']
                                               as Map)['speechRate'],
                                           min: 0,
-                                          max: 100,
-                                          label: 0.round().toString(),
+                                          max: 5,
+                                          divisions: 50,
+                                          label: ((controller.config['tts']
+                                                      as Map)['speechRate']
+                                                  as double)
+                                              .toPrecision(1)
+                                              .toString(),
                                           onChanged: (double v) {
                                             (controller.config['tts']
                                                 as Map)['speechRate'] = v;
@@ -137,9 +142,12 @@ class Option_Tts extends OptionsBase {
                                           value: (controller.config['tts']
                                               as Map)['volume'],
                                           min: 0,
-                                          max: 100,
-                                          // divisions: 1,
-                                          label: 0.round().toString(),
+                                          max: 1,
+                                          divisions: 10,
+                                          label: ((controller.config['tts']
+                                                  as Map)['volume'] as double)
+                                              .toPrecision(1)
+                                              .toString(),
                                           onChanged: (double v) {
                                             (controller.config['tts']
                                                 as Map)['volume'] = v;
@@ -159,8 +167,12 @@ class Option_Tts extends OptionsBase {
                                           value: (controller.config['tts']
                                               as Map)['pitch'],
                                           min: 0,
-                                          max: 100,
-                                          label: 0.round().toString(),
+                                          max: 2,
+                                          divisions: 20,
+                                          label: ((controller.config['tts']
+                                                  as Map)['pitch'] as double)
+                                              .toPrecision(1)
+                                              .toString(),
                                           onChanged: (double v) {
                                             (controller.config['tts']
                                                 as Map)['pitch'] = v;
@@ -179,7 +191,7 @@ class Option_Tts extends OptionsBase {
                                         flex: 6,
                                         child: SpinBox(
                                           min: 1,
-                                          max: 20,
+                                          max: 10,
                                           incrementIcon: Icon(
                                             Icons.add,
                                             color: Theme.of(Get.context)

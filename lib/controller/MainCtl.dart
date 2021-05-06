@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
@@ -45,9 +46,9 @@ class MainCtl extends GetxController {
     "theme": [].obs,
     "tts": {
       'language': 'ko-KR',
-      'speechRate': 0.toDouble(),
-      'volume': 0.toDouble(),
-      'pitch': 0.toDouble(),
+      'speechRate': 1.toDouble(),
+      'volume': 1.toDouble(),
+      'pitch': 1.toDouble(),
       'groupcnt': 1,
     }.obs,
     "filter": [].obs,
@@ -84,8 +85,12 @@ class MainCtl extends GetxController {
 
     // 설정 이벤트
     ever(config['theme'], changeTheme);
-    debounce(config['tts'], (v) {
+    debounce(config['tts'], (ttsConf) async {
       // tts 옵션 변경시 tts 옵션 처리 로직 부분 .
+      FlutterTts tts = FlutterTts();
+      await tts.setSpeechRate(ttsConf['speechRate']);
+      await tts.setVolume(ttsConf['volume']);
+      await tts.setPitch(ttsConf['pitch']);
     }, time: Duration(milliseconds: 500));
     debounce(config['filter'], (v) {
       // tts 음성 시 무시하거나 대체될 로직 부분 ,

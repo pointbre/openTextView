@@ -26,7 +26,7 @@ const List<dynamic> DFFILTER = [
   {
     "name": "일본어(일어) 필터",
     "expr": true,
-    "filter": "[ぁ-ゔ]+|[ァ-ヴー]+[々〆〤]",
+    "filter": "[ぁ-ゔ]|[ァ-ヴー]|[々〆〤]",
     "to": '',
     'enable': false
   },
@@ -40,14 +40,14 @@ const List<dynamic> DFFILTER = [
   {
     "name": "물음표 여러개 필터",
     "expr": true,
-    "filter": "\?{1,}",
+    "filter": "\\?{1,}",
     "to": '?',
     'enable': false
   },
   {
     "name": "느낌표 여러개 필터",
     "expr": true,
-    "filter": "!{1,}",
+    "filter": "\\!{1,}",
     "to": '!',
     'enable': false
   },
@@ -62,6 +62,13 @@ const List<dynamic> DFFILTER = [
     "name": "는는는(===)",
     "expr": false,
     "filter": "={2,}",
+    "to": '',
+    'enable': false
+  },
+  {
+    "name": "점점점(......)",
+    "expr": false,
+    "filter": "[\\.{2,}]|[\\…{1,}]",
     "to": '',
     'enable': false
   },
