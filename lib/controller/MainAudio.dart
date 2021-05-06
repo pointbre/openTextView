@@ -118,14 +118,7 @@ class TextPlayerTask extends BackgroundAudioTask {
               '${i} / ${(i / contents.length * 100).toStringAsPrecision(2)}%',
           extras: {"pos": i}));
       await tts.speak(speakText);
-
-      if (await storage.ready) {
-        DateTime now = DateTime.now();
-        DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
-        params['history'][historyIdx]['date'] = formatter.format(now);
-        params['history'][historyIdx]['pos'] = i;
-        await storage.setItem('history', params['history']);
-      }
+      saveState(i);
     }
     // print('>>> ${speakText}');
     // print(speakText.split('\n'));
@@ -133,9 +126,26 @@ class TextPlayerTask extends BackgroundAudioTask {
     return super.onPlay();
   }
 
+  void saveState(int idx) async {
+    int historyIdx = params['history'].indexWhere((element) {
+      return element['name'] == (params['picker'] as Map)['name'];
+    });
+    if (await storage.ready) {
+      DateTime now = DateTime.now();
+      DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+      params['history'][historyIdx]['date'] = formatter.format(now);
+      params['history'][historyIdx]['pos'] = idx;
+      await storage.setItem('history', params['history']);
+    }
+  }
+
   @override
   Future<void> onPause() {
-    print('onPauseonPauseonPauseonPause');
+    AudioServiceBackground.setState(controls: [
+      MediaControl.play,
+      MediaControl.stop,
+    ], playing: true, processingState: AudioProcessingState.ready);
+    tts.stop();
   }
 
   @override
@@ -143,9 +153,10 @@ class TextPlayerTask extends BackgroundAudioTask {
     print('onStoponStoponStoponStop');
     super.onStop();
     AudioServiceBackground.setState(
-        controls: [MediaControl.skipToPrevious],
+        controls: [],
         playing: false,
         processingState: AudioProcessingState.none);
+    tts.stop();
     // super.cacheManager.emptyCache();
     // Signal the speech to stop
     // _finished = true;
