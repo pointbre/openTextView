@@ -15,6 +15,7 @@ class TextPlayerTask extends BackgroundAudioTask {
   bool _interrupted = false;
 
   List contents = [];
+  Map<String, dynamic> params;
 
   bool get _playing => AudioServiceBackground.state.playing;
 
@@ -26,13 +27,14 @@ class TextPlayerTask extends BackgroundAudioTask {
     await session.configure(AudioSessionConfiguration.speech());
 
     session.interruptionEventStream.listen((event) {
-      print(event.begin);
-      print(event.type);
+      print('interruptionEventStream : ${event.begin}');
+      print('interruptionEventStream : ${event.type}');
     });
-
+    print('----------------------------');
     tts.awaitSpeakCompletion(true);
     print(params);
     contents = params['contents'];
+    this.params = params;
     // flutter_tts resets the AVAudioSession category to playAndRecord and the
     // options to defaultToSpeaker whenever this background isolate is loaded,
     // so we need to set our preferred audio session configuration here after
@@ -100,12 +102,15 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPlay() {
-    print('---------!!!! ');
+    print('---------!!!!!55556666---');
+    AudioServiceBackground.setMediaItem(MediaItem(
+        id: 'tts_',
+        album: 'TTS',
+        title: params['picker']['name'],
+        artist: '13598 / 20%'));
     AudioServiceBackground.setState(controls: [
-      MediaControl.skipToPrevious,
       MediaControl.pause,
       MediaControl.stop,
-      MediaControl.skipToNext
     ], playing: true, processingState: AudioProcessingState.buffering);
 
     return super.onPlay();
@@ -118,12 +123,13 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onStop() async {
+    print('onStoponStoponStoponStop');
     super.onStop();
     AudioServiceBackground.setState(
-        controls: [],
+        controls: [MediaControl.skipToPrevious],
         playing: false,
         processingState: AudioProcessingState.none);
-    super.cacheManager.emptyCache();
+    // super.cacheManager.emptyCache();
     // Signal the speech to stop
     // _finished = true;
     // _sleeper.interrupt();
@@ -135,10 +141,7 @@ class TextPlayerTask extends BackgroundAudioTask {
   }
 
   MediaItem mediaItem(int number) => MediaItem(
-      id: 'tts_$number',
-      album: 'Numbers',
-      title: 'Number $number',
-      artist: 'Sample Artist');
+      id: 'tts_', album: 'Numbers', title: 'Number ', artist: 'Sample Artist');
 
   Future<void> _playPause() async {
     // if (_playing) {
