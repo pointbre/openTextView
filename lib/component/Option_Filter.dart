@@ -31,13 +31,6 @@ const List<dynamic> DFFILTER = [
     'enable': false
   },
   {
-    "name": "아포스트로피(홀따음표) 필터",
-    "expr": false,
-    "filter": "'",
-    "to": '',
-    'enable': false
-  },
-  {
     "name": "물음표 여러개 필터",
     "expr": true,
     "filter": "\\?{1,}",
@@ -53,22 +46,50 @@ const List<dynamic> DFFILTER = [
   },
   {
     "name": "다시다시다시(----)",
-    "expr": false,
+    "expr": true,
     "filter": "-{2,}",
     "to": '',
     'enable': false
   },
   {
     "name": "는는는(===)",
-    "expr": false,
+    "expr": true,
     "filter": "={2,}",
     "to": '',
     'enable': false
   },
   {
     "name": "점점점(......)",
-    "expr": false,
+    "expr": true,
     "filter": "[\\.{2,}]|[\\…{1,}]",
+    "to": '',
+    'enable': false
+  },
+  {
+    "name": "물음표,느낌표제거(?!)",
+    "expr": true,
+    "filter": "\\?{1,}!{1,}",
+    "to": '!',
+    'enable': false
+  },
+  {
+    "name": "느낌표,물음표제거(!?)",
+    "expr": true,
+    "filter": "!{1,}\\?{1,}",
+    "to": '!',
+    'enable': false
+  },
+  {
+    "name": "여러 느낌표나 물음표 필터후 문장에 물음표만 있을경우 필터",
+    "expr": true,
+    "filter": """"!"|"\\?"|'!'|'\\?'|“!”|“\\?”|‘!’|‘\\?|\\[!\\]|\\[\\?\\]""",
+    "to": '',
+    'enable': false
+  },
+  {
+    "name": "아포스트로피(홀따음표) 필터",
+    "expr": false,
+    "filter": "'",
     "to": '',
     'enable': false
   },
@@ -108,7 +129,7 @@ class Option_Filter extends OptionsBase {
                   // 필터 적용후 닫기 필요
 
                   RxList rxlist = controller.config['filter'];
-                  rxlist.add(Map.from(e));
+                  rxlist.add(Map.from({...e, "enable": true}));
                   controller.update();
                   Get.back();
                 },
@@ -269,6 +290,34 @@ class Option_Filter extends OptionsBase {
                                           child: Container(
                                         child: ListTile(
                                           title: Text(e['name'] ?? "---"),
+                                          subtitle: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                          flex: 8,
+                                                          child: Text(
+                                                              e['filter'])),
+                                                      Expanded(
+                                                          flex: 1,
+                                                          child: Icon(Icons
+                                                              .arrow_right)),
+                                                      Expanded(
+                                                          flex: 2,
+                                                          child: Center(
+                                                              child: Text(
+                                                                  e['to'] == ""
+                                                                      ? '없음'
+                                                                      : e['to'])))
+                                                    ]),
+                                                Text(
+                                                    '정규식 사용 여부 : ${e['expr'] ? '사용' : '미사용'}'),
+                                              ]),
                                           trailing: Checkbox(
                                               value: e['enable'] ?? false,
                                               onChanged: (b) {

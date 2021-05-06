@@ -49,26 +49,23 @@ class FloatingButton extends GetView<MainCtl> {
                   await tts.setPitch(ttsConf['pitch']);
                   // print('filter ${filterList}');
 
-                  print("야 !!!"
-                      .replaceAllMapped(RegExp("\\!{1,}"), (match) => ""));
-
-                  // await tts
-                  //     .setVoice({"name": "ko-KR-language", "locale": "ko-KR"});
                   for (var i = 0; i < 600; i += 10) {
                     String speakText =
                         controller.contents.getRange(i, i + 10).join('\n');
                     filterList.forEach((e) {
                       if (e['expr']) {
-                        print(e);
                         speakText = speakText.replaceAllMapped(
                             RegExp('${e["filter"]}'), (match) => e['to']);
+                      } else {
+                        speakText = speakText.replaceAll(e["filter"], e['to']);
                       }
                     });
-                    print(speakText);
+                    print('>>> ${speakText}');
+                    print(speakText.split('\n'));
 
-                    var aa = await tts.speak(speakText);
+                    // var aa = await tts.speak(speakText);
 
-                    print(aa);
+                    // print(aa);
                   }
 
                   // AudioService.playbackStateStream.listen((event) {

@@ -166,9 +166,9 @@ class Option_Tts extends OptionsBase {
                                         child: Slider(
                                           value: (controller.config['tts']
                                               as Map)['pitch'],
-                                          min: 0,
+                                          min: 0.5,
                                           max: 2,
-                                          divisions: 20,
+                                          divisions: 15,
                                           label: ((controller.config['tts']
                                                   as Map)['pitch'] as double)
                                               .toPrecision(1)
