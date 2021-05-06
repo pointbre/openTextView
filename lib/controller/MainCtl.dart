@@ -250,30 +250,21 @@ class MainCtl extends GetxController {
     return hsl.withSaturation(1 - (swatchValue / 1000)).toColor();
   }
 
-  // [*]------ TEST ------[*]
-  TextPlayerTask t = TextPlayerTask();
-  // [*]------ TEST ------[*]
   void play() async {
     if (!AudioService.connected) {
       await AudioService.connect();
     }
-    // [*]------ TEST ------[*]
-    t.onStart({...(config as Map), "contents": contents});
-    // [*]------ TEST ------[*]
-    // await AudioService.start(
-    //     backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
-    //     androidNotificationChannelName: 'openTextView',
-    //     androidNotificationColor: 0xFF2196f3,
-    //     androidNotificationIcon: 'mipmap/ic_launcher',
-    //     params: {...(config as Map), "contents": contents});
-    // await AudioService.play();
+    await AudioService.start(
+        backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
+        androidNotificationChannelName: 'openTextView',
+        androidNotificationColor: 0xFF2196f3,
+        androidNotificationIcon: 'mipmap/ic_launcher',
+        params: {...(config as Map), "contents": contents});
+    await AudioService.play();
   }
 
   void stop() async {
-    // [*]------ TEST ------[*]
-    t.onStop();
-    // [*]------ TEST ------[*]
-    // await AudioService.stop();
-    // await AudioService.disconnect();
+    await AudioService.stop();
+    await AudioService.disconnect();
   }
 }

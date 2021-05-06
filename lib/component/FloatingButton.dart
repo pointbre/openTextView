@@ -31,6 +31,9 @@ class FloatingButton extends GetView<MainCtl> {
                   // controller.stop();
                 } else {
                   print('start');
+
+                  // AudioService.playbackStateStream.listen((event) {
+                  // });
                   // await AudioService.start(
                   //     backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
                   //     androidNotificationChannelName: 'openTextView',
