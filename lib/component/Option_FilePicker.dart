@@ -45,14 +45,22 @@ class Option_FilePicker extends OptionsBase {
     if (result.files.isNotEmpty) {
       PlatformFile platformfile = result.files.first;
       RxMap picker = controller.config['picker'];
-
-      picker.updateAll((key, value) {
-        if (key == 'name') return platformfile.name;
-        if (key == 'bytes') return platformfile.bytes;
-        if (key == 'size') return platformfile.size;
-        if (key == 'extension') return platformfile.extension;
-        if (key == 'path') return platformfile.path;
+      picker.assignAll({
+        'name': platformfile.name,
+        'bytes': platformfile.bytes,
+        'size': platformfile.size,
+        'extension': platformfile.extension,
+        'path': platformfile.path,
       });
+      // picker.updateAll((key, value) {
+      //   print('[[[[[[[[[[[[[[${key}');
+      //   if (key == 'name') return platformfile.name;
+      //   if (key == 'bytes') return platformfile.bytes;
+      //   if (key == 'size') return platformfile.size;
+      //   if (key == 'extension') return platformfile.extension;
+      //   if (key == 'path') return platformfile.path;
+      // });
+      // controller.update();
       // ---------- 마지막 연 파일은 캐시에 남기고 다른 캐시 삭제 로직 --------
       // Directory tempDir = await getTemporaryDirectory();
       // Directory filpikerDir = Directory(tempDir.path + '/file_picker');

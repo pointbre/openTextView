@@ -27,65 +27,62 @@ class FloatingButton extends GetView<MainCtl> {
           return FloatingActionButton(
               elevation: 2.0,
               onPressed: () async {
-                print('onPressed >> :${bplayTts}');
+                // print('onPressed >> :${bplayTts}');
 
-                // if (bplay) {
-                if (bplayTts) {
-                  bplayTts = false;
-                  // print('onStop');
-                  // t.onStop();
-                  // controller.stop();
-                  tts.stop();
+                if (bplay) {
+                  // if (bplayTts) {
+                  // bplayTts = false;
+
+                  // return;
+                  controller.stop();
                 } else {
-                  bplayTts = true;
-                  Map params = controller.config;
-                  Map ttsConf = params['tts'];
-                  var filterList = (params['filter'] as List)
-                      .where((element) => element['enable'])
-                      .toList();
-                  await tts.awaitSpeakCompletion(true);
-                  await tts.setSpeechRate(ttsConf['speechRate']);
-                  await tts.setVolume(ttsConf['volume']);
-                  await tts.setPitch(ttsConf['pitch']);
-                  // print('filter ${filterList}');
-
-                  for (var i = 0; i < 600; i += 10) {
-                    String speakText =
-                        controller.contents.getRange(i, i + 10).join('\n');
-                    filterList.forEach((e) {
-                      if (e['expr']) {
-                        speakText = speakText.replaceAllMapped(
-                            RegExp('${e["filter"]}'), (match) => e['to']);
-                      } else {
-                        speakText = speakText.replaceAll(e["filter"], e['to']);
-                      }
-                    });
-                    print('>>> ${speakText}');
-                    print(speakText.split('\n'));
-
-                    // var aa = await tts.speak(speakText);
-
-                    // print(aa);
-                  }
-
-                  // AudioService.playbackStateStream.listen((event) {
+                  // // bplayTts = true;
+                  // Map params = controller.config;
+                  // Map ttsConf = params['tts'];
+                  // var filterList = (params['filter'] as List)
+                  //     .where((element) => element['enable'])
+                  //     .toList();
+                  // filterList.forEach((e) {
+                  //   print('test >> : ${e}');
+                  //   if (e['expr']) {
+                  //     test = test.replaceAllMapped(
+                  //         RegExp('${e["filter"]}'), (match) => e['to']);
+                  //   } else {
+                  //     test = test.replaceAll(e["filter"], e['to']);
+                  //   }
+                  //   print(test);
                   // });
-                  // await AudioService.start(
-                  //     backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
-                  //     androidNotificationChannelName: 'openTextView',
-                  //     androidNotificationColor: 0xFF2196f3,
-                  //     androidNotificationIcon: 'mipmap/ic_launcher',
-                  //     params: {
-                  //       ...(controller.config as Map),
-                  //       "contents": controller.contents
-                  //     });
-                  // await AudioService.play();
-                  // await t.onStart({
-                  //   ...(controller.config as Map),
-                  //   "contents": controller.contents
-                  // });
-                  // await t.onPlay();
-                  // controller.play();
+                  // print(test);
+                  // await tts.awaitSpeakCompletion(true);
+                  // await tts.setSpeechRate(ttsConf['speechRate']);
+                  // await tts.setVolume(ttsConf['volume']);
+                  // await tts.setPitch(ttsConf['pitch']);
+                  // await tts.speak('''
+                  //   ***
+                  //   !!!
+                  //   (1)
+                  //   [1]
+                  //   []
+                  //   ()
+                  //   {}
+                  //   1~3
+                  //   1~
+                  //   @
+                  //   @@
+                  //   ##
+                  //   #
+                  //   \$\$
+                  //   \$
+                  //   ^
+                  //   ^^
+                  //   &
+                  //   &&
+                  //   *
+
+                  // ''');
+                  // return;
+
+                  controller.play();
                 }
               },
               child: Icon(bplay ? Icons.volume_off_sharp : Icons.volume_up));

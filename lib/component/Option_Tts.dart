@@ -205,7 +205,8 @@ class Option_Tts extends OptionsBase {
                                                 .color,
                                           ),
                                           value: (controller.config['tts']
-                                                  as Map)['groupcnt'] ??
+                                                      as Map)['groupcnt']
+                                                  .toDouble() ??
                                               1,
                                           onChanged: (value) {
                                             (controller.config['tts']

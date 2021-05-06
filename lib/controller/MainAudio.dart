@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/instance_manager.dart';
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
 void textToSpeechTaskEntrypoint() async {
@@ -10,6 +14,8 @@ void textToSpeechTaskEntrypoint() async {
 
 class TextPlayerTask extends BackgroundAudioTask {
   FlutterTts tts = FlutterTts();
+
+  final LocalStorage storage = new LocalStorage('opentextview');
   AudioSession session;
   bool _finished = false;
   bool _interrupted = false;
@@ -30,11 +36,13 @@ class TextPlayerTask extends BackgroundAudioTask {
       print('interruptionEventStream : ${event.begin}');
       print('interruptionEventStream : ${event.type}');
     });
-    print('----------------------------');
-    tts.awaitSpeakCompletion(true);
-    print(params);
-    contents = params['contents'];
+    Map ttsConf = params['tts'];
+    await tts.awaitSpeakCompletion(true);
+    await tts.setSpeechRate(ttsConf['speechRate']);
+    await tts.setVolume(ttsConf['volume']);
+    await tts.setPitch(ttsConf['pitch']);
     this.params = params;
+    contents = params['contents'];
     // flutter_tts resets the AVAudioSession category to playAndRecord and the
     // options to defaultToSpeaker whenever this background isolate is loaded,
     // so we need to set our preferred audio session configuration here after
@@ -67,51 +75,60 @@ class TextPlayerTask extends BackgroundAudioTask {
     //   if (_playing) onPause();
     // });
 
-    // Start playing.
-    // await _playPause();
-    // for (var i = 1; i <= 10 && !_finished;) {
-    //   AudioServiceBackground.setMediaItem(mediaItem(i));
-    //   AudioServiceBackground.androidForceEnableMediaButtons();
-    //   try {
-    //     await _tts.speak('$i');
-    //     i++;
-    //     await _sleeper.sleep(Duration(milliseconds: 300));
-    //   } catch (e) {
-    //     // Speech was interrupted
-    //   }
-    //   // If we were just paused
-    //   if (!_finished && !_playing) {
-    //     try {
-    //       // Wait to be unpaused
-    //       await _sleeper.sleep();
-    //     } catch (e) {
-    //       // unpaused
-    //     }
-    //   }
-    // }
-    // await AudioServiceBackground.setState(
-    //   controls: [],
-    //   processingState: AudioProcessingState.stopped,
-    //   playing: false,
-    // );
-    // if (!_finished) {
-    //   onStop();
-    // }
     // _completer.complete();
+    // super.onStart(params);
+    return;
   }
 
   @override
-  Future<void> onPlay() {
-    print('---------!!!!!55556666---');
-    AudioServiceBackground.setMediaItem(MediaItem(
-        id: 'tts_',
-        album: 'TTS',
-        title: params['picker']['name'],
-        artist: '13598 / 20%'));
+  Future<void> onPlay() async {
     AudioServiceBackground.setState(controls: [
       MediaControl.pause,
       MediaControl.stop,
     ], playing: true, processingState: AudioProcessingState.buffering);
+
+    // tts start
+    Map ttsConf = params['tts'];
+    var filterList = (params['filter'] as List)
+        .where((element) => element['enable'])
+        .toList();
+    int count = ttsConf['groupcnt'].toInt();
+
+    int historyIdx = params['history'].indexWhere((element) {
+      return element['name'] == (params['picker'] as Map)['name'];
+    });
+    int curpos = params['history'][historyIdx]['pos'];
+    for (var i = curpos; i < contents.length; i += count) {
+      int endIdx = contents.length > i + count ? i + count : contents.length;
+      String speakText = contents.getRange(i, endIdx).join('\n');
+      filterList.forEach((e) {
+        if (e['expr']) {
+          speakText = speakText.replaceAllMapped(
+              RegExp('${e["filter"]}'), (match) => e['to']);
+        } else {
+          speakText = speakText.replaceAll(e["filter"], e['to']);
+        }
+      });
+      print(speakText);
+      AudioServiceBackground.setMediaItem(MediaItem(
+          id: 'tts_',
+          album: 'TTS',
+          title: params['picker']['name'],
+          artist:
+              '${i} / ${(i / contents.length * 100).toStringAsPrecision(2)}%',
+          extras: {"pos": i}));
+      await tts.speak(speakText);
+
+      if (await storage.ready) {
+        DateTime now = DateTime.now();
+        DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+        params['history'][historyIdx]['date'] = formatter.format(now);
+        params['history'][historyIdx]['pos'] = i;
+        await storage.setItem('history', params['history']);
+      }
+    }
+    // print('>>> ${speakText}');
+    // print(speakText.split('\n'));
 
     return super.onPlay();
   }
@@ -139,9 +156,6 @@ class TextPlayerTask extends BackgroundAudioTask {
     // // Shut down this task
     // await super.onStop();
   }
-
-  MediaItem mediaItem(int number) => MediaItem(
-      id: 'tts_', album: 'Numbers', title: 'Number ', artist: 'Sample Artist');
 
   Future<void> _playPause() async {
     // if (_playing) {

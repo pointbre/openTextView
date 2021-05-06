@@ -61,7 +61,7 @@ const List<dynamic> DFFILTER = [
   {
     "name": "점점점(......)",
     "expr": true,
-    "filter": "[\\.{2,}]|[\\…{1,}]",
+    "filter": "\\.{2,}|\\…{1,}",
     "to": '',
     'enable': false
   },
@@ -93,6 +93,14 @@ const List<dynamic> DFFILTER = [
     "to": '',
     'enable': false
   },
+  {
+    "name": "특수문자 반복 된경우 필터",
+    "expr": true,
+    "filter":
+        "\\&{2,}|\\#{2,}|\\@{2,}|\\\${2,}|~{1,}|\\*{2,}|\\[\\]|\\(\\)|\\{\\}",
+    "to": '',
+    'enable': true
+  }
 ];
 
 class Option_FilterCtl extends GetxController {
@@ -106,7 +114,7 @@ class Option_Filter extends OptionsBase {
   BuildContext context = null;
   void openFilterList() async {
     showDialog(
-      context: context,
+      context: Get.context,
       builder: (BuildContext context) {
         return SimpleDialog(
           title: Text('제공 필터 목록'),
@@ -203,7 +211,6 @@ class Option_Filter extends OptionsBase {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            print('----- ${controller.config['filter']}');
                             ctl.filterTmpCtl.clear();
                             Get.back();
                           },

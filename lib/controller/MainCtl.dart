@@ -87,16 +87,17 @@ class MainCtl extends GetxController {
     ever(config['theme'], changeTheme);
     debounce(config['tts'], (ttsConf) async {
       // tts 옵션 변경시 tts 옵션 처리 로직 부분 .
-      FlutterTts tts = FlutterTts();
-      await tts.setSpeechRate(ttsConf['speechRate']);
-      await tts.setVolume(ttsConf['volume']);
-      await tts.setPitch(ttsConf['pitch']);
+      // FlutterTts tts = FlutterTts();
+      // await tts.setSpeechRate(ttsConf['speechRate']);
+      // await tts.setVolume(ttsConf['volume']);
+      // await tts.setPitch(ttsConf['pitch']);
     }, time: Duration(milliseconds: 500));
     debounce(config['filter'], (v) {
       // tts 음성 시 무시하거나 대체될 로직 부분 ,
     }, time: Duration(seconds: 1));
 
     debounce(config['picker'], (v) async {
+      print('configconfigFilePickerFilePickerFilePicker${v}');
       // return;
       if ((v as Map).isNotEmpty) {
         File file = File(v['path']);
@@ -127,9 +128,7 @@ class MainCtl extends GetxController {
           });
         }
       }
-
-      // 열어본 파일 히스토리 저장을 위한 로직 부분, 추후 추가 예정.
-    }, time: Duration(seconds: 1));
+    }, time: Duration(milliseconds: 300));
 
     // [*]--------------[*]
     // 옵션 로드 / 공통 이벤트 처리 로직
@@ -137,12 +136,15 @@ class MainCtl extends GetxController {
     await storage.ready;
 
     // 초기 설정 파일 로드
+    print('초기 설정 파일 로드');
     print(storage.getItem('config'));
+    print(storage.getItem('history'));
+    print('초기 설정 파일 로드 end');
     try {
       assignConfig(storage.getItem('config') ?? {});
       assignHistory(storage.getItem('history') ?? []);
     } catch (e) {
-      storage.clear();
+      // storage.clear();
     }
 
     // save config , 초기 설정 로드 후 저장 이벤트 를 셋팅 한다.
@@ -167,6 +169,7 @@ class MainCtl extends GetxController {
   }
 
   assignHistory(List tmpHistory) {
+    // print(tmpHistory);
     history.assignAll(tmpHistory);
   }
 
@@ -176,9 +179,9 @@ class MainCtl extends GetxController {
         return;
       }
       try {
-        if (config[key] is RxList) {
+        if (config[key] is RxList && (tmpConfig[key] as List).isNotEmpty) {
           (config[key] as RxList).assignAll(tmpConfig[key]);
-        } else if (config[key] is RxMap) {
+        } else if (config[key] is RxMap && (tmpConfig[key] as Map).isNotEmpty) {
           (config[key] as RxMap).assignAll(tmpConfig[key]);
         }
       } catch (e) {
@@ -260,11 +263,30 @@ class MainCtl extends GetxController {
       await AudioService.connect();
     }
     await AudioService.start(
-        backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
-        androidNotificationChannelName: 'openTextView',
-        androidNotificationColor: 0xFF2196f3,
-        androidNotificationIcon: 'mipmap/ic_launcher',
-        params: {...(config as Map), "contents": contents});
+      backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
+      androidNotificationChannelName: 'openTextView',
+      androidNotificationColor: 0xFF2196f3,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+      params: {
+        ...Map.from(config),
+        "contents": contents,
+        "history": List.from(history)
+      },
+    );
+    AudioService.currentMediaItemStream.listen((event) {
+      print('event.extras : ${event?.extras}');
+      if (event?.extras != null) {
+        itemScrollctl.jumpTo(index: event.extras['pos']);
+
+        curPos.update((val) {
+          val = event.extras['pos'];
+          return val;
+        });
+        update();
+      }
+      // itemScrollctl.jumpTo(index: event.extras['pos']);
+      // print('currentMediaItemStream : ${event.extras}');
+    });
     await AudioService.play();
   }
 
