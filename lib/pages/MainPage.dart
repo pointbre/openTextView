@@ -83,11 +83,8 @@ class MainPage extends GetView<MainCtl> {
                             if (snapshot.data) {
                               int cnt =
                                   ((ctl.config['tts'] as RxMap)['groupcnt']);
-
                               int endpos = ctl.curPos.value + cnt;
-
-                              if (index >= ctl.curPos.value &&
-                                  index <= endpos) {
+                              if (index >= ctl.curPos.value && index < endpos) {
                                 return Text(
                                   '${controller.contents[index]}',
                                   style: TextStyle(
