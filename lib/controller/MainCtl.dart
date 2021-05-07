@@ -76,6 +76,21 @@ class MainCtl extends GetxController {
   void onInit() async {
     super.onInit();
 
+    if (!AudioService.connected) {
+      await AudioService.connect();
+    }
+
+    print(AudioService.currentMediaItemStream);
+    AudioService.currentMediaItemStream.listen((event) {
+      print("------------");
+      if (event?.extras != null) {
+        itemScrollctl.jumpTo(index: event.extras['pos']);
+        curPos.value = event.extras['pos'];
+        curPos.update((val) {});
+      }
+      // itemScrollctl.jumpTo(index: event.extras['pos']);
+    });
+
     itemPosListener.itemPositions.addListener(onScroll);
 
     // 설정 이벤트
@@ -264,14 +279,15 @@ class MainCtl extends GetxController {
         "history": List.from(history)
       },
     );
-    AudioService.currentMediaItemStream.listen((event) {
-      if (event?.extras != null) {
-        itemScrollctl.jumpTo(index: event.extras['pos']);
-        curPos.value = event.extras['pos'];
-        curPos.update((val) {});
-      }
-      // itemScrollctl.jumpTo(index: event.extras['pos']);
-    });
+    // AudioService.currentMediaItemStream.listen((event) {
+    //   if (event?.extras != null) {
+    //     itemScrollctl.jumpTo(index: event.extras['pos']);
+    //     curPos.value = event.extras['pos'];
+    //     curPos.update((val) {});
+    //   }
+    //   // itemScrollctl.jumpTo(index: event.extras['pos']);
+    // });
+
     await AudioService.play();
   }
 
