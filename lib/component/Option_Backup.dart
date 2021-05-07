@@ -10,7 +10,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
-import 'package:path_provider/path_provider.dart';
 
 // var isOpen = false;
 

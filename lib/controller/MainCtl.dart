@@ -1,18 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainAudio.dart';
-import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class FindObj {
@@ -87,10 +82,6 @@ class MainCtl extends GetxController {
     ever(config['theme'], changeTheme);
     debounce(config['tts'], (ttsConf) async {
       // tts 옵션 변경시 tts 옵션 처리 로직 부분 .
-      // FlutterTts tts = FlutterTts();
-      // await tts.setSpeechRate(ttsConf['speechRate']);
-      // await tts.setVolume(ttsConf['volume']);
-      // await tts.setPitch(ttsConf['pitch']);
     }, time: Duration(milliseconds: 500));
     debounce(config['filter'], (v) {
       // tts 음성 시 무시하거나 대체될 로직 부분 ,
@@ -260,10 +251,12 @@ class MainCtl extends GetxController {
     if (!AudioService.connected) {
       await AudioService.connect();
     }
+    RxList colors = (config["theme"] as RxList);
+
     await AudioService.start(
       backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
       androidNotificationChannelName: '오픈텍스트뷰어',
-      androidNotificationColor: (config["theme"] as RxList)[0] ?? 0xFFFFFFFF,
+      androidNotificationColor: colors.isNotEmpty ? colors[0] : 0xFFFFFFFF,
       androidNotificationIcon: 'mipmap/ic_launcher',
       params: {
         ...Map.from(config),

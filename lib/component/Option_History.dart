@@ -1,21 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:open_textview/items/Languages.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'package:url_launcher/url_launcher.dart';
 
 class Option_History extends OptionsBase {
   @override

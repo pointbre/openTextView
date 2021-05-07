@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:get/instance_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:open_textview/controller/MainCtl.dart';
 
 void textToSpeechTaskEntrypoint() async {
   AudioServiceBackground.run(() => TextPlayerTask());
@@ -106,11 +102,11 @@ class TextPlayerTask extends BackgroundAudioTask {
       int endIdx = contents.length > i + count ? i + count : contents.length;
       String speakText = contents.getRange(i, endIdx).join('\n');
       filterList.forEach((e) {
-        if (e['expr']) {
+        if (e['expr'] != null && e['expr']) {
           speakText = speakText.replaceAllMapped(
-              RegExp('${e["filter"]}'), (match) => e['to']);
+              RegExp('${e["filter"] ?? ""}'), (match) => e['to'] ?? "");
         } else {
-          speakText = speakText.replaceAll(e["filter"], e['to']);
+          speakText = speakText.replaceAll(e["filter"] ?? "", e['to'] ?? "");
         }
       });
       AudioServiceBackground.setMediaItem(MediaItem(

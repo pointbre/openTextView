@@ -1,18 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:open_textview/items/Languages.dart';
-
-import 'package:url_launcher/url_launcher.dart';
 
 // var isOpen = false;
 const List<dynamic> DFFILTER = [
@@ -104,7 +96,13 @@ const List<dynamic> DFFILTER = [
 ];
 
 class Option_FilterCtl extends GetxController {
-  final filterTmpCtl = {}.obs;
+  final filterTmpCtl = {
+    "name": "특수문자 반복 된경우 필터",
+    "expr": false,
+    "filter": "",
+    "to": '',
+    'enable': true,
+  }.obs;
 }
 
 class Option_Filter extends OptionsBase {
@@ -155,80 +153,81 @@ class Option_Filter extends OptionsBase {
     showDialog(
       context: Get.context,
       builder: (BuildContext context) {
-        return GetBuilder<Option_FilterCtl>(
-            builder: (ctl) => SimpleDialog(
-                  title: Text('필터 추가'),
-                  children: [
-                    SizedBox(
-                        height: Get.height * 0.7,
-                        width: Get.width * 0.9,
-                        child: Container(
-                            padding:
-                                EdgeInsets.only(top: 10, left: 10, right: 10),
-                            child: Column(
-                              children: [
-                                TextField(
-                                  decoration: InputDecoration(
-                                    labelText: "필터 이름",
-                                  ),
-                                  onChanged: (value) {
-                                    ctl.filterTmpCtl['name'] = value;
-                                    ctl.update();
-                                  },
-                                ),
-                                Divider(),
-                                TextField(
-                                  decoration: InputDecoration(
-                                    labelText: "필터 조건",
-                                  ),
-                                  onChanged: (value) {
-                                    ctl.filterTmpCtl['filter'] = value;
-                                    ctl.update();
-                                  },
-                                ),
-                                Divider(),
-                                TextField(
-                                  decoration: InputDecoration(
-                                    labelText: "변환할 텍스트",
-                                  ),
-                                  onChanged: (value) {
-                                    ctl.filterTmpCtl['to'] = value;
-                                    ctl.update();
-                                  },
-                                ),
-                                Divider(),
-                                CheckboxListTile(
-                                    title: Text('정규식사용'),
-                                    value: ctl.filterTmpCtl['expr'] ?? false,
-                                    onChanged: (b) {
-                                      ctl.filterTmpCtl['expr'] = b;
-                                      ctl.update();
-                                    }),
-                              ],
-                            ))),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            ctl.filterTmpCtl.clear();
-                            Get.back();
-                          },
-                          child: Text('취소'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            RxList rxlist = controller.config['filter'];
-                            rxlist.add(ctl.filterTmpCtl.toJson());
-                            controller.update();
-                            Get.back();
-                          },
-                          child: Text('추가'),
-                        )
-                      ],
-                    )
-                  ],
-                ));
+        return GetBuilder<Option_FilterCtl>(builder: (ctl) {
+          print(ctl.filterTmpCtl);
+          return SimpleDialog(
+            title: Text('필터 추가'),
+            children: [
+              SizedBox(
+                  height: Get.height * 0.7,
+                  width: Get.width * 0.9,
+                  child: Container(
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "필터 이름",
+                            ),
+                            onChanged: (value) {
+                              ctl.filterTmpCtl['name'] = value;
+                              ctl.update();
+                            },
+                          ),
+                          Divider(),
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "필터 조건",
+                            ),
+                            onChanged: (value) {
+                              ctl.filterTmpCtl['filter'] = value;
+                              ctl.update();
+                            },
+                          ),
+                          Divider(),
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "변환할 텍스트",
+                            ),
+                            onChanged: (value) {
+                              ctl.filterTmpCtl['to'] = value;
+                              ctl.update();
+                            },
+                          ),
+                          Divider(),
+                          CheckboxListTile(
+                              title: Text('정규식사용'),
+                              value: ctl.filterTmpCtl['expr'] ?? false,
+                              onChanged: (b) {
+                                ctl.filterTmpCtl['expr'] = b;
+                                ctl.update();
+                              }),
+                        ],
+                      ))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      ctl.filterTmpCtl.clear();
+                      Get.back();
+                    },
+                    child: Text('취소'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      RxList rxlist = controller.config['filter'];
+                      rxlist.add(ctl.filterTmpCtl.toJson());
+                      controller.update();
+                      Get.back();
+                    },
+                    child: Text('추가'),
+                  )
+                ],
+              )
+            ],
+          );
+        });
       },
     );
   }
@@ -278,6 +277,7 @@ class Option_Filter extends OptionsBase {
                                 ...filterlist.map((e) {
                                   int idx = filterlist.indexOf(e);
 
+                                  print('>>>>>>>><<<>>> : ${e['expr']}');
                                   return Dismissible(
                                       key: UniqueKey(),
                                       background: Container(color: Colors.red),
@@ -305,7 +305,8 @@ class Option_Filter extends OptionsBase {
                                                       Expanded(
                                                           flex: 8,
                                                           child: Text(
-                                                              e['filter'])),
+                                                              e['filter'] ??
+                                                                  "")),
                                                       Expanded(
                                                           flex: 1,
                                                           child: Icon(Icons
@@ -313,13 +314,15 @@ class Option_Filter extends OptionsBase {
                                                       Expanded(
                                                           flex: 2,
                                                           child: Center(
-                                                              child: Text(
-                                                                  e['to'] == ""
-                                                                      ? '없음'
-                                                                      : e['to'])))
+                                                              child: Text(e['to'] !=
+                                                                          null &&
+                                                                      e['to'] ==
+                                                                          ""
+                                                                  ? '없음'
+                                                                  : e['to'])))
                                                     ]),
                                                 Text(
-                                                    '정규식 사용 여부 : ${e['expr'] ? '사용' : '미사용'}'),
+                                                    '정규식 사용 여부 : ${e['expr'] != null && e['expr'] ? '사용' : '미사용'}'),
                                               ]),
                                           trailing: Checkbox(
                                               value: e['enable'] ?? false,

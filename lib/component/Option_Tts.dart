@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_spinbox/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:open_textview/items/Languages.dart';
 
 // var isOpen = false;

@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
-import 'package:open_textview/controller/MainCtl.dart';
 import 'package:open_textview/items/NavBtnItems.dart';
 
 class bottomnavCtl extends GetxController {
