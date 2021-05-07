@@ -10,6 +10,9 @@ openTextView 오픈텍스트뷰어 는 텍스트를 음성으로 변경 하여 �
 
 tts 설정 에서 여러줄 을 읽도록 설정할 수 있습니다.
 
+[구글 플레이 링크](https://play.google.com/store/apps/details?id=com.khjde.opentextview)
+
+
 
 | 작업 내역                                              | 완료 여부     
 | -------                                               | :-------:  
