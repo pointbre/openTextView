@@ -51,6 +51,9 @@ class Option_LineTo extends OptionsBase {
                       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Column(
                         children: [
+                          Text(
+                            '한번에 너무 많이 이동하거나. 빨리 이동하면 오류가 발생합니다. 원인을 못찾았으니 조금씩 천천히 이동해 주세요. ',
+                          ),
                           Obx(() => Text(
                                 '현재 위치 : ${controller.curPos.value} / ${(controller.curPos.value / controller.contents.length * 100).toPrecision(2)}%',
                                 style: Get.context.textTheme.subtitle1,

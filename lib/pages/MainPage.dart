@@ -58,7 +58,6 @@ class MainPage extends GetView<MainCtl> {
               child: StreamBuilder(
                   stream: AudioService.runningStream,
                   builder: (c, snapshot) => GetBuilder<MainCtl>(builder: (ctl) {
-                        // print('[[[[[[[[[[[[[${ctl.contents.length}');
                         // if (ctl.contents.length == 0) {
                         //   return Container();
                         // }
@@ -83,18 +82,17 @@ class MainPage extends GetView<MainCtl> {
                             // }
 
                             if (snapshot.data) {
-                              int cnt = ((ctl.config['tts']
-                                      as RxMap)['groupcnt'] as double)
-                                  .round();
+                              int cnt =
+                                  ((ctl.config['tts'] as RxMap)['groupcnt']);
 
                               int endpos = ctl.curPos.value + cnt;
 
-                              if (ctl.curPos.value <= index &&
-                                  endpos >= index) {
+                              if (index >= ctl.curPos.value &&
+                                  index <= endpos) {
                                 return Text(
                                   '${controller.contents[index]}',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w700,
                                       backgroundColor: Theme.of(context)
                                           .colorScheme
                                           .surface),

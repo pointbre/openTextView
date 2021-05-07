@@ -210,7 +210,8 @@ class Option_Tts extends OptionsBase {
                                               1,
                                           onChanged: (value) {
                                             (controller.config['tts']
-                                                as Map)['groupcnt'] = value;
+                                                    as Map)['groupcnt'] =
+                                                value.toInt();
                                             controller.update();
                                           },
                                         ),
@@ -240,7 +241,6 @@ class Option_Tts extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     // TESTopenSetting();
-    // print('tts load--------');
     return IconButton(
         onPressed: () {
           openSetting();

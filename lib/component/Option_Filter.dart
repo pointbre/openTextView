@@ -153,7 +153,7 @@ class Option_Filter extends OptionsBase {
   void openCustomFilter() async {
     Get.put(Option_FilterCtl());
     showDialog(
-      context: context,
+      context: Get.context,
       builder: (BuildContext context) {
         return GetBuilder<Option_FilterCtl>(
             builder: (ctl) => SimpleDialog(
@@ -220,8 +220,6 @@ class Option_Filter extends OptionsBase {
                           onPressed: () async {
                             RxList rxlist = controller.config['filter'];
                             rxlist.add(ctl.filterTmpCtl.toJson());
-                            // print(controller.config['filter']);
-                            // print(ctl.filterTmpCtl);
                             controller.update();
                             Get.back();
                           },
@@ -245,7 +243,6 @@ class Option_Filter extends OptionsBase {
     // test----
 
     // RxList filterlist = controller.config['filter'];
-    // print('filterlistfilterlist : $filterlist');
     showDialog(
         context: Get.context,
         // barrierColor: Colors.transparent,
@@ -280,7 +277,6 @@ class Option_Filter extends OptionsBase {
                                   children: [
                                 ...filterlist.map((e) {
                                   int idx = filterlist.indexOf(e);
-                                  print('>>>: ${e} ${filterlist.indexOf(e)}');
 
                                   return Dismissible(
                                       key: UniqueKey(),

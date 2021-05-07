@@ -98,8 +98,6 @@ class Option_Theme extends OptionsBase {
 
   @override
   void openSetting() {
-    // print(context.theme.dialogTheme.backgroundColor);
-
     showDialog(
         context: Get.context,
         // barrierColor: Colors.transparent,

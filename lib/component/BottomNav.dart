@@ -31,16 +31,16 @@ class BottomNav extends OptionsBase {
                         title: Text(el.name),
                         trailing: Obx(() => Checkbox(
                               value: !(controller.config['nav'] as RxList)
-                                  .where((e) => e.toString() == el.toString())
+                                  .where((e) =>
+                                      e.toString() == el.runtimeType.toString())
                                   .isEmpty,
                               onChanged: (value) {
-                                print(value);
                                 if (value) {
                                   (controller.config['nav'] as RxList)
-                                      .add(el.toString());
+                                      .add(el.runtimeType.toString());
                                 } else {
                                   (controller.config['nav'] as RxList)
-                                      .remove(el.toString());
+                                      .remove(el.runtimeType.toString());
                                 }
                                 controller.update();
                               },
@@ -58,7 +58,7 @@ class BottomNav extends OptionsBase {
 
   void openOptions() async {
     showDialog(
-      context: context,
+      context: Get.context,
       builder: (BuildContext context) {
         return SimpleDialog(title: Text('설정'),
             // contentPadding: EdgeInsets.all(1),
@@ -122,12 +122,13 @@ class BottomNav extends OptionsBase {
                   children: [
                     ...(controller.config['nav'] as RxList).map((cmpName) {
                       List<OptionsBase> tmp = NAVBUTTON
-                          .where((element) => element.toString() == cmpName)
+                          .where((element) =>
+                              element.runtimeType.toString() == cmpName)
                           .toList();
                       if (tmp.isNotEmpty) {
                         return tmp.first;
                       }
-                      return Container();
+                      return SizedBox();
                     }),
                   ],
                 );

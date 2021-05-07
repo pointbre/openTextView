@@ -27,13 +27,7 @@ class FloatingButton extends GetView<MainCtl> {
           return FloatingActionButton(
               elevation: 2.0,
               onPressed: () async {
-                // print('onPressed >> :${bplayTts}');
-
                 if (bplay) {
-                  // if (bplayTts) {
-                  // bplayTts = false;
-
-                  // return;
                   controller.stop();
                 } else {
                   // // bplayTts = true;
@@ -43,16 +37,14 @@ class FloatingButton extends GetView<MainCtl> {
                   //     .where((element) => element['enable'])
                   //     .toList();
                   // filterList.forEach((e) {
-                  //   print('test >> : ${e}');
+
                   //   if (e['expr']) {
                   //     test = test.replaceAllMapped(
                   //         RegExp('${e["filter"]}'), (match) => e['to']);
                   //   } else {
                   //     test = test.replaceAll(e["filter"], e['to']);
                   //   }
-                  //   print(test);
                   // });
-                  // print(test);
                   // await tts.awaitSpeakCompletion(true);
                   // await tts.setSpeechRate(ttsConf['speechRate']);
                   // await tts.setVolume(ttsConf['volume']);

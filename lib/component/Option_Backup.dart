@@ -120,7 +120,6 @@ class Option_Backup extends OptionsBase {
                         var json = {};
                         try {
                           json = jsonDecode(contents.text);
-                          print(json['config']);
                           if ((json['config'] as Map).isEmpty &&
                               (json['history'] as List).isEmpty) {
                             return;

@@ -97,7 +97,6 @@ class MainCtl extends GetxController {
     }, time: Duration(seconds: 1));
 
     debounce(config['picker'], (v) async {
-      print('configconfigFilePickerFilePickerFilePicker${v}');
       // return;
       if ((v as Map).isNotEmpty) {
         File file = File(v['path']);
@@ -169,7 +168,6 @@ class MainCtl extends GetxController {
   }
 
   assignHistory(List tmpHistory) {
-    // print(tmpHistory);
     history.assignAll(tmpHistory);
   }
 
@@ -264,8 +262,8 @@ class MainCtl extends GetxController {
     }
     await AudioService.start(
       backgroundTaskEntrypoint: textToSpeechTaskEntrypoint,
-      androidNotificationChannelName: 'openTextView',
-      androidNotificationColor: 0xFF2196f3,
+      androidNotificationChannelName: '오픈텍스트뷰어',
+      androidNotificationColor: (config["theme"] as RxList)[0] ?? 0xFFFFFFFF,
       androidNotificationIcon: 'mipmap/ic_launcher',
       params: {
         ...Map.from(config),
@@ -274,18 +272,12 @@ class MainCtl extends GetxController {
       },
     );
     AudioService.currentMediaItemStream.listen((event) {
-      print('event.extras : ${event?.extras}');
       if (event?.extras != null) {
         itemScrollctl.jumpTo(index: event.extras['pos']);
-
-        curPos.update((val) {
-          val = event.extras['pos'];
-          return val;
-        });
-        update();
+        curPos.value = event.extras['pos'];
+        curPos.update((val) {});
       }
       // itemScrollctl.jumpTo(index: event.extras['pos']);
-      // print('currentMediaItemStream : ${event.extras}');
     });
     await AudioService.play();
   }

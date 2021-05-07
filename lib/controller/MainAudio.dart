@@ -82,10 +82,14 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPlay() async {
-    AudioServiceBackground.setState(controls: [
-      MediaControl.pause,
-      MediaControl.stop,
-    ], playing: true, processingState: AudioProcessingState.buffering);
+    AudioServiceBackground.setState(
+      controls: [
+        MediaControl.pause,
+        MediaControl.stop,
+      ],
+      playing: true,
+      processingState: AudioProcessingState.buffering,
+    );
 
     // tts start
     Map ttsConf = params['tts'];
@@ -109,19 +113,27 @@ class TextPlayerTask extends BackgroundAudioTask {
           speakText = speakText.replaceAll(e["filter"], e['to']);
         }
       });
-      print(speakText);
       AudioServiceBackground.setMediaItem(MediaItem(
           id: 'tts_',
           album: 'TTS',
           title: params['picker']['name'],
           artist:
               '${i} / ${(i / contents.length * 100).toStringAsPrecision(2)}%',
-          extras: {"pos": i}));
+          extras: {"pos": i},
+          duration: Duration(seconds: contents.length)));
+      AudioServiceBackground.setState(
+        controls: [
+          MediaControl.pause,
+          MediaControl.stop,
+        ],
+        playing: true,
+        processingState: AudioProcessingState.buffering,
+        position: Duration(seconds: i),
+      );
+      // AudioService.seekTo(Duration(seconds: i));
       await tts.speak(speakText);
       saveState(i);
     }
-    // print('>>> ${speakText}');
-    // print(speakText.split('\n'));
 
     return super.onPlay();
   }
@@ -150,7 +162,6 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onStop() async {
-    print('onStoponStoponStoponStop');
     super.onStop();
     AudioServiceBackground.setState(
         controls: [],
