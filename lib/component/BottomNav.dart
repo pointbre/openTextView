@@ -30,10 +30,10 @@ class BottomNav extends OptionsBase {
                         leading: el.buildIcon(),
                         title: Text(el.name),
                         trailing: Obx(() => Checkbox(
-                              value: !(controller.config['nav'] as RxList)
+                              value: (controller.config['nav'] as RxList)
                                   .where((e) =>
                                       e.toString() == el.runtimeType.toString())
-                                  .isEmpty,
+                                  .isNotEmpty,
                               onChanged: (value) {
                                 if (value) {
                                   (controller.config['nav'] as RxList)
