@@ -29,9 +29,6 @@ class MainCtl extends GetxController {
   final findText = "".obs;
   final findList = List<FindObj>.empty().obs;
 
-// AudioService.play();
-  // --- tts기능 ---
-
   final LocalStorage storage = new LocalStorage('opentextview');
 
   final playState = false.obs;
@@ -82,7 +79,6 @@ class MainCtl extends GetxController {
       await AudioService.connect();
     }
 
-    print(AudioService.currentMediaItemStream);
     AudioService.currentMediaItemStream.listen((event) {
       if (event?.extras != null) {
         itemScrollctl.jumpTo(index: event.extras['pos']);
@@ -151,10 +147,10 @@ class MainCtl extends GetxController {
     await storage.ready;
 
     // 초기 설정 파일 로드
-    print('초기 설정 파일 로드');
-    print(storage.getItem('config'));
-    print(storage.getItem('history'));
-    print('초기 설정 파일 로드 end');
+    // print('초기 설정 파일 로드');
+    // print(storage.getItem('config'));
+    // print(storage.getItem('history'));
+    // print('초기 설정 파일 로드 end');
     try {
       assignConfig(storage.getItem('config') ?? {});
       assignHistory(storage.getItem('history') ?? []);
@@ -293,14 +289,6 @@ class MainCtl extends GetxController {
         "history": List.from(history)
       },
     );
-    // AudioService.currentMediaItemStream.listen((event) {
-    //   if (event?.extras != null) {
-    //     itemScrollctl.jumpTo(index: event.extras['pos']);
-    //     curPos.value = event.extras['pos'];
-    //     curPos.update((val) {});
-    //   }
-    //   // itemScrollctl.jumpTo(index: event.extras['pos']);
-    // });
 
     await AudioService.play();
   }
