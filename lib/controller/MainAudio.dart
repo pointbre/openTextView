@@ -153,7 +153,7 @@ class TextPlayerTask extends BackgroundAudioTask {
       saveState(i);
     }
 
-    AudioService.stop();
+    onStop();
     return super.onPlay();
   }
 
