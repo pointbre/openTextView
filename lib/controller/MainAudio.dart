@@ -20,8 +20,9 @@ class TextPlayerTask extends BackgroundAudioTask {
   Map<String, dynamic> params;
 
   bool get _playing => AudioServiceBackground.state.playing;
-
+  List filterList;
   // final ctl = Get.find<MainCtl>();
+
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
     // ctl = Get.find<MainCtl>();
@@ -39,6 +40,11 @@ class TextPlayerTask extends BackgroundAudioTask {
     await tts.setPitch(ttsConf['pitch']);
     this.params = params;
     contents = params['contents'];
+
+    filterList = (params['filter'] as List)
+        .where((element) => element['enable'])
+        .toList();
+
     // flutter_tts resets the AVAudioSession category to playAndRecord and the
     // options to defaultToSpeaker whenever this background isolate is loaded,
     // so we need to set our preferred audio session configuration here after
@@ -77,6 +83,22 @@ class TextPlayerTask extends BackgroundAudioTask {
   }
 
   @override
+  Future onCustomAction(String name, arguments) async {
+    if (name == 'tts') {
+      await tts.setSpeechRate(arguments['speechRate']);
+      await tts.setVolume(arguments['volume']);
+      await tts.setPitch(arguments['pitch']);
+      params['tts'] = arguments;
+    }
+    if (name == 'filter') {
+      filterList =
+          (arguments as List).where((element) => element['enable']).toList();
+    }
+
+    return super.onCustomAction(name, arguments);
+  }
+
+  @override
   Future<void> onPlay() async {
     AudioServiceBackground.setState(
       controls: [
@@ -89,9 +111,7 @@ class TextPlayerTask extends BackgroundAudioTask {
 
     // tts start
     Map ttsConf = params['tts'];
-    var filterList = (params['filter'] as List)
-        .where((element) => element['enable'])
-        .toList();
+
     int count = ttsConf['groupcnt'].toInt();
 
     int historyIdx = params['history'].indexWhere((element) {
@@ -99,8 +119,11 @@ class TextPlayerTask extends BackgroundAudioTask {
     });
     int curpos = params['history'][historyIdx]['pos'];
     for (var i = curpos; i < contents.length; i += count) {
+      count = params['tts']['groupcnt'].toInt();
+
       int endIdx = contents.length > i + count ? i + count : contents.length;
       String speakText = contents.getRange(i, endIdx).join('\n');
+      print(filterList);
       filterList.forEach((e) {
         if (e['expr'] != null && e['expr']) {
           speakText = speakText.replaceAllMapped(
@@ -126,11 +149,11 @@ class TextPlayerTask extends BackgroundAudioTask {
         processingState: AudioProcessingState.buffering,
         position: Duration(seconds: i),
       );
-      // AudioService.seekTo(Duration(seconds: i));
       await tts.speak(speakText);
       saveState(i);
     }
 
+    AudioService.stop();
     return super.onPlay();
   }
 
@@ -173,33 +196,5 @@ class TextPlayerTask extends BackgroundAudioTask {
     // await _completer.future;
     // // Shut down this task
     // await super.onStop();
-  }
-
-  Future<void> _playPause() async {
-    // if (_playing) {
-    //   _interrupted = false;
-    //   await AudioServiceBackground.setState(
-    //     controls: [MediaControl.play, MediaControl.stop],
-    //     processingState: AudioProcessingState.ready,
-    //     playing: false,
-    //   );
-    //   _sleeper.interrupt();
-    //   _tts.interrupt();
-    // } else {
-    //   final session = await AudioSession.instance;
-    //   // flutter_tts doesn't activate the session, so we do it here. This
-    //   // allows the app to stop other apps from playing audio while we are
-    //   // playing audio.
-    //   if (await session.setActive(true)) {
-    //     // If we successfully activated the session, set the state to playing
-    //     // and resume playback.
-    //     await AudioServiceBackground.setState(
-    //       controls: [MediaControl.pause, MediaControl.stop],
-    //       processingState: AudioProcessingState.ready,
-    //       playing: true,
-    //     );
-    //     _sleeper.interrupt();
-    //   }
-    // }
   }
 }

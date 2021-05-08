@@ -82,7 +82,6 @@ class MainCtl extends GetxController {
 
     print(AudioService.currentMediaItemStream);
     AudioService.currentMediaItemStream.listen((event) {
-      print("------------");
       if (event?.extras != null) {
         itemScrollctl.jumpTo(index: event.extras['pos']);
         curPos.value = event.extras['pos'];
@@ -97,9 +96,15 @@ class MainCtl extends GetxController {
     ever(config['theme'], changeTheme);
     debounce(config['tts'], (ttsConf) async {
       // tts 옵션 변경시 tts 옵션 처리 로직 부분 .
+      if (AudioService.runningStream.value) {
+        AudioService.customAction('tts', ttsConf);
+      }
     }, time: Duration(milliseconds: 500));
-    debounce(config['filter'], (v) {
+    debounce(config['filter'], (filterList) {
       // tts 음성 시 무시하거나 대체될 로직 부분 ,
+      if (AudioService.runningStream.value) {
+        AudioService.customAction('filter', filterList);
+      }
     }, time: Duration(seconds: 1));
 
     debounce(config['picker'], (v) async {
@@ -107,6 +112,9 @@ class MainCtl extends GetxController {
       if ((v as Map).isNotEmpty) {
         File file = File(v['path']);
         if (file.existsSync()) {
+          if (AudioService.runningStream.value) {
+            AudioService.stop();
+          }
           Uint8List u8list = file.readAsBytesSync();
           DecodingResult decodeContents =
               await CharsetDetector.autoDecode(u8list);
