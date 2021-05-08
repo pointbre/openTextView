@@ -45,6 +45,8 @@ class MainCtl extends GetxController {
       'volume': 1.toDouble(),
       'pitch': 1.toDouble(),
       'groupcnt': 1,
+      'headsetbutton': false,
+      'audiosession': true,
     }.obs,
     "filter": [].obs,
     "nav": [].obs, // 하단 네비게이션바
@@ -176,8 +178,12 @@ class MainCtl extends GetxController {
 
   setConfig(Map<String, dynamic> config, List history) {
     try {
+      int whereIdx = history.indexWhere((element) {
+        return element['name'] == (config['picker'] as Map)['name'];
+      });
       assignConfig(config ?? {});
       assignHistory(history ?? []);
+      itemScrollctl.jumpTo(index: history[whereIdx]['pos']);
     } catch (e) {}
   }
 

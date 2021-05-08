@@ -196,7 +196,7 @@ class Option_Filter extends OptionsBase {
                           ),
                           Divider(),
                           CheckboxListTile(
-                              title: Text('정규식사용'),
+                              title: Text('정규식 표현식 사용'),
                               value: ctl.filterTmpCtl['expr'] ?? false,
                               onChanged: (b) {
                                 ctl.filterTmpCtl['expr'] = b;

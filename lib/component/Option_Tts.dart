@@ -14,7 +14,7 @@ import 'package:open_textview/items/Languages.dart';
 
 class Option_Tts extends OptionsBase {
   @override
-  String get name => 'tts 설정';
+  String get name => 'TTS 설정';
 
   final flutterTts = FlutterTts();
   void openSettingLanguage() async {
@@ -84,7 +84,7 @@ class Option_Tts extends OptionsBase {
               ),
               children: [
                 SizedBox(
-                    height: Get.height * 0.8,
+                    height: Get.height * 0.7,
                     width: Get.width * 0.9,
                     child: Column(children: [
                       Container(
@@ -215,6 +215,31 @@ class Option_Tts extends OptionsBase {
                                         ),
                                       ),
                                     ]),
+                                Divider(),
+                                CheckboxListTile(
+                                    contentPadding: EdgeInsets.all(0),
+                                    title: Text('헤드셋 버튼 사용'),
+                                    value: (controller.config['tts']
+                                            as Map)['headsetbutton'] ??
+                                        false,
+                                    onChanged: (b) {
+                                      (controller.config['tts']
+                                          as Map)['headsetbutton'] = b;
+                                      controller.update();
+                                    }),
+                                CheckboxListTile(
+                                    contentPadding: EdgeInsets.all(0),
+                                    title: Text('다른 플레이어 실행시 정지'),
+                                    value: (controller.config['tts']
+                                            as Map)['audiosession'] ??
+                                        false,
+                                    onChanged: (b) {
+                                      (controller.config['tts']
+                                          as Map)['audiosession'] = b;
+                                      controller.update();
+                                      // ctl.filterTmpCtl['expr'] = b;
+                                      // ctl.update();
+                                    }),
                               ],
                             );
                           },

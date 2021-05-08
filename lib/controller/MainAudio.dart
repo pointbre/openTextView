@@ -13,26 +13,41 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   final LocalStorage storage = new LocalStorage('opentextview');
   AudioSession session;
-  bool _finished = false;
-  bool _interrupted = false;
 
   List contents = [];
   Map<String, dynamic> params;
 
   bool get _playing => AudioServiceBackground.state.playing;
+
   List filterList;
   // final ctl = Get.find<MainCtl>();
 
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
     // ctl = Get.find<MainCtl>();
+    AudioServiceBackground.androidForceEnableMediaButtons();
+
     session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.speech());
-
-    session.interruptionEventStream.listen((event) {
-      print('interruptionEventStream : ${event.begin}');
-      print('interruptionEventStream : ${event.type}');
+    session.becomingNoisyEventStream.listen((_) {
+      onPause();
     });
+    session.interruptionEventStream.listen((event) {
+      if (event.type == AudioInterruptionType.pause) {
+        if (event.begin) {
+          onPause();
+        } else {
+          onPlay();
+        }
+        return;
+      }
+      if (event.begin && event.type == AudioInterruptionType.unknown) {
+        if (params['tts']['audiosession']) {
+          onPause();
+        } else {}
+      }
+    });
+
     Map ttsConf = params['tts'];
     await tts.awaitSpeakCompletion(true);
     await tts.setSpeechRate(ttsConf['speechRate']);
@@ -53,6 +68,9 @@ class TextPlayerTask extends BackgroundAudioTask {
     // await session.configure(AudioSessionConfiguration.speech());
     // Handle audio interruptions.
     // session.interruptionEventStream.listen((event) {
+    //   print('event.begin : ${event.begin}');
+    //   print('event.type : ${event.type}');
+
     //   if (event.begin) {
     //     if (_playing) {
     //       onPause();
@@ -100,6 +118,14 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onPlay() async {
+    if (!await session.setActive(true)) {
+      return;
+    }
+    // if (await session.setActive(true)) {
+    //   // Now play audio.
+    // } else {
+    //   // The request was denied and the app should not play audio
+    // }
     AudioServiceBackground.setState(
       controls: [
         MediaControl.pause,
@@ -123,7 +149,7 @@ class TextPlayerTask extends BackgroundAudioTask {
 
       int endIdx = contents.length > i + count ? i + count : contents.length;
       String speakText = contents.getRange(i, endIdx).join('\n');
-      print(filterList);
+
       filterList.forEach((e) {
         if (e['expr'] != null && e['expr']) {
           speakText = speakText.replaceAllMapped(
@@ -159,8 +185,15 @@ class TextPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onClick(MediaButton button) {
-    print('onClick : ${button}');
-    return super.onClick(button);
+    if (params['tts']['headsetbutton']) {
+      if (AudioServiceBackground.state.playing) {
+        onPause();
+      } else {
+        onPlay();
+      }
+    }
+
+    // return super.onClick(button);
   }
 
   void saveState(int idx) async {
@@ -177,22 +210,25 @@ class TextPlayerTask extends BackgroundAudioTask {
   }
 
   @override
-  Future<void> onPause() {
+  Future<void> onPause() async {
+    // await session.setActive(true);
+
     AudioServiceBackground.setState(controls: [
       MediaControl.play,
       MediaControl.stop,
-    ], playing: true, processingState: AudioProcessingState.ready);
+    ], playing: false, processingState: AudioProcessingState.ready);
     tts.stop();
   }
 
   @override
   Future<void> onStop() async {
-    super.onStop();
+    await session.setActive(false);
     AudioServiceBackground.setState(
         controls: [],
         playing: false,
         processingState: AudioProcessingState.none);
     tts.stop();
+    super.onStop();
     // super.cacheManager.emptyCache();
     // Signal the speech to stop
     // _finished = true;
