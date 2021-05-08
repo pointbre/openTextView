@@ -157,6 +157,12 @@ class TextPlayerTask extends BackgroundAudioTask {
     return super.onPlay();
   }
 
+  @override
+  Future<void> onClick(MediaButton button) {
+    print('onClick : ${button}');
+    return super.onClick(button);
+  }
+
   void saveState(int idx) async {
     int historyIdx = params['history'].indexWhere((element) {
       return element['name'] == (params['picker'] as Map)['name'];
