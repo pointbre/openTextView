@@ -39,7 +39,10 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-
+    packagingOptions{
+      doNotStrip '*/mips/*.so'
+      doNotStrip '*/mips64/*.so'
+    }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.khjde.opentextview"

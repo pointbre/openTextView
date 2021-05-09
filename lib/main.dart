@@ -6,7 +6,6 @@ import 'package:open_textview/pages/MainPage.dart';
 
 void main() {
   Get.lazyPut(() => MainCtl());
-  var testColor = [0xFF0A174E, 0xFFF5D042];
   runApp(AudioServiceWidget(
     child: GetMaterialApp(getPages: [
       GetPage(name: '/', page: () => MainPage()),
