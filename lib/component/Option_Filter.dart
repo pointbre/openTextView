@@ -74,7 +74,8 @@ const List<dynamic> DFFILTER = [
   {
     "name": "여러 느낌표나 물음표 필터후 문장에 물음표만 있을경우 필터",
     "expr": true,
-    "filter": """"!"|"\\?"|'!'|'\\?'|“!”|“\\?”|‘!’|‘\\?|\\[!\\]|\\[\\?\\]""",
+    "filter":
+        """"!"|"\\."|"\\?"|'!'|'\\?'|“\\.”|“!”|“\\?”|‘!’|‘\\?|\\[!\\]|\\[\\?\\]|\\[\\.\\]""",
     "to": '',
     'enable': false
   },
@@ -94,16 +95,6 @@ const List<dynamic> DFFILTER = [
     'enable': true
   }
 ];
-
-class Option_FilterCtl extends GetxController {
-  final filterTmpCtl = {
-    "name": "특수문자 반복 된경우 필터",
-    "expr": false,
-    "filter": "",
-    "to": '',
-    'enable': true,
-  }.obs;
-}
 
 class Option_Filter extends OptionsBase {
   @override
@@ -148,86 +139,109 @@ class Option_Filter extends OptionsBase {
     );
   }
 
-  void openCustomFilter() async {
-    Get.put(Option_FilterCtl());
+  void openCustomFilter(int editIdx) async {
+    var targetObj = {};
+
+    if (editIdx >= 0) {
+      targetObj = (controller.config['filter'] as RxList)[editIdx];
+    } else {
+      targetObj = {
+        "name": "",
+        "filter": "",
+        "to": "",
+        "expr": false,
+        "enable": true
+      };
+    }
     showDialog(
       context: Get.context,
       builder: (BuildContext context) {
-        return GetBuilder<Option_FilterCtl>(builder: (ctl) {
-          print(ctl.filterTmpCtl);
-          return SimpleDialog(
-            title: Text('필터 추가'),
-            children: [
-              SizedBox(
-                  height: Get.height * 0.7,
-                  width: Get.width * 0.9,
-                  child: Container(
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      child: Column(
-                        children: [
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: "필터 이름",
-                            ),
-                            onChanged: (value) {
-                              ctl.filterTmpCtl['name'] = value;
-                              ctl.update();
-                            },
+        return SimpleDialog(
+          title: Text('필터 추가'),
+          children: [
+            SizedBox(
+                height: Get.height * 0.7,
+                width: Get.width * 0.9,
+                child: Container(
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    child: Column(
+                      children: [
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: "필터 이름",
                           ),
-                          Divider(),
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: "필터 조건",
-                            ),
-                            onChanged: (value) {
-                              ctl.filterTmpCtl['filter'] = value;
-                              ctl.update();
-                            },
+                          controller:
+                              TextEditingController(text: targetObj['name']),
+                          onChanged: (value) {
+                            targetObj['name'] = value;
+                            // ctl.filterTmpCtl['name'] = value;
+                            // ctl.update();
+                          },
+                        ),
+                        Divider(),
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: "필터 조건",
                           ),
-                          Divider(),
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: "변환할 텍스트",
-                            ),
-                            onChanged: (value) {
-                              ctl.filterTmpCtl['to'] = value;
-                              ctl.update();
-                            },
+                          controller:
+                              TextEditingController(text: targetObj['filter']),
+                          onChanged: (value) {
+                            targetObj['filter'] = value;
+                            // ctl.filterTmpCtl['filter'] = value;
+                            // ctl.update();
+                          },
+                        ),
+                        Divider(),
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: "변환할 텍스트",
                           ),
-                          Divider(),
-                          CheckboxListTile(
-                              title: Text('정규식 표현식 사용'),
-                              value: ctl.filterTmpCtl['expr'] ?? false,
-                              onChanged: (b) {
-                                ctl.filterTmpCtl['expr'] = b;
-                                ctl.update();
-                              }),
-                        ],
-                      ))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      ctl.filterTmpCtl.clear();
-                      Get.back();
-                    },
-                    child: Text('취소'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      RxList rxlist = controller.config['filter'];
-                      rxlist.add(ctl.filterTmpCtl.toJson());
-                      controller.update();
-                      Get.back();
-                    },
-                    child: Text('추가'),
-                  )
-                ],
-              )
-            ],
-          );
-        });
+                          controller:
+                              TextEditingController(text: targetObj['to']),
+                          onChanged: (value) {
+                            targetObj['to'] = value;
+                            // ctl.filterTmpCtl['to'] = value;
+                            // ctl.update();
+                          },
+                        ),
+                        Divider(),
+                        CheckboxListTile(
+                            title: Text('정규식 표현식 사용'),
+                            value: targetObj['expr'] ?? false,
+                            onChanged: (b) {
+                              targetObj['expr'] = b;
+                              // ctl.filterTmpCtl['expr'] = b;
+                              // ctl.update();
+                            }),
+                      ],
+                    ))),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    // ctl.filterTmpCtl.clear();
+                    Get.back();
+                  },
+                  child: Text('취소'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    RxList rxlist = controller.config['filter'];
+                    if (editIdx >= 0) {
+                      rxlist[editIdx] = Map.from(targetObj);
+                    } else {
+                      rxlist.add(Map.from(targetObj));
+                    }
+                    controller.update();
+                    Get.back();
+                  },
+                  child: Text('추가'),
+                )
+              ],
+            )
+          ],
+        );
       },
     );
   }
@@ -271,13 +285,25 @@ class Option_Filter extends OptionsBase {
                           ),
                           Divider(),
                           Expanded(
-                              child: ListView(
+                              // (
+                              //   children: [],
+                              // )
+                              child: ReorderableListView(
+                                  onReorder: (oldIndex, newIndex) {
+                                    if (oldIndex < newIndex) {
+                                      newIndex -= 1;
+                                    }
+                                    var item =
+                                        (controller.config['filter'] as RxList)
+                                            .removeAt(oldIndex);
+                                    (controller.config['filter'] as RxList)
+                                        .insert(newIndex, item);
+                                    controller.update();
+                                  },
                                   padding: EdgeInsets.all(5),
                                   children: [
                                 ...filterlist.map((e) {
                                   int idx = filterlist.indexOf(e);
-
-                                  print('>>>>>>>><<<>>> : ${e['expr']}');
                                   return Dismissible(
                                       key: UniqueKey(),
                                       background: Container(color: Colors.red),
@@ -293,6 +319,9 @@ class Option_Filter extends OptionsBase {
                                           child: Container(
                                         child: ListTile(
                                           title: Text(e['name'] ?? "---"),
+                                          onTap: () {
+                                            openCustomFilter(idx);
+                                          },
                                           subtitle: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -341,7 +370,7 @@ class Option_Filter extends OptionsBase {
                               children: [
                                 ElevatedButton(
                                   onPressed: () async {
-                                    openCustomFilter();
+                                    openCustomFilter(-1);
                                   },
                                   child: Icon(Icons.add),
                                 ),

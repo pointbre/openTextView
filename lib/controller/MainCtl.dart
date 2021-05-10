@@ -126,7 +126,7 @@ class MainCtl extends GetxController {
                 return ExtractOperation.extract;
               });
           // print('[p]]]]]]]]]]]${.extractText}');
-
+          contents.clear();
           for (int i = 0; i < imgFiles.length; i++) {
             String text = await FlutterTesseractOcr.extractText(
                 '${imgFiles[i].toString()}',
