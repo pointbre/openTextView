@@ -127,7 +127,9 @@ class MainCtl extends GetxController {
               });
           // print('[p]]]]]]]]]]]${.extractText}');
           contents.clear();
+          // return;
           for (int i = 0; i < imgFiles.length; i++) {
+            print(imgFiles[i].toString());
             String text = await FlutterTesseractOcr.extractText(
                 '${imgFiles[i].toString()}',
                 language: 'kor',
@@ -135,6 +137,7 @@ class MainCtl extends GetxController {
                   "psm": "4",
                   "preserve_interword_spaces": "1",
                 });
+            print('------------------------');
             text = text.replaceAll('.\n', '######%%%%%%.');
             text = text.replaceAll('\'\n', '######%%%%%%\'');
             text = text.replaceAll('"\n', '######%%%%%%"');

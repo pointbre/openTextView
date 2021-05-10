@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 
@@ -37,12 +38,17 @@ class Option_FilePicker extends OptionsBase {
 
   @override
   void openSetting() async {
+    bool hasBackground = await FlutterBackground.hasPermissions;
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
-      allowedExtensions: ['txt', 'zip', '7z'],
+      allowedExtensions: //---
+          ['txt'],
+      // ['txt', 'zip', '7z'],
+      // hasBackground ? ['txt', 'zip', '7z'] : ['txt'],
     );
-    if (result.files.isNotEmpty) {
+
+    if (result != null && result.files.isNotEmpty) {
       PlatformFile platformfile = result.files.first;
       RxMap picker = controller.config['picker'];
       picker.assignAll({
