@@ -95,15 +95,15 @@ class Option_Tts extends OptionsBase {
                                 (controller.config['tts'] as Map)['language'];
                             return Column(
                               children: [
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        openSettingLanguage();
-                                      },
-                                      child: Text(
-                                          '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
-                                    )),
+                                // SizedBox(
+                                //     width: double.infinity,
+                                //     child: ElevatedButton(
+                                //       onPressed: () async {
+                                //         openSettingLanguage();
+                                //       },
+                                //       child: Text(
+                                //           '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
+                                //     )),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [

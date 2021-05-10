@@ -37,7 +37,7 @@ class MainCtl extends GetxController {
   final config = {
     "theme": [].obs,
     "tts": {
-      'language': 'ko-KR',
+      // 'language': 'ko-KR',
       'speechRate': 1.toDouble(),
       'volume': 1.toDouble(),
       'pitch': 1.toDouble(),
