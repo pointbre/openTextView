@@ -125,6 +125,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_archive:
+    dependency: "direct main"
+    description:
+      name: flutter_archive
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  flutter_background:
+    dependency: "direct main"
+    description:
+      name: flutter_background
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -185,7 +199,7 @@ packages:
       name: flutter_tesseract_ocr
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter

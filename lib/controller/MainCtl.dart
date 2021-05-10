@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
@@ -49,6 +51,8 @@ class MainCtl extends GetxController {
     "nav": [].obs, // 하단 네비게이션바
     "picker": {}.obs,
   }.obs;
+
+  final imgFiles = [].obs;
 
   void onScroll() {
     var min = itemPosListener.itemPositions.value
@@ -106,8 +110,68 @@ class MainCtl extends GetxController {
     }, time: Duration(seconds: 1));
 
     debounce(config['picker'], (v) async {
-      // return;
-      if ((v as Map).isNotEmpty) {
+      if ((v as Map).isNotEmpty && v['extension'] == 'zip') {
+        File file = File(v['path']);
+        if (file.existsSync()) {
+          Directory unzipDir =
+              Directory('${file.parent.path}/${v['name'].split('.')[0]}');
+          await ZipFile.extractToDirectory(
+              zipFile: file,
+              destinationDir: unzipDir,
+              onExtracting: (zipEntry, progress) {
+                imgFiles.add('${unzipDir.path}/${zipEntry.name}');
+                if (File('${unzipDir.path}/${zipEntry.name}').existsSync()) {
+                  return ExtractOperation.skip;
+                }
+                return ExtractOperation.extract;
+              });
+          // print('[p]]]]]]]]]]]${.extractText}');
+
+          for (int i = 0; i < imgFiles.length; i++) {
+            String text = await FlutterTesseractOcr.extractText(
+                '${imgFiles[i].toString()}',
+                language: 'kor',
+                args: {
+                  "psm": "4",
+                  "preserve_interword_spaces": "1",
+                });
+            text = text.replaceAll('.\n', '######%%%%%%.');
+            text = text.replaceAll('\'\n', '######%%%%%%\'');
+            text = text.replaceAll('"\n', '######%%%%%%"');
+            text = text.replaceAll('!\n', '######%%%%%%!');
+            text = text.replaceAll('?\n', '######%%%%%%?');
+            text = text.replaceAll('?\n', '######%%%%%%?');
+            text = text.replaceAll('”\n', '######%%%%%%”');
+            text = text.replaceAll(']\n', '######%%%%%%]');
+            text = text.replaceAll(',\n', '######%%%%%%,');
+
+            text = text.replaceAll('\n', '');
+
+            text = text.replaceAll('######%%%%%%.', '.\n');
+            text = text.replaceAll('######%%%%%%\'', '\'\n');
+            text = text.replaceAll('######%%%%%%"', '"\n');
+            text = text.replaceAll('######%%%%%%!', '!\n');
+            text = text.replaceAll('######%%%%%%?', '?\n');
+            text = text.replaceAll('######%%%%%%?', '?\n');
+            text = text.replaceAll('######%%%%%%”', '”\n');
+            text = text.replaceAll('######%%%%%%]', ']\n');
+            text = text.replaceAll('######%%%%%%,', ',\n');
+            contents.addAll(text.split('\n'));
+            print('[[[[[[[[[[[ : ${text}');
+            update();
+          }
+          // imgFiles.map((element) async {
+          //   print(element.toString());
+          // });
+          // imgFiles.forEach((element) async {
+          // });
+
+          print('[p]]]]]]]]]]]');
+        }
+
+        // print('======================${v}');
+      }
+      if ((v as Map).isNotEmpty && v['extension'] == 'txt') {
         File file = File(v['path']);
         if (file.existsSync()) {
           if (AudioService.runningStream.value) {

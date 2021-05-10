@@ -16,57 +16,56 @@ class Option_Tts extends OptionsBase {
   @override
   String get name => 'TTS 설정';
 
-  final flutterTts = FlutterTts();
-  void openSettingLanguage() async {
-    List<dynamic> langs = [];
-    // 4월 23 일 :
-    // 3월 31 일자 구글 tts 패치후 음성 1번 의 경우 남녀 목소리가 같이 나오는 버그로 인해.
-    // 강제로 버전을 다운그레이드 하여 tts 엔진 사용시 지원 언어가나오지 않는 현상으로 인하여 우회 처리 로직 추가
+  // void openSettingLanguage() async {
+  //   List<dynamic> langs = [];
+  //   // 4월 23 일 :
+  //   // 3월 31 일자 구글 tts 패치후 음성 1번 의 경우 남녀 목소리가 같이 나오는 버그로 인해.
+  //   // 강제로 버전을 다운그레이드 하여 tts 엔진 사용시 지원 언어가나오지 않는 현상으로 인하여 우회 처리 로직 추가
 
-    try {
-      langs =
-          await flutterTts.getLanguages.timeout(Duration(milliseconds: 300));
-    } catch (e) {
-      langs = LANG.keys.toList();
-    }
+  //   try {
+  //     langs =
+  //         await flutterTts.getLanguages.timeout(Duration(milliseconds: 300));
+  //   } catch (e) {
+  //     langs = LANG.keys.toList();
+  //   }
 
-    Picker(
-        backgroundColor: Theme.of(Get.context).scaffoldBackgroundColor,
-        headerColor: Theme.of(Get.context).scaffoldBackgroundColor,
-        selecteds: [
-          langs.indexOf((controller.config['tts'] as Map)['language'])
-        ],
-        height: 300,
-        adapter: PickerDataAdapter<String>(
-          data: langs.map((e) {
-            var tmplang = LANG[e.toString()];
-            return PickerItem(
-              text: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: Align(
-                    alignment: Alignment.center,
-                    child: Text(e.toString(),
-                        style: TextStyle(
-                            color: Theme.of(Get.context).accentColor)),
-                  )),
-                  Expanded(
-                      child: Text(tmplang['ko'],
-                          style: TextStyle(
-                              color: Theme.of(Get.context).accentColor))),
-                ],
-              ),
-              value: e.toString(),
-            );
-          }).toList(),
-        ),
-        selectedTextStyle: TextStyle(color: Colors.blue),
-        onConfirm: (Picker picker, List value) {
-          (controller.config['tts'] as Map)['language'] = langs[value[0]];
-          controller.update();
-        }).showModal(Get.overlayContext);
-  }
+  //   Picker(
+  //       backgroundColor: Theme.of(Get.context).scaffoldBackgroundColor,
+  //       headerColor: Theme.of(Get.context).scaffoldBackgroundColor,
+  //       selecteds: [
+  //         langs.indexOf((controller.config['tts'] as Map)['language'])
+  //       ],
+  //       height: 300,
+  //       adapter: PickerDataAdapter<String>(
+  //         data: langs.map((e) {
+  //           var tmplang = LANG[e.toString()];
+  //           return PickerItem(
+  //             text: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Expanded(
+  //                     child: Align(
+  //                   alignment: Alignment.center,
+  //                   child: Text(e.toString(),
+  //                       style: TextStyle(
+  //                           color: Theme.of(Get.context).accentColor)),
+  //                 )),
+  //                 Expanded(
+  //                     child: Text(tmplang['ko'],
+  //                         style: TextStyle(
+  //                             color: Theme.of(Get.context).accentColor))),
+  //               ],
+  //             ),
+  //             value: e.toString(),
+  //           );
+  //         }).toList(),
+  //       ),
+  //       selectedTextStyle: TextStyle(color: Colors.blue),
+  //       onConfirm: (Picker picker, List value) {
+  //         (controller.config['tts'] as Map)['language'] = langs[value[0]];
+  //         controller.update();
+  //       }).showModal(Get.overlayContext);
+  // }
 
   @override
   void openSetting() {

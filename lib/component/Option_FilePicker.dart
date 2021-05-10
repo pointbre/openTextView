@@ -40,7 +40,7 @@ class Option_FilePicker extends OptionsBase {
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
-      allowedExtensions: ['txt'],
+      allowedExtensions: ['txt', 'zip', '7z'],
     );
     if (result.files.isNotEmpty) {
       PlatformFile platformfile = result.files.first;
