@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
@@ -10,20 +13,47 @@ import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:open_textview/items/Languages.dart';
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 
 // var isOpen = false;
 class Option_OcrCtl extends GetxController {
   final isBackgroundPermissions = true.obs;
+  final traineddataFiles = [].obs;
   @override
   void onInit() async {
     bool hasPermission = await FlutterBackground.hasPermissions;
     isBackgroundPermissions.value = hasPermission;
     isBackgroundPermissions.update((val) {});
-    print('${hasPermission} Option_OcrCtl : ${isBackgroundPermissions.value}');
+    // print('${hasPermission} Option_OcrCtl : ${isBackgroundPermissions.value}');
+    Directory dir = Directory(await FlutterTesseractOcr.getTessdataPath());
+    if (dir.existsSync()) {
+      dir.create();
+      dir.list().forEach((element) async {
+        // print(await File(element.path).length());
+        // print(element.path.split('.').last);
 
+        traineddataFiles.add(element.path.split('/').last);
+        update();
+      });
+    }
     super.onInit();
   }
 }
+
+const traineddatas = [
+  {
+    'name': 'kor',
+    'langname': '한글',
+    'url':
+        'https://github.com/tesseract-ocr/tessdata/raw/master/kor.traineddata'
+  },
+  {
+    'name': 'eng',
+    'langname': '영어',
+    'url':
+        'https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata'
+  },
+];
 
 class Option_Ocr extends OptionsBase {
   @override
@@ -61,7 +91,7 @@ class Option_Ocr extends OptionsBase {
                                 GetX<Option_OcrCtl>(
                                   builder: (ctl) {
                                     if (ctl.isBackgroundPermissions.value) {
-                                      return SizedBox();
+                                      return Text('백그라운드 실행 이 허용 되었습니다.');
                                     }
                                     return SizedBox(
                                         width: double.infinity,
@@ -69,14 +99,9 @@ class Option_Ocr extends OptionsBase {
                                           onPressed: () async {
                                             var config =
                                                 FlutterBackgroundAndroidConfig(
-                                              notificationTitle:
-                                                  'flutter_background example app',
-                                              notificationText:
-                                                  'Background notification for keeping the example app running in the background',
-                                              notificationIcon: AndroidResource(
-                                                  name: 'background_icon'),
+                                              notificationTitle: '오픈텍뷰',
+                                              notificationText: 'ocr 실행중입니다.',
                                             );
-                                            // Demonstrate calling initialize twice in a row is possible without causing problems.
 
                                             ctl.isBackgroundPermissions.value =
                                                 await FlutterBackground
@@ -89,212 +114,53 @@ class Option_Ocr extends OptionsBase {
                                         ));
                                   },
                                 ),
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        // Demonstrate calling initialize twice in a row is possible without causing problems.
+                                Divider(),
+                                Text('학습데이터'),
+                                GetBuilder<Option_OcrCtl>(builder: (ctl) {
+                                  return ListView(
+                                    shrinkWrap: true,
+                                    children: [
+                                      ...traineddatas.map((e) {
+                                        String targetFileName =
+                                            e['url'].split('/').last;
+                                        print(ctl.traineddataFiles);
+                                        return ListTile(
+                                          title: Text(e['langname']),
+                                          leading: Checkbox(
+                                            value: ctl.traineddataFiles
+                                                    .indexOf(targetFileName) >=
+                                                0,
+                                            onChanged: (value) {},
+                                          ),
+                                          trailing: ElevatedButton(
+                                            onPressed: () async {
+                                              // print(e['url'].split('/').last);
+                                              HttpClient httpClient =
+                                                  new HttpClient();
+                                              var request = await httpClient
+                                                  .getUrl(Uri.parse(e['url']));
+                                              var response =
+                                                  await request.close();
 
-                                        await FlutterBackground.initialize(
-                                            androidConfig:
-                                                FlutterBackgroundAndroidConfig(
-                                                    notificationTitle: '오픈텍뷰',
-                                                    notificationText:
-                                                        'ocr 실행중입니다. ',
-                                                    notificationIcon:
-                                                        AndroidResource(
-                                                            name:
-                                                                'background_icon'),
-                                                    notificationImportance:
-                                                        AndroidNotificationImportance
-                                                            .Max));
-                                        FlutterBackground
-                                            .enableBackgroundExecution();
+                                              var bytes =
+                                                  await consolidateHttpClientResponseBytes(
+                                                      response);
 
-                                        // var config =
-                                        //     FlutterBackgroundAndroidConfig(
-                                        //   notificationTitle:
-                                        //       'flutter_background example app',
-                                        //   notificationText:
-                                        //       'Background notification for keeping the example app running in the background',
-                                        //   notificationIcon: AndroidResource(
-                                        //       name: 'background_icon'),
-                                        // );
-                                        // Demonstrate calling initialize twice in a row is possible without causing problems.
-
-                                        // bool b = await FlutterBackground
-                                        //     .initialize(
-                                        //         androidConfig: config);
-                                        // ctl.isBackgroundPermissions.value =
-                                        //     b;
-                                        // ctl.isBackgroundPermissions
-                                        //     .update((val) {});
-                                      },
-                                      child: Text('test'),
-                                    )),
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        FlutterBackground
-                                            .disableBackgroundExecution();
-                                        // var config =
-                                        //     FlutterBackgroundAndroidConfig(
-                                        //   notificationTitle:
-                                        //       'flutter_background example app',
-                                        //   notificationText:
-                                        //       'Background notification for keeping the example app running in the background',
-                                        //   notificationIcon: AndroidResource(
-                                        //       name: 'background_icon'),
-                                        // );
-                                        // Demonstrate calling initialize twice in a row is possible without causing problems.
-
-                                        // bool b = await FlutterBackground
-                                        //     .initialize(
-                                        //         androidConfig: config);
-                                        // ctl.isBackgroundPermissions.value =
-                                        //     b;
-                                        // ctl.isBackgroundPermissions
-                                        //     .update((val) {});
-                                      },
-                                      child: Text('test'),
-                                    )),
-                                // Row(
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       Expanded(flex: 2, child: Text('속도 : ')),
-                                //       Expanded(
-                                //         flex: 6,
-                                //         child: Slider(
-                                //           value: (controller.config['tts']
-                                //               as Map)['speechRate'],
-                                //           min: 0,
-                                //           max: 5,
-                                //           divisions: 50,
-                                //           label: ((controller.config['tts']
-                                //                       as Map)['speechRate']
-                                //                   as double)
-                                //               .toPrecision(1)
-                                //               .toString(),
-                                //           onChanged: (double v) {
-                                //             (controller.config['tts']
-                                //                 as Map)['speechRate'] = v;
-
-                                //             controller.update();
-                                //           },
-                                //         ),
-                                //       ),
-                                //     ]),
-                                // Row(
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       Expanded(flex: 2, child: Text('볼륨 : ')),
-                                //       Expanded(
-                                //         flex: 6,
-                                //         child: Slider(
-                                //           value: (controller.config['tts']
-                                //               as Map)['volume'],
-                                //           min: 0,
-                                //           max: 1,
-                                //           divisions: 10,
-                                //           label: ((controller.config['tts']
-                                //                   as Map)['volume'] as double)
-                                //               .toPrecision(1)
-                                //               .toString(),
-                                //           onChanged: (double v) {
-                                //             (controller.config['tts']
-                                //                 as Map)['volume'] = v;
-
-                                //             controller.update();
-                                //           },
-                                //         ),
-                                //       ),
-                                //     ]),
-                                // Row(
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       Expanded(flex: 2, child: Text('피치 : ')),
-                                //       Expanded(
-                                //         flex: 6,
-                                //         child: Slider(
-                                //           value: (controller.config['tts']
-                                //               as Map)['pitch'],
-                                //           min: 0.5,
-                                //           max: 2,
-                                //           divisions: 15,
-                                //           label: ((controller.config['tts']
-                                //                   as Map)['pitch'] as double)
-                                //               .toPrecision(1)
-                                //               .toString(),
-                                //           onChanged: (double v) {
-                                //             (controller.config['tts']
-                                //                 as Map)['pitch'] = v;
-
-                                //             controller.update();
-                                //           },
-                                //         ),
-                                //       ),
-                                //     ]),
-                                // Row(
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       Expanded(
-                                //           flex: 2, child: Text('줄단위 읽기: ')),
-                                //       Expanded(
-                                //         flex: 6,
-                                //         child: SpinBox(
-                                //           min: 1,
-                                //           max: 10,
-                                //           incrementIcon: Icon(
-                                //             Icons.add,
-                                //             color: Theme.of(Get.context)
-                                //                 .iconTheme
-                                //                 .color,
-                                //           ),
-                                //           decrementIcon: Icon(
-                                //             Icons.remove,
-                                //             color: Theme.of(Get.context)
-                                //                 .iconTheme
-                                //                 .color,
-                                //           ),
-                                //           value: (controller.config['tts']
-                                //                       as Map)['groupcnt']
-                                //                   .toDouble() ??
-                                //               1,
-                                //           onChanged: (value) {
-                                //             (controller.config['tts']
-                                //                     as Map)['groupcnt'] =
-                                //                 value.toInt();
-                                //             controller.update();
-                                //           },
-                                //         ),
-                                //       ),
-                                //     ]),
-                                // Divider(),
-                                // CheckboxListTile(
-                                //     contentPadding: EdgeInsets.all(0),
-                                //     title: Text('헤드셋 버튼 사용'),
-                                //     value: (controller.config['tts']
-                                //             as Map)['headsetbutton'] ??
-                                //         false,
-                                //     onChanged: (b) {
-                                //       (controller.config['tts']
-                                //           as Map)['headsetbutton'] = b;
-                                //       controller.update();
-                                //     }),
-                                // CheckboxListTile(
-                                //     contentPadding: EdgeInsets.all(0),
-                                //     title: Text('다른 플레이어 실행시 정지'),
-                                //     value: (controller.config['tts']
-                                //             as Map)['audiosession'] ??
-                                //         false,
-                                //     onChanged: (b) {
-                                //       (controller.config['tts']
-                                //           as Map)['audiosession'] = b;
-                                //       controller.update();
-                                //       // ctl.filterTmpCtl['expr'] = b;
-                                //       // ctl.update();
-                                //     }),
+                                              String dir =
+                                                  await FlutterTesseractOcr
+                                                      .getTessdataPath();
+                                              File file = new File(
+                                                  '$dir/${targetFileName}');
+                                              await file.writeAsBytes(bytes);
+                                              return file;
+                                            },
+                                            child: Text(e['langname']),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ],
+                                  );
+                                })
                               ],
                             );
                           },
@@ -318,7 +184,7 @@ class Option_Ocr extends OptionsBase {
 
   @override
   Widget build(BuildContext context) {
-    // TESTopenSetting();
+    TESTopenSetting();
     return IconButton(
         onPressed: () {
           openSetting();
@@ -330,7 +196,14 @@ class Option_Ocr extends OptionsBase {
   Widget buildIcon() {
     return Stack(
       children: [
-        Text('OCR')
+        // Center(
+        // child:
+        Column(
+          // padding: EdgeInsets.only(top: 0),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text('OCR')],
+        )
+        // )
 
         // Icon(
         //   Icons.photo,

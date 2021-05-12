@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -29,12 +31,12 @@ class Option_LineTo extends OptionsBase {
   @override
   void openSetting() {
     Get.put(Option_LineToCtl());
-
     showDialog(
         context: Get.context,
         builder: (BuildContext context) {
           return GetBuilder<MainCtl>(builder: (ctl) {
             RxList filterlist = controller.config['filter'];
+            int cententsLen = max(1, controller.contents.length);
             return SimpleDialog(title: Text(name), children: [
               SizedBox(
                   height: Get.height * 0.3,
@@ -44,7 +46,7 @@ class Option_LineTo extends OptionsBase {
                       child: Column(
                         children: [
                           Obx(() => Text(
-                                '현재 위치 : ${controller.curPos.value} / ${(controller.curPos.value / controller.contents.length * 100).toPrecision(2)}%',
+                                '현재 위치 : ${controller.curPos.value} / ${(controller.curPos.value / cententsLen * 100).toPrecision(2)}%',
                                 style: Get.context.textTheme.subtitle1,
                               )),
                           Divider(),
@@ -53,10 +55,10 @@ class Option_LineTo extends OptionsBase {
                               value: ctl.curpos.value,
                               //controller.curPos.value.toDouble(),
                               min: 0,
-                              max: controller.contents.length.toDouble(),
-                              divisions: controller.contents.length,
+                              max: cententsLen.toDouble(),
+                              divisions: cententsLen,
                               label:
-                                  '${ctl.curpos.value.toInt().toString()} / ${(ctl.curpos.value / controller.contents.length * 100).toPrecision(2)}%',
+                                  '${ctl.curpos.value.toInt().toString()} / ${(ctl.curpos.value / cententsLen * 100).toPrecision(2)}%',
                               onChanged: (double v) {
                                 ctl.curpos.value = v;
                                 ctl.update();

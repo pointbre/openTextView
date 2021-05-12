@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -164,9 +166,9 @@ class TextPlayerTask extends BackgroundAudioTask {
           album: 'TTS',
           title: params['picker']['name'],
           artist:
-              '${i} / ${(i / contents.length * 100).toStringAsPrecision(2)}%',
+              '${i} / ${(i / max(1, contents.length) * 100).toStringAsPrecision(2)}%',
           extras: {"pos": i},
-          duration: Duration(seconds: contents.length)));
+          duration: Duration(seconds: max(1, contents.length))));
       AudioServiceBackground.setState(
         controls: [
           MediaControl.pause,

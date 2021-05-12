@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
+import 'package:charset_converter/charset_converter.dart';
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -67,9 +68,9 @@ class MainCtl extends GetxController {
     });
     DateTime now = DateTime.now();
     DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
-    if (curPos.value > 0) {
-      history[whereIdx]['pos'] = curPos.value;
-    }
+    // if (curPos.value > 0) {
+    // }
+    history[whereIdx]['pos'] = curPos.value;
     history[whereIdx]['date'] = formatter.format(now);
     history.refresh();
     update(['scroll']);
@@ -107,7 +108,7 @@ class MainCtl extends GetxController {
       if (AudioService.runningStream.value) {
         AudioService.customAction('filter', filterList);
       }
-    }, time: Duration(seconds: 1));
+    }, time: Duration(milliseconds: 500));
 
     debounce(config['picker'], (v) async {
       if ((v as Map).isNotEmpty && v['extension'] == 'zip') {
@@ -169,7 +170,6 @@ class MainCtl extends GetxController {
           // imgFiles.forEach((element) async {
           // });
 
-          print('[p]]]]]]]]]]]');
         }
 
         // print('======================${v}');
@@ -181,10 +181,18 @@ class MainCtl extends GetxController {
             AudioService.stop();
           }
           Uint8List u8list = file.readAsBytesSync();
-          DecodingResult decodeContents =
-              await CharsetDetector.autoDecode(u8list);
-          // contents.clear();
-          contents.assignAll(decodeContents.string.split('\n'));
+          String decodeContents;
+          try {
+            DecodingResult decodingResult = await CharsetDetector.autoDecode(
+              u8list,
+            );
+            decodeContents = decodingResult.string;
+          } catch (e) {
+            decodeContents = await CharsetConverter.decode('EUC-KR', u8list);
+          }
+          // contents.assignAll([]);
+          contents.clear();
+          contents.assignAll(decodeContents.split('\n'));
           update();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -193,7 +201,6 @@ class MainCtl extends GetxController {
             });
             DateTime now = DateTime.now();
             DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
-
             if (whereIdx < 0) {
               history.add(
                   {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
@@ -230,13 +237,13 @@ class MainCtl extends GetxController {
       debounce(config[key], (v) async {
         await storage.ready;
         await storage.setItem('config', config.toJson());
-      }, time: Duration(milliseconds: 1000));
+      }, time: Duration(milliseconds: 400));
     });
 
     debounce(history, (v) async {
       await storage.ready;
       await storage.setItem('history', history.toJson());
-    }, time: Duration(milliseconds: 1100));
+    }, time: Duration(milliseconds: 500));
   }
 
   setConfig(Map<String, dynamic> config, List history) {
