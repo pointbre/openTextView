@@ -36,6 +36,10 @@ class MainCtl extends GetxController {
 
   final playState = false.obs;
 
+  final ocrData = {
+    "total": 0,
+    "current": 0,
+  }.obs;
   final history = [].obs;
   final config = {
     "theme": [].obs,
@@ -70,9 +74,12 @@ class MainCtl extends GetxController {
     DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
     // if (curPos.value > 0) {
     // }
-    history[whereIdx]['pos'] = curPos.value;
-    history[whereIdx]['date'] = formatter.format(now);
-    history.refresh();
+
+    if (whereIdx >= 0) {
+      history[whereIdx]['pos'] = curPos.value;
+      history[whereIdx]['date'] = formatter.format(now);
+      history.refresh();
+    }
     update(['scroll']);
   }
 
@@ -127,10 +134,21 @@ class MainCtl extends GetxController {
                 return ExtractOperation.extract;
               });
           // print('[p]]]]]]]]]]]${.extractText}');
-          contents.clear();
+          DateTime now = DateTime.now();
+          DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+          int whereIdx = history.indexWhere((element) {
+            return element['name'] == (config['picker'] as Map)['name'];
+          });
+          if (whereIdx < 0) {
+            history.add(
+                {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
+            itemScrollctl.jumpTo(index: 0);
+          }
           // return;
+          contents.clear();
+          ocrData.update('total', (value) => imgFiles.length);
           for (int i = 0; i < imgFiles.length; i++) {
-            print(imgFiles[i].toString());
+            ocrData.update('current', (value) => i + 1);
             String text = await FlutterTesseractOcr.extractText(
                 '${imgFiles[i].toString()}',
                 language: 'kor',
@@ -139,28 +157,45 @@ class MainCtl extends GetxController {
                   "preserve_interword_spaces": "1",
                 });
             print('------------------------');
-            text = text.replaceAll('.\n', '######%%%%%%.');
-            text = text.replaceAll('\'\n', '######%%%%%%\'');
-            text = text.replaceAll('"\n', '######%%%%%%"');
-            text = text.replaceAll('!\n', '######%%%%%%!');
-            text = text.replaceAll('?\n', '######%%%%%%?');
-            text = text.replaceAll('?\n', '######%%%%%%?');
-            text = text.replaceAll('”\n', '######%%%%%%”');
-            text = text.replaceAll(']\n', '######%%%%%%]');
-            text = text.replaceAll(',\n', '######%%%%%%,');
+            // text = text.replaceAll('.\n', '######%%%%%%.');
+            // text = text.replaceAll('\'\n', '######%%%%%%\'');
+            // text = text.replaceAll('"\n', '######%%%%%%"');
+            // text = text.replaceAll('!\n', '######%%%%%%!');
+            // text = text.replaceAll('?\n', '######%%%%%%?');
+            // text = text.replaceAll('?\n', '######%%%%%%?');
+            // text = text.replaceAll('”\n', '######%%%%%%”');
+            // text = text.replaceAll(']\n', '######%%%%%%]');
+            // text = text.replaceAll(',\n', '######%%%%%%,');
 
+            // text = text.replaceAll('\n', '');
+
+            // text = text.replaceAll('######%%%%%%.', '.\n');
+            // text = text.replaceAll('######%%%%%%\'', '\'\n');
+            // text = text.replaceAll('######%%%%%%"', '"\n');
+            // text = text.replaceAll('######%%%%%%!', '!\n');
+            // text = text.replaceAll('######%%%%%%?', '?\n');
+            // text = text.replaceAll('######%%%%%%?', '?\n');
+            // text = text.replaceAll('######%%%%%%”', '”\n');
+            // text = text.replaceAll('######%%%%%%]', ']\n');
+            text = text.replaceAll('\n\n', '___QWER!@#___');
             text = text.replaceAll('\n', '');
 
-            text = text.replaceAll('######%%%%%%.', '.\n');
-            text = text.replaceAll('######%%%%%%\'', '\'\n');
-            text = text.replaceAll('######%%%%%%"', '"\n');
-            text = text.replaceAll('######%%%%%%!', '!\n');
-            text = text.replaceAll('######%%%%%%?', '?\n');
-            text = text.replaceAll('######%%%%%%?', '?\n');
-            text = text.replaceAll('######%%%%%%”', '”\n');
-            text = text.replaceAll('######%%%%%%]', ']\n');
-            text = text.replaceAll('######%%%%%%,', ',\n');
-            contents.addAll(text.split('\n'));
+            text = text.replaceAll('___QWER!@#___', '\n\n');
+
+            // text = text.replaceAllMapped(RegExp('\n\n'), (match) {
+            //   print(match.start);
+            //   print(match.end);
+            //   return '';
+            // });
+            // \n{0,1}
+            // text.split('\n')
+            var arr = text.split('\n');
+            if (contents.isNotEmpty && contents.last.length > 0) {
+              contents.last += arr.first;
+              arr.removeAt(0);
+            }
+            print(arr);
+            contents.addAll(arr);
             print('[[[[[[[[[[[ : ${text}');
             update();
           }
@@ -171,7 +206,6 @@ class MainCtl extends GetxController {
           // });
 
         }
-
         // print('======================${v}');
       }
       if ((v as Map).isNotEmpty && v['extension'] == 'txt') {

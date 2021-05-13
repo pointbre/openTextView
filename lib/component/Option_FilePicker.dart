@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 
 class Option_FilePicker extends OptionsBase {
   BuildContext context = null;
@@ -36,16 +39,34 @@ class Option_FilePicker extends OptionsBase {
     );
   }
 
+  bReadyOcr() async {
+    print(await FlutterBackground.hasPermissions);
+    if (await FlutterBackground.hasPermissions) {
+      Directory dir = Directory(await FlutterTesseractOcr.getTessdataPath());
+      // if (!dir.existsSync()) {
+      //   dir.create();
+      // }
+      // print(dir);
+
+      // List<String> rtn = [];
+      // dir.list().forEach((element) async {
+      //   print('element : >>> ${element}');
+      //   rtn.add(element.path.split('/').last);
+      //   print(rtn);
+      // });
+      print(await dir.list().length > 0);
+      return await dir.list().length > 0;
+    }
+    return false;
+  }
+
   @override
   void openSetting() async {
-    bool hasBackground = await FlutterBackground.hasPermissions;
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
       allowedExtensions: //---
-          ['txt'],
-      // ['txt', 'zip', '7z'],
-      // hasBackground ? ['txt', 'zip', '7z'] : ['txt'],
+          await bReadyOcr() ? ['txt', 'zip', '7z'] : ['txt'],
     );
 
     if (result != null && result.files.isNotEmpty) {

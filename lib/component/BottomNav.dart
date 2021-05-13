@@ -24,7 +24,7 @@ class BottomNav extends OptionsBase {
                   key: ValueKey(idx),
                   elevation: 2,
                   child: ListTileTheme(
-                      iconColor: Theme.of(Get.context).accentColor,
+                      iconColor: Theme.of(Get.context).iconTheme.color,
                       child: ListTile(
                         leading: el.buildIcon(),
                         title: Text(el.name),

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
@@ -51,6 +52,26 @@ class MainPage extends GetView<MainCtl> {
                 ],
               ),
             ),
+            Obx(() {
+              if (controller.ocrData['current'] !=
+                      controller.ocrData['total'] &&
+                  (controller.config['picker'] as Map)['extension'] == 'zip') {
+                return Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      children: [
+                        Text(
+                            '${controller.ocrData['current']} / ${controller.ocrData['total']}'),
+                        LinearProgressIndicator(
+                          value: max(controller.ocrData['current'], 1) /
+                              max(controller.ocrData['total'], 1),
+                          semanticsLabel: 'Linear progress indicator',
+                        )
+                      ],
+                    ));
+              }
+              return SizedBox();
+            }),
             Expanded(
                 child: Container(
               padding: EdgeInsets.only(left: 5, right: 5, top: 5),

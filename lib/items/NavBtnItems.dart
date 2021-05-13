@@ -21,7 +21,7 @@ var NAVBUTTON = [
   Option_Backup(),
   Option_LineTo(),
   Option_History(),
-  // Option_Ocr(),
+  Option_Ocr(),
   Option_OssLicenses(),
 ];
 
