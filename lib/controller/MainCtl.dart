@@ -151,6 +151,7 @@ class MainCtl extends GetxController {
           // return;
           contents.clear();
           ocrData.update('total', (value) => imgFiles.length);
+
           for (int i = 0; i < imgFiles.length; i++) {
             ocrData.update('current', (value) => i + 1);
             String text = await FlutterTesseractOcr.extractText(
@@ -160,49 +161,28 @@ class MainCtl extends GetxController {
                   "psm": "4",
                   "preserve_interword_spaces": "1",
                 });
-            print('------------------------');
-            // text = text.replaceAll('.\n', '######%%%%%%.');
-            // text = text.replaceAll('\'\n', '######%%%%%%\'');
-            // text = text.replaceAll('"\n', '######%%%%%%"');
-            // text = text.replaceAll('!\n', '######%%%%%%!');
-            // text = text.replaceAll('?\n', '######%%%%%%?');
-            // text = text.replaceAll('?\n', '######%%%%%%?');
-            // text = text.replaceAll('”\n', '######%%%%%%”');
-            // text = text.replaceAll(']\n', '######%%%%%%]');
-            // text = text.replaceAll(',\n', '######%%%%%%,');
-
-            // text = text.replaceAll('\n', '');
-
-            // text = text.replaceAll('######%%%%%%.', '.\n');
-            // text = text.replaceAll('######%%%%%%\'', '\'\n');
-            // text = text.replaceAll('######%%%%%%"', '"\n');
-            // text = text.replaceAll('######%%%%%%!', '!\n');
-            // text = text.replaceAll('######%%%%%%?', '?\n');
-            // text = text.replaceAll('######%%%%%%?', '?\n');
-            // text = text.replaceAll('######%%%%%%”', '”\n');
-            // text = text.replaceAll('######%%%%%%]', ']\n');
+            text = text.replaceAll('.\n', '___QWER!@#!!___');
             text = text.replaceAll('\n\n', '___QWER!@#___');
             text = text.replaceAll('\n', '');
 
             text = text.replaceAll('___QWER!@#___', '\n\n');
+            text = text.replaceAll('___QWER!@#!!___', '.\n\n');
 
-            // text = text.replaceAllMapped(RegExp('\n\n'), (match) {
-            //   print(match.start);
-            //   print(match.end);
-            //   return '';
-            // });
-            // \n{0,1}
-            // text.split('\n')
             var arr = text.split('\n');
             if (contents.isNotEmpty && contents.last.length > 0) {
               contents.last += arr.first;
               arr.removeAt(0);
             }
-            print(arr);
+
             contents.addAll(arr);
-            print('[[[[[[[[[[[ : ${text}');
             update();
           }
+          File f = File(
+              '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
+          if (!f.existsSync()) {
+            f.create();
+          }
+          f.writeAsString(contents.join('\n'));
           // imgFiles.map((element) async {
           //   print(element.toString());
           // });

@@ -78,9 +78,9 @@ class MainPage extends GetView<MainCtl> {
               child: StreamBuilder(
                   stream: AudioService.runningStream,
                   builder: (c, snapshot) => GetBuilder<MainCtl>(builder: (ctl) {
-                        // if (ctl.contents.length == 0) {
-                        //   return Container();
-                        // }
+                        if (ctl.contents.length == 0) {
+                          return SizedBox();
+                        }
                         return ScrollablePositionedList.builder(
                           itemCount: ctl.contents.length,
                           itemBuilder: (context, index) {
@@ -116,7 +116,7 @@ class MainPage extends GetView<MainCtl> {
                                 );
                               }
                             }
-                            return Text('${controller.contents[index]}');
+                            return Text('${controller.contents[index] ?? ""}');
                           },
                           itemScrollController: controller.itemScrollctl,
                           itemPositionsListener: controller.itemPosListener,
