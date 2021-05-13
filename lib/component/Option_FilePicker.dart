@@ -42,20 +42,20 @@ class Option_FilePicker extends OptionsBase {
   bReadyOcr() async {
     print(await FlutterBackground.hasPermissions);
     if (await FlutterBackground.hasPermissions) {
+      bool rtn = false;
       Directory dir = Directory(await FlutterTesseractOcr.getTessdataPath());
-      // if (!dir.existsSync()) {
-      //   dir.create();
-      // }
-      // print(dir);
+      rtn = (await dir.list().length > 0);
+      Directory ocrdir = Directory((controller.config['ocr'] as RxMap)['path']);
+      rtn = ocrdir.existsSync();
+      File f = File('${ocrdir.path}/test1234567890.txt');
+      try {
+        await f.create();
+        await f.delete();
+      } catch (e) {
+        rtn = false;
+      }
 
-      // List<String> rtn = [];
-      // dir.list().forEach((element) async {
-      //   print('element : >>> ${element}');
-      //   rtn.add(element.path.split('/').last);
-      //   print(rtn);
-      // });
-      print(await dir.list().length > 0);
-      return await dir.list().length > 0;
+      return rtn;
     }
     return false;
   }

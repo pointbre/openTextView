@@ -44,7 +44,7 @@ dependencies:
   flutter_spinbox: ^0.5.2
   flutter_background: ^1.0.0
   flutter_archive: ^3.0.0
-  
+  permission_handler:
   
   
 

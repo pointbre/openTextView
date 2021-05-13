@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/OptionsBase.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // var isOpen = false;
 
@@ -43,6 +44,11 @@ class Option_Backup extends OptionsBase {
                   onPressed: () async {
                     FilePicker.platform.getDirectoryPath().then((value) async {
                       if (value != null) {
+                        var status = await Permission.storage.status;
+
+                        if (!status.isGranted) {
+                          await Permission.storage.request();
+                        }
                         Directory d = Directory(value);
                         File f = File('${d.path}/opentextview_backup.json');
                         if (!f.existsSync()) {

@@ -55,6 +55,10 @@ class MainCtl extends GetxController {
     "filter": [].obs,
     "nav": [].obs, // 하단 네비게이션바
     "picker": {}.obs,
+    "ocr": {
+      "path": "",
+      "lang": [],
+    }.obs
   }.obs;
 
   final imgFiles = [].obs;
