@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_charset_detector/flutter_charset_detector.dart';
 import 'package:charset_converter/charset_converter.dart';
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
@@ -151,6 +152,12 @@ class MainCtl extends GetxController {
           // return;
           contents.clear();
           ocrData.update('total', (value) => imgFiles.length);
+          FlutterBackground.initialize(
+              androidConfig: FlutterBackgroundAndroidConfig(
+            notificationTitle: '오픈텍뷰',
+            notificationText: 'ocr 실행중입니다.',
+          ));
+          await FlutterBackground.enableBackgroundExecution();
 
           for (int i = 0; i < imgFiles.length; i++) {
             ocrData.update('current', (value) => i + 1);
@@ -175,6 +182,10 @@ class MainCtl extends GetxController {
             }
 
             contents.addAll(arr);
+            // contents 업데이트후 tts 작동 중이면 tts 에 contents 도 같이 갱신 해줘야함.
+            if (AudioService.runningStream.value) {
+              AudioService.customAction('contents', contents);
+            }
             update();
           }
           File f = File(
@@ -183,6 +194,8 @@ class MainCtl extends GetxController {
             f.create();
           }
           f.writeAsString(contents.join('\n'));
+
+          await FlutterBackground.disableBackgroundExecution();
           // imgFiles.map((element) async {
           //   print(element.toString());
           // });

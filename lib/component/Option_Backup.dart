@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:device_info/device_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,16 @@ class Option_Backup extends OptionsBase {
 
                         if (!status.isGranted) {
                           await Permission.storage.request();
+                        }
+                        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+                        AndroidDeviceInfo androidInfo =
+                            await deviceInfo.androidInfo;
+                        if (androidInfo.version.sdkInt >= 30) {
+                          status =
+                              await Permission.manageExternalStorage.status;
+                          if (!status.isGranted) {
+                            await Permission.manageExternalStorage.request();
+                          }
                         }
                         Directory d = Directory(value);
                         File f = File('${d.path}/opentextview_backup.json');

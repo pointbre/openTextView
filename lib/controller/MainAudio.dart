@@ -115,6 +115,9 @@ class TextPlayerTask extends BackgroundAudioTask {
       filterList =
           (arguments as List).where((element) => element['enable']).toList();
     }
+    if (name == "contents") {
+      contents = arguments;
+    }
 
     return super.onCustomAction(name, arguments);
   }

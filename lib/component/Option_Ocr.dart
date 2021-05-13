@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:device_info/device_info.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -207,6 +208,12 @@ class Option_Ocr extends OptionsBase {
                                         Text('3. OCR 처리 완료후 파일 저장 경로 를 선택해주세요'),
                                         Text('[선택된경로]/OCR 폴더에 저장됩니다. '),
                                         Text(
+                                            '만약 계속 권한 없다는 메세지가 출력 된다면 개발자옵션 - 스크롤 맨 하단 - "외부에서 앱 강제 허용" 을 활성화 해주세요. (android11 에서는 저장 할때 계속 에러나네요.)',
+                                            style: TextStyle(
+                                                color: Theme.of(Get.context)
+                                                    .colorScheme
+                                                    .error)),
+                                        Text(
                                             '선택된경로 : ${(controller.config['ocr'] as RxMap)['path']} ',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
@@ -221,6 +228,22 @@ class Option_Ocr extends OptionsBase {
                                                 await Permission.storage
                                                     .request();
                                               }
+
+                                              DeviceInfoPlugin deviceInfo =
+                                                  DeviceInfoPlugin();
+                                              AndroidDeviceInfo androidInfo =
+                                                  await deviceInfo.androidInfo;
+                                              if (androidInfo.version.sdkInt >=
+                                                  30) {
+                                                status = await Permission
+                                                    .manageExternalStorage
+                                                    .status;
+                                                if (!status.isGranted) {
+                                                  await Permission
+                                                      .manageExternalStorage
+                                                      .request();
+                                                }
+                                              }
                                               if (value != null) {
                                                 Directory d =
                                                     Directory('${value}/OCR');
@@ -228,6 +251,7 @@ class Option_Ocr extends OptionsBase {
                                                   try {
                                                     await d.create();
                                                   } catch (e) {
+                                                    print(e);
                                                     alertStoragePermissionError(
                                                         value);
                                                     return;
@@ -239,6 +263,7 @@ class Option_Ocr extends OptionsBase {
                                                   try {
                                                     await f.create();
                                                   } catch (e) {
+                                                    print(e);
                                                     alertStoragePermissionError(
                                                         f.path);
                                                     return;
