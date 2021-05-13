@@ -172,16 +172,24 @@ class MainCtl extends GetxController {
                   "psm": "4",
                   "preserve_interword_spaces": "1",
                 });
+            text = text.replaceAll('"\n', '___QWER!@#"___');
+            text = text.replaceAll('”\n', '___QWER!@#”___');
+            text = text.replaceAll('\'\n', '___QWER!@#\'___');
+            text = text.replaceAll('’\n', '___QWER!@#’___');
             text = text.replaceAll('.\n', '___QWER!@#!!___');
             text = text.replaceAll('\n\n', '___QWER!@#___');
             text = text.replaceAll('\n', '');
 
             text = text.replaceAll('___QWER!@#___', '\n\n');
             text = text.replaceAll('___QWER!@#!!___', '.\n\n');
+            text = text.replaceAll('___QWER!@#’___', '’\n');
+            text = text.replaceAll('___QWER!@#"___', '"\n');
+            text = text.replaceAll('___QWER!@#”___', '”\n');
+            text = text.replaceAll('___QWER!@#\'___', '\'\n');
 
             var arr = text.split('\n');
             if (contents.isNotEmpty && contents.last.length > 0) {
-              contents.last += arr.first;
+              contents.last += ' ' + arr.first;
               arr.removeAt(0);
             }
 
