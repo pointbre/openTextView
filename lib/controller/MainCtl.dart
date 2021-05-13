@@ -192,7 +192,7 @@ class MainCtl extends GetxController {
             }
             update();
           }
-          if (ocrData['brun'] == 0) {
+          if (ocrData['brun'] == 1) {
             File f = File(
                 '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
             if (!f.existsSync()) {
