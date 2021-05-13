@@ -152,7 +152,7 @@ class MainCtl extends GetxController {
           // return;
           contents.clear();
           ocrData.update('total', (value) => imgFiles.length);
-          FlutterBackground.initialize(
+          await FlutterBackground.initialize(
               androidConfig: FlutterBackgroundAndroidConfig(
             notificationTitle: '오픈텍뷰',
             notificationText: 'ocr 실행중입니다.',
@@ -163,7 +163,7 @@ class MainCtl extends GetxController {
             ocrData.update('current', (value) => i + 1);
             String text = await FlutterTesseractOcr.extractText(
                 '${imgFiles[i].toString()}',
-                language: 'kor',
+                language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
                 args: {
                   "psm": "4",
                   "preserve_interword_spaces": "1",
