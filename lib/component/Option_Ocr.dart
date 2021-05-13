@@ -155,9 +155,6 @@ class Option_Ocr extends OptionsBase {
                                     List langs = (controller.config['ocr']
                                             as RxMap)['lang'] ??
                                         [];
-                                    print(langs);
-                                    // lang.split('+');
-                                    // print(lang.split('+'));
 
                                     return Column(
                                       crossAxisAlignment:
@@ -271,7 +268,7 @@ class Option_Ocr extends OptionsBase {
                                         ...traineddatas.map((e) {
                                           String targetFileName =
                                               e['url'].split('/').last;
-                                          print(ctl.traineddataFiles);
+
                                           return ListTile(
                                             title: Text(e['langname']),
                                             leading: Checkbox(
@@ -283,7 +280,6 @@ class Option_Ocr extends OptionsBase {
                                             ),
                                             trailing: ElevatedButton(
                                               onPressed: () async {
-                                                // print(e['url'].split('/').last);
                                                 ctl.bDownloadawait.value = true;
 
                                                 ctl.update();
