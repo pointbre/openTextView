@@ -81,6 +81,23 @@ class Option_Ocr extends OptionsBase {
             ));
   }
 
+  void downloadtrainedata(obj) async {
+    String targetFileName = obj['url'].split('/').last;
+    var ctl = Get.find<Option_OcrCtl>();
+    ctl.bDownloadawait.value = true;
+    ctl.update();
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse(obj['url']));
+    HttpClientResponse response = await request.close();
+    Uint8List bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = await FlutterTesseractOcr.getTessdataPath();
+    File file = new File('$dir/${targetFileName}');
+    await file.writeAsBytes(bytes);
+    ctl.bDownloadawait.value = false;
+    ctl.update();
+    ctl.loadTraineData();
+  }
+
   @override
   void openSetting() async {
     Get.put(Option_OcrCtl());
@@ -111,14 +128,42 @@ class Option_Ocr extends OptionsBase {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Divider(),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          flex: 7,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              controller.ocrData
+                                                  .update('brun', (value) => 0);
+                                            },
+                                            child: Text('OCR 강제 종료'),
+                                          )),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(),
+                                      ),
+                                      Expanded(
+                                          flex: 10,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              await FlutterBackground
+                                                  .disableBackgroundExecution();
+                                            },
+                                            child: Text('백그라우드 작업 끄기'),
+                                          )),
+                                    ],
+                                  ),
+                                  Divider(),
                                   Text(
-                                    'ocr기능을 위해 아래 기능을 설정 해주셔야 합니다.',
+                                    'OCR 기능을 위해 아래 기능을 설정 해주셔야 합니다.',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Divider(),
                                   Text(
-                                      '1. ocr 작동중 꺼지는걸 방지 하기 위해 백그라운드 실행을 허용해 주세요.'),
+                                      '1. OCR 작동중 꺼지는걸 방지 하기 위해 백그라운드 실행을 허용해 주세요.'),
                                   GetX<Option_OcrCtl>(
                                     builder: (ctl) {
                                       if (ctl.isBackgroundPermissions.value) {
@@ -205,7 +250,8 @@ class Option_Ocr extends OptionsBase {
                                           ],
                                         ),
                                         Divider(),
-                                        Text('3. OCR 처리 완료후 파일 저장 경로 를 선택해주세요'),
+                                        Text(
+                                            '3. OCR 처리 완료후 파일 저장 경로 를 선택해주세요(강제 종료시 저장하지 않습니다.)'),
                                         Text('[선택된경로]/OCR 폴더에 저장됩니다. '),
                                         Text(
                                             '만약 계속 권한 없다는 메세지가 출력 된다면 개발자옵션 - 스크롤 맨 하단 - "외부에서 앱 강제 허용" 을 활성화 해주세요. (android11 에서는 저장 할때 계속 에러나네요.)',
@@ -305,31 +351,7 @@ class Option_Ocr extends OptionsBase {
                                             ),
                                             trailing: ElevatedButton(
                                               onPressed: () async {
-                                                ctl.bDownloadawait.value = true;
-
-                                                ctl.update();
-                                                HttpClient httpClient =
-                                                    new HttpClient();
-                                                HttpClientRequest request =
-                                                    await httpClient.getUrl(
-                                                        Uri.parse(e['url']));
-                                                HttpClientResponse response =
-                                                    await request.close();
-                                                Uint8List bytes =
-                                                    await consolidateHttpClientResponseBytes(
-                                                        response);
-                                                String dir =
-                                                    await FlutterTesseractOcr
-                                                        .getTessdataPath();
-                                                File file = new File(
-                                                    '$dir/${targetFileName}');
-                                                await file.writeAsBytes(bytes);
-                                                ctl.bDownloadawait.value =
-                                                    false;
-                                                ctl.update();
-
-                                                ctl.loadTraineData();
-                                                return file;
+                                                downloadtrainedata(e);
                                               },
                                               child: Text(e['langname']),
                                             ),

@@ -40,6 +40,7 @@ class MainCtl extends GetxController {
   final ocrData = {
     "total": 0,
     "current": 0,
+    "brun": 0,
   }.obs;
   final history = [].obs;
   final config = {
@@ -147,7 +148,6 @@ class MainCtl extends GetxController {
           if (whereIdx < 0) {
             history.add(
                 {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
-            itemScrollctl.jumpTo(index: 0);
           }
           // return;
           contents.clear();
@@ -158,8 +158,12 @@ class MainCtl extends GetxController {
             notificationText: 'ocr 실행중입니다.',
           ));
           await FlutterBackground.enableBackgroundExecution();
+          ocrData.update('brun', (value) => 1);
 
           for (int i = 0; i < imgFiles.length; i++) {
+            if (ocrData['brun'] == 0) {
+              break;
+            }
             ocrData.update('current', (value) => i + 1);
             String text = await FlutterTesseractOcr.extractText(
                 '${imgFiles[i].toString()}',
@@ -188,22 +192,17 @@ class MainCtl extends GetxController {
             }
             update();
           }
-          File f = File(
-              '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
-          if (!f.existsSync()) {
-            f.create();
+          if (ocrData['brun'] == 0) {
+            File f = File(
+                '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
+            if (!f.existsSync()) {
+              f.create();
+            }
+            f.writeAsString(contents.join('\n'));
           }
-          f.writeAsString(contents.join('\n'));
-
+          ocrData.update('brun', (value) => 0);
           await FlutterBackground.disableBackgroundExecution();
-          // imgFiles.map((element) async {
-          //   print(element.toString());
-          // });
-          // imgFiles.forEach((element) async {
-          // });
-
         }
-        // print('======================${v}');
       }
       if ((v as Map).isNotEmpty && v['extension'] == 'txt') {
         File file = File(v['path']);
