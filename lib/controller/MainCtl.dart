@@ -300,7 +300,8 @@ class MainCtl extends GetxController {
             im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
         image = im.adjustColor(
           image.clone(),
-          brightness: 5,
+          gamma: 15,
+          // brightness: 5,
         );
         File('${imgFiles[i].toString()}_ocr.jpg')
           ..writeAsBytesSync(im.encodeJpg(image));
