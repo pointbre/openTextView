@@ -81,7 +81,7 @@ class MainPage extends GetView<MainCtl> {
                         return ScrollablePositionedList.builder(
                           itemCount: ctl.contents.length,
                           itemBuilder: (context, index) {
-                            if (index >= ctl.contents.length) {
+                            if (index >= ctl.contents.length || index < 0) {
                               return Text('');
                             }
                             if (snapshot.data) {

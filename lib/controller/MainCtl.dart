@@ -242,15 +242,20 @@ class MainCtl extends GetxController {
   void jobOcr(v) async {
     File file = File(v['path']);
     if (file.existsSync()) {
-      itemScrollctl.jumpTo(index: 0);
-
       Directory unzipDir =
           Directory('${file.parent.path}/${v['name'].split('.')[0]}');
       await ZipFile.extractToDirectory(
           zipFile: file,
           destinationDir: unzipDir,
           onExtracting: (zipEntry, progress) {
-            imgFiles.add('${unzipDir.path}/${zipEntry.name}');
+            print(zipEntry.name);
+
+            if (!zipEntry.isDirectory) {
+              String ex = zipEntry.name.split('.').last;
+              if (ex == 'gif' || ex == 'jpg' || ex == 'png') {
+                imgFiles.add('${unzipDir.path}/${zipEntry.name}');
+              }
+            }
             if (File('${unzipDir.path}/${zipEntry.name}').existsSync()) {
               return ExtractOperation.skip;
             }
@@ -270,6 +275,7 @@ class MainCtl extends GetxController {
       contents.clear();
       // return;
       ocrData.update('total', (value) => imgFiles.length);
+      print(imgFiles);
       await FlutterBackground.initialize(
           androidConfig: FlutterBackgroundAndroidConfig(
         notificationTitle: '오픈텍뷰',
