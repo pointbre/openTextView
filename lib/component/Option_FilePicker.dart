@@ -72,6 +72,20 @@ class Option_FilePicker extends OptionsBase {
     if (result != null && result.files.isNotEmpty) {
       PlatformFile platformfile = result.files.first;
       RxMap picker = controller.config['picker'];
+
+      // if (controller.ocrData['brun'] == 1 &&
+      //     (platformfile.extension == "zip" || platformfile.extension == "7z")) {
+      //   controller.ocrData.update('brun', (value) => 0);
+      //   Future.delayed(const Duration(seconds: 5000), () {
+      //     picker.assignAll({
+      //       'name': platformfile.name,
+      //       'bytes': platformfile.bytes,
+      //       'size': platformfile.size,
+      //       'extension': platformfile.extension,
+      //       'path': platformfile.path,
+      //     });
+      //   });
+      // } else {
       picker.assignAll({
         'name': platformfile.name,
         'bytes': platformfile.bytes,
@@ -79,6 +93,8 @@ class Option_FilePicker extends OptionsBase {
         'extension': platformfile.extension,
         'path': platformfile.path,
       });
+      // }
+
       // controller.update();
       // ---------- 마지막 연 파일은 캐시에 남기고 다른 캐시 삭제 로직 --------
       // Directory tempDir = await getTemporaryDirectory();

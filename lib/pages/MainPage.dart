@@ -78,36 +78,19 @@ class MainPage extends GetView<MainCtl> {
               child: StreamBuilder(
                   stream: AudioService.runningStream,
                   builder: (c, snapshot) => GetBuilder<MainCtl>(builder: (ctl) {
-                        if (ctl.contents.length == 0) {
-                          return SizedBox();
-                        }
                         return ScrollablePositionedList.builder(
                           itemCount: ctl.contents.length,
                           itemBuilder: (context, index) {
-                            // String contens = controller.contents[index];
-                            // String findText = controller.findText.value;
-                            // if (findText != "" && contens.indexOf(findText) >= 0) {
-                            //   int startIdx = contens.indexOf(findText);
-                            //   int endIdx = startIdx + findText.length;
-
-                            //   var deco = contens.substring(startIdx, endIdx);
-                            //   var contensS = contens.substring(0, startIdx);
-                            //   var contensE = contens.substring(endIdx);
-                            //   return Text.rich(TextSpan(children: [
-                            //     TextSpan(text: contensS),
-                            //     TextSpan(
-                            //         text: deco, style: TextStyle(color: Colors.blue)),
-                            //     TextSpan(text: contensE),
-                            //   ]));
-                            // }
-
+                            if (index >= ctl.contents.length) {
+                              return Text('');
+                            }
                             if (snapshot.data) {
                               int cnt =
                                   ((ctl.config['tts'] as RxMap)['groupcnt']);
                               int endpos = ctl.curPos.value + cnt;
                               if (index >= ctl.curPos.value && index < endpos) {
                                 return Text(
-                                  '${controller.contents[index]}',
+                                  '${ctl.contents[index]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       backgroundColor: Theme.of(context)
@@ -116,10 +99,10 @@ class MainPage extends GetView<MainCtl> {
                                 );
                               }
                             }
-                            return Text('${controller.contents[index] ?? ""}');
+                            return Text('${ctl.contents[index] ?? ""}');
                           },
-                          itemScrollController: controller.itemScrollctl,
-                          itemPositionsListener: controller.itemPosListener,
+                          itemScrollController: ctl.itemScrollctl,
+                          itemPositionsListener: ctl.itemPosListener,
                         );
                       })),
             ))

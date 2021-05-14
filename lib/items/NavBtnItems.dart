@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/Option_Backup.dart';
+import 'package:open_textview/component/Option_CacheControl.dart';
 import 'package:open_textview/component/Option_FilePicker.dart';
 import 'package:open_textview/component/Option_Filter.dart';
 import 'package:open_textview/component/Option_Find.dart';
@@ -22,6 +23,7 @@ var NAVBUTTON = [
   Option_LineTo(),
   Option_History(),
   Option_Ocr(),
+  Option_CacheControl(),
   Option_OssLicenses(),
 ];
 

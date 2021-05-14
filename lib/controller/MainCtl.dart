@@ -124,93 +124,47 @@ class MainCtl extends GetxController {
     }, time: Duration(milliseconds: 500));
 
     debounce(config['picker'], (v) async {
+      if (ocrData['brun'] == 1) {
+        ocrData.update('brun', (value) => 0);
+        await Future.delayed(const Duration(milliseconds: 4000));
+      }
       if ((v as Map).isNotEmpty && v['extension'] == 'zip') {
-        File file = File(v['path']);
-        if (file.existsSync()) {
-          Directory unzipDir =
-              Directory('${file.parent.path}/${v['name'].split('.')[0]}');
-          await ZipFile.extractToDirectory(
-              zipFile: file,
-              destinationDir: unzipDir,
-              onExtracting: (zipEntry, progress) {
-                imgFiles.add('${unzipDir.path}/${zipEntry.name}');
-                if (File('${unzipDir.path}/${zipEntry.name}').existsSync()) {
-                  return ExtractOperation.skip;
-                }
-                return ExtractOperation.extract;
+        File f = File(
+            '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
+        if (f.existsSync()) {
+          showDialog(
+              context: Get.context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("openTextView"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "이미 ocr 이 완료된 파일 입니다. OCR작업 하시겠습니까?",
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    ElevatedButton(
+                      child: new Text("취소"),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    ElevatedButton(
+                      child: new Text("작업"),
+                      onPressed: () {
+                        jobOcr(v);
+                        Get.back();
+                      },
+                    ),
+                  ],
+                );
               });
-          // print('[p]]]]]]]]]]]${.extractText}');
-          DateTime now = DateTime.now();
-          DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
-          int whereIdx = history.indexWhere((element) {
-            return element['name'] == (config['picker'] as Map)['name'];
-          });
-          if (whereIdx < 0) {
-            history.add(
-                {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
-          }
-          // return;
-          contents.clear();
-          ocrData.update('total', (value) => imgFiles.length);
-          await FlutterBackground.initialize(
-              androidConfig: FlutterBackgroundAndroidConfig(
-            notificationTitle: '오픈텍뷰',
-            notificationText: 'ocr 실행중입니다.',
-          ));
-          await FlutterBackground.enableBackgroundExecution();
-          ocrData.update('brun', (value) => 1);
-
-          for (int i = 0; i < imgFiles.length; i++) {
-            if (ocrData['brun'] == 0) {
-              break;
-            }
-            ocrData.update('current', (value) => i + 1);
-            String text = await FlutterTesseractOcr.extractText(
-                '${imgFiles[i].toString()}',
-                language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
-                args: {
-                  "psm": "4",
-                  "preserve_interword_spaces": "1",
-                });
-            text = text.replaceAll('"\n', '___QWER!@#"___');
-            text = text.replaceAll('”\n', '___QWER!@#”___');
-            text = text.replaceAll('\'\n', '___QWER!@#\'___');
-            text = text.replaceAll('’\n', '___QWER!@#’___');
-            text = text.replaceAll('.\n', '___QWER!@#!!___');
-            text = text.replaceAll('\n\n', '___QWER!@#___');
-            text = text.replaceAll('\n', '');
-
-            text = text.replaceAll('___QWER!@#___', '\n\n');
-            text = text.replaceAll('___QWER!@#!!___', '.\n\n');
-            text = text.replaceAll('___QWER!@#’___', '’\n');
-            text = text.replaceAll('___QWER!@#"___', '"\n');
-            text = text.replaceAll('___QWER!@#”___', '”\n');
-            text = text.replaceAll('___QWER!@#\'___', '\'\n');
-
-            var arr = text.split('\n');
-            if (contents.isNotEmpty && contents.last.length > 0) {
-              contents.last += ' ' + arr.first;
-              arr.removeAt(0);
-            }
-
-            contents.addAll(arr);
-            // contents 업데이트후 tts 작동 중이면 tts 에 contents 도 같이 갱신 해줘야함.
-            if (AudioService.runningStream.value) {
-              AudioService.customAction('contents', contents);
-            }
-            update();
-          }
-          if (ocrData['brun'] == 1) {
-            File f = File(
-                '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
-            if (!f.existsSync()) {
-              f.create();
-            }
-            f.writeAsString(contents.join('\n'));
-          }
-          ocrData.update('brun', (value) => 0);
-          await FlutterBackground.disableBackgroundExecution();
+          return;
         }
+        jobOcr(v);
       }
       if ((v as Map).isNotEmpty && v['extension'] == 'txt') {
         File file = File(v['path']);
@@ -230,6 +184,7 @@ class MainCtl extends GetxController {
           }
           // contents.assignAll([]);
           contents.clear();
+
           contents.assignAll(decodeContents.split('\n'));
           update();
 
@@ -282,6 +237,103 @@ class MainCtl extends GetxController {
       await storage.ready;
       await storage.setItem('history', history.toJson());
     }, time: Duration(milliseconds: 500));
+  }
+
+  void jobOcr(v) async {
+    File file = File(v['path']);
+    if (file.existsSync()) {
+      itemScrollctl.jumpTo(index: 0);
+
+      Directory unzipDir =
+          Directory('${file.parent.path}/${v['name'].split('.')[0]}');
+      await ZipFile.extractToDirectory(
+          zipFile: file,
+          destinationDir: unzipDir,
+          onExtracting: (zipEntry, progress) {
+            imgFiles.add('${unzipDir.path}/${zipEntry.name}');
+            if (File('${unzipDir.path}/${zipEntry.name}').existsSync()) {
+              return ExtractOperation.skip;
+            }
+            return ExtractOperation.extract;
+          });
+      DateTime now = DateTime.now();
+      DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
+      int whereIdx = history.indexWhere((element) {
+        return element['name'] == (config['picker'] as Map)['name'];
+      });
+      if (whereIdx < 0) {
+        history
+            .add({'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
+      }
+      // return;
+
+      contents.clear();
+      // return;
+      ocrData.update('total', (value) => imgFiles.length);
+      await FlutterBackground.initialize(
+          androidConfig: FlutterBackgroundAndroidConfig(
+        notificationTitle: '오픈텍뷰',
+        notificationText: 'ocr 실행중입니다.',
+      ));
+      await FlutterBackground.enableBackgroundExecution();
+      ocrData.update('brun', (value) => 1);
+
+      for (int i = 0; i < imgFiles.length; i++) {
+        if (ocrData['brun'] == 0) {
+          break;
+        }
+        ocrData.update('current', (value) => i + 1);
+        String text = await FlutterTesseractOcr.extractText(
+            '${imgFiles[i].toString()}',
+            language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
+            args: {
+              "psm": "4",
+              "preserve_interword_spaces": "1",
+            });
+        text = text.replaceAll('"\n', '___QWER!@#"___');
+        text = text.replaceAll('”\n', '___QWER!@#”___');
+        text = text.replaceAll('\'\n', '___QWER!@#\'___');
+        text = text.replaceAll('’\n', '___QWER!@#’___');
+        text = text.replaceAll('.\n', '___QWER!@#!!___');
+        text = text.replaceAll('\n\n', '___QWER!@#___');
+        text = text.replaceAll('\n', '');
+
+        text = text.replaceAll('___QWER!@#___', '\n\n');
+        text = text.replaceAll('___QWER!@#!!___', '.\n\n');
+        text = text.replaceAll('___QWER!@#’___', '’\n');
+        text = text.replaceAll('___QWER!@#"___', '"\n');
+        text = text.replaceAll('___QWER!@#”___', '”\n');
+        text = text.replaceAll('___QWER!@#\'___', '\'\n');
+
+        var arr = text.split('\n');
+        if (contents.isNotEmpty) {
+          int len = contents.last.length - 1 ?? 0;
+          if (contents.last
+                  .lastIndexOf(RegExp('\\.|"|\'|”|’|\\!|\\?|\\\|\\)|\\]')) <
+              len) {
+            contents.last += ' ' + arr.first;
+            arr.removeAt(0);
+          }
+        }
+
+        contents.addAll(arr);
+        // contents 업데이트후 tts 작동 중이면 tts 에 contents 도 같이 갱신 해줘야함.
+        if (AudioService.runningStream.value) {
+          AudioService.customAction('contents', contents);
+        }
+        update();
+      }
+      if (ocrData['brun'] == 1) {
+        File f = File(
+            '${(config['ocr'] as RxMap)['path']}/${v['name'].split('.')[0]}.txt');
+        if (!f.existsSync()) {
+          f.create();
+        }
+        f.writeAsString(contents.join('\n'));
+      }
+      ocrData.update('brun', (value) => 0);
+      await FlutterBackground.disableBackgroundExecution();
+    }
   }
 
   setConfig(Map<String, dynamic> config, List history) {

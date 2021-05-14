@@ -118,7 +118,7 @@ class Option_Ocr extends OptionsBase {
                   SizedBox(
                       height: Get.height * 0.7,
                       width: Get.width * 0.9,
-                      child: Column(children: [
+                      child: ListView(children: [
                         Container(
                           padding: EdgeInsets.all(10),
                           child: GetBuilder<MainCtl>(
