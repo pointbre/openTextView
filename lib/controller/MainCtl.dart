@@ -13,6 +13,8 @@ import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:open_textview/controller/MainAudio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:image/image.dart' as im;
+import 'dart:ui' as ui;
 
 class FindObj {
   FindObj({this.pos, this.contents});
@@ -242,14 +244,14 @@ class MainCtl extends GetxController {
   void jobOcr(v) async {
     File file = File(v['path']);
     if (file.existsSync()) {
+      imgFiles.clear();
       Directory unzipDir =
           Directory('${file.parent.path}/${v['name'].split('.')[0]}');
+
       await ZipFile.extractToDirectory(
           zipFile: file,
           destinationDir: unzipDir,
           onExtracting: (zipEntry, progress) {
-            print(zipEntry.name);
-
             if (!zipEntry.isDirectory) {
               String ex = zipEntry.name.split('.').last;
               if (ex == 'gif' || ex == 'jpg' || ex == 'png') {
@@ -273,9 +275,13 @@ class MainCtl extends GetxController {
       // return;
 
       contents.clear();
+
+      imgFiles.sort((a, b) {
+        return a.compareTo(b);
+      });
       // return;
       ocrData.update('total', (value) => imgFiles.length);
-      print(imgFiles);
+
       await FlutterBackground.initialize(
           androidConfig: FlutterBackgroundAndroidConfig(
         notificationTitle: '오픈텍뷰',
@@ -289,8 +295,23 @@ class MainCtl extends GetxController {
           break;
         }
         ocrData.update('current', (value) => i + 1);
+
+        im.Image image =
+            im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
+        image = im.adjustColor(
+          image.clone(),
+          brightness: 5,
+        );
+        File('${imgFiles[i].toString()}_ocr.jpg')
+          ..writeAsBytesSync(im.encodeJpg(image));
+        // print(
+        //     '${(config['ocr'] as RxMap)['path']}${imgFiles[i].toString().split('/').last}_ocr.jpg');
+        // File(
+        //     '${(config['ocr'] as RxMap)['path']}${imgFiles[i].toString().split('/').last}_ocr.jpg')
+        //   ..writeAsBytesSync(im.encodeJpg(image));
+
         String text = await FlutterTesseractOcr.extractText(
-            '${imgFiles[i].toString()}',
+            '${imgFiles[i].toString()}_ocr.jpg',
             language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
             args: {
               "psm": "4",

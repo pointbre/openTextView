@@ -46,6 +46,7 @@ dependencies:
   flutter_archive: ^3.0.0
   permission_handler:
   device_info: ^2.0.0
+  image: 
 
   
   
