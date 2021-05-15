@@ -305,7 +305,7 @@ class MainCtl extends GetxController {
             im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
         image = im.adjustColor(
           image.clone(),
-          gamma: 2,
+          gamma: 5,
         );
         File('${imgFiles[i].toString()}_ocr.jpg')
           ..writeAsBytesSync(im.encodeJpg(image));
@@ -379,6 +379,7 @@ class MainCtl extends GetxController {
         language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
         args: {
           "psm": "4",
+          "oem": "1",
           "preserve_interword_spaces": "1",
         });
     text = text.replaceAll('"\n', '___QWER!@#"___');

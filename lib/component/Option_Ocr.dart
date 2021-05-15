@@ -53,13 +53,13 @@ const traineddatas = [
     'name': 'kor',
     'langname': '한글',
     'url':
-        'https://github.com/tesseract-ocr/tessdata/raw/master/kor.traineddata'
+        'https://github.com/tesseract-ocr/tessdata_best/raw/master/kor.traineddata'
   },
   {
     'name': 'eng',
     'langname': '영어',
     'url':
-        'https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata'
+        'https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata'
   },
 ];
 
