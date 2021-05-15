@@ -53,11 +53,35 @@ const traineddatas = [
     'name': 'kor',
     'langname': '한글',
     'url':
+        'https://github.com/tesseract-ocr/tessdata/raw/master/kor.traineddata'
+  },
+  {
+    'name': 'kor_vert',
+    'langname': '한글vert',
+    'url':
+        'https://github.com/tesseract-ocr/tessdata/raw/master/kor_vert.traineddata'
+  },
+  {
+    'name': 'kor_lstm',
+    'langname': '한글lstm',
+    'url':
         'https://github.com/tesseract-ocr/tessdata_best/raw/master/kor.traineddata'
+  },
+  {
+    'name': 'kor_lstm_vert',
+    'langname': '한글lstm_vert',
+    'url':
+        'https://github.com/tesseract-ocr/tessdata_best/raw/master/kor_vert.traineddata'
   },
   {
     'name': 'eng',
     'langname': '영어',
+    'url':
+        'https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata'
+  },
+  {
+    'name': 'eng_lstm',
+    'langname': '영어lstm',
     'url':
         'https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata'
   },
@@ -82,7 +106,7 @@ class Option_Ocr extends OptionsBase {
   }
 
   void downloadtrainedata(obj) async {
-    String targetFileName = obj['url'].split('/').last;
+    // String targetFileName = obj['url'].split('/').last;
     var ctl = Get.find<Option_OcrCtl>();
     ctl.bDownloadawait.value = true;
     ctl.update();
@@ -91,7 +115,8 @@ class Option_Ocr extends OptionsBase {
     HttpClientResponse response = await request.close();
     Uint8List bytes = await consolidateHttpClientResponseBytes(response);
     String dir = await FlutterTesseractOcr.getTessdataPath();
-    File file = new File('$dir/${targetFileName}');
+    print('$dir/${obj['name']}.traineddata');
+    File file = new File('$dir/${obj['name']}.traineddata');
     await file.writeAsBytes(bytes);
     ctl.bDownloadawait.value = false;
     ctl.update();
@@ -209,56 +234,56 @@ class Option_Ocr extends OptionsBase {
                                         Text(
                                           '2. ocr 적용할 언어를 선택해 주세요.',
                                         ),
-                                        Row(
-                                          children: [
-                                            ...['kor', 'eng']
-                                                .map((lan) => TextButton.icon(
-                                                      // style: TextButton.styleFrom(
-                                                      //   primary: Colors.red, // foreground
-                                                      // ),
-                                                      // check_box_outline_blank
-                                                      icon: Icon(langs.indexOf(
-                                                                  lan) >=
-                                                              0
-                                                          ? Icons.check_box
-                                                          : Icons
-                                                              .check_box_outline_blank),
-                                                      onPressed: () {
-                                                        RxMap conf = (controller
-                                                                .config['ocr']
-                                                            as RxMap);
-                                                        conf.update('lang',
-                                                            (value) {
-                                                          List l = value ?? [];
-                                                          int idx =
-                                                              l.indexOf(lan);
-                                                          if (idx < 0) {
-                                                            l.add(lan);
-                                                          } else {
-                                                            l.removeAt(idx);
-                                                          }
-                                                          return l;
-                                                        });
-                                                        // List target = conf['lang'];
-                                                        // target.add('kor');
+                                        Container(
+                                            height: 50,
+                                            child: ListView(
+                                              scrollDirection: Axis.horizontal,
+                                              shrinkWrap: true,
+                                              children: [
+                                                ...traineddatas
+                                                    .map((e) => e['name'])
+                                                    .map((lan) {
+                                                  return TextButton.icon(
+                                                    // style: TextButton.styleFrom(
+                                                    //   primary: Colors.red, // foreground
+                                                    // ),
+                                                    // check_box_outline_blank
+                                                    icon: Icon(langs
+                                                                .indexOf(lan) >=
+                                                            0
+                                                        ? Icons.check_box
+                                                        : Icons
+                                                            .check_box_outline_blank),
+                                                    onPressed: () {
+                                                      RxMap conf = (controller
+                                                              .config['ocr']
+                                                          as RxMap);
+                                                      conf.update('lang',
+                                                          (value) {
+                                                        List l = value ?? [];
+                                                        int idx =
+                                                            l.indexOf(lan);
+                                                        if (idx < 0) {
+                                                          l.add(lan);
+                                                        } else {
+                                                          l.removeAt(idx);
+                                                        }
+                                                        return l;
+                                                      });
+                                                      // List target = conf['lang'];
+                                                      // target.add('kor');
 
-                                                        // lang = ;
-                                                      },
-                                                      label: Text(lan),
-                                                    ))
-                                                .toList()
-                                          ],
-                                        ),
+                                                      // lang = ;
+                                                    },
+                                                    label: Text('${lan}'),
+                                                  );
+                                                }).toList()
+                                              ],
+                                            )),
                                         Divider(),
                                         Text(
                                             '3. OCR 처리 완료후 파일 저장 경로 를 선택해주세요(강제 종료시 저장하지 않습니다.)'),
                                         Text('[선택된경로]/OCR 폴더에 저장됩니다. '),
-                                        Text(
-                                            '만약 계속 권한 없다는 메세지가 출력 된다면 개발자옵션 - 스크롤 맨 하단 - "외부에서 앱 강제 허용" 을 활성화 해주세요. (android11 에서는 저장 할때 계속 에러나네요.)',
-                                            style: TextStyle(
-                                                color: Theme.of(Get.context)
-                                                    .colorScheme
-                                                    .error)),
                                         Text(
                                             '선택된경로 : ${(controller.config['ocr'] as RxMap)['path']} ',
                                             style: TextStyle(
@@ -333,12 +358,13 @@ class Option_Ocr extends OptionsBase {
                                   Text(
                                       '4. 학습데이터 를 다운로드 해주세요. 개당 15~25MB 사이입니다. '),
                                   GetBuilder<Option_OcrCtl>(builder: (ctl) {
-                                    return ListView(
-                                      shrinkWrap: true,
+                                    return Column(
+                                      // shrinkWrap: true,
                                       children: [
                                         ...traineddatas.map((e) {
                                           String targetFileName =
-                                              e['url'].split('/').last;
+                                              '${e['name']}.traineddata';
+                                          // e['url'].split('/').last;
 
                                           return ListTile(
                                             title: Text(e['langname']),
@@ -353,7 +379,7 @@ class Option_Ocr extends OptionsBase {
                                               onPressed: () async {
                                                 downloadtrainedata(e);
                                               },
-                                              child: Text(e['langname']),
+                                              child: Text(e['name']),
                                             ),
                                           );
                                         }).toList(),

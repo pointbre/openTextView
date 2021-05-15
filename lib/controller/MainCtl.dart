@@ -379,7 +379,7 @@ class MainCtl extends GetxController {
         language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
         args: {
           "psm": "4",
-          "oem": "1",
+          "oem": "2",
           "preserve_interword_spaces": "1",
         });
     text = text.replaceAll('"\n', '___QWER!@#"___');
