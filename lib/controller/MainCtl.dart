@@ -305,7 +305,7 @@ class MainCtl extends GetxController {
             im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
         image = im.adjustColor(
           image.clone(),
-          gamma: 3,
+          gamma: 2,
         );
         File('${imgFiles[i].toString()}_ocr.jpg');
         String conv = await _ocr('${imgFiles[i].toString()}_ocr.jpg');
