@@ -296,44 +296,53 @@ class MainCtl extends GetxController {
         }
         ocrData.update('current', (value) => i + 1);
 
-        im.Image image =
-            im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
-        image = im.adjustColor(
-          image.clone(),
-          gamma: 15,
-          // brightness: 5,
-        );
-        File('${imgFiles[i].toString()}_ocr.jpg')
-          ..writeAsBytesSync(im.encodeJpg(image));
         // print(
         //     '${(config['ocr'] as RxMap)['path']}${imgFiles[i].toString().split('/').last}_ocr.jpg');
         // File(
         //     '${(config['ocr'] as RxMap)['path']}${imgFiles[i].toString().split('/').last}_ocr.jpg')
         //   ..writeAsBytesSync(im.encodeJpg(image));
+        im.Image image =
+            im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
+        image = im.adjustColor(
+          image.clone(),
+          gamma: 3,
+        );
+        File('${imgFiles[i].toString()}_ocr.jpg');
+        String conv = await _ocr('${imgFiles[i].toString()}_ocr.jpg');
+        if (conv.split('   ').length > 3) {
+          im.Image image =
+              im.decodeImage(File(imgFiles[i].toString()).readAsBytesSync());
+          image = im.adjustColor(
+            image.clone(),
+            gamma: 20,
+          );
+          File('${imgFiles[i].toString()}_ocr.jpg')
+            ..writeAsBytesSync(im.encodeJpg(image));
+          conv = await _ocr('${imgFiles[i].toString()}_ocr.jpg');
+        }
+        // String text = await FlutterTesseractOcr.extractText(
+        //     '${imgFiles[i].toString()}_ocr.jpg',
+        //     language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
+        //     args: {
+        //       "psm": "4",
+        //       "preserve_interword_spaces": "1",
+        //     });
+        // text = text.replaceAll('"\n', '___QWER!@#"___');
+        // text = text.replaceAll('”\n', '___QWER!@#”___');
+        // text = text.replaceAll('\'\n', '___QWER!@#\'___');
+        // text = text.replaceAll('’\n', '___QWER!@#’___');
+        // text = text.replaceAll('.\n', '___QWER!@#!!___');
+        // text = text.replaceAll('\n\n', '___QWER!@#___');
+        // text = text.replaceAll('\n', '');
 
-        String text = await FlutterTesseractOcr.extractText(
-            '${imgFiles[i].toString()}_ocr.jpg',
-            language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
-            args: {
-              "psm": "4",
-              "preserve_interword_spaces": "1",
-            });
-        text = text.replaceAll('"\n', '___QWER!@#"___');
-        text = text.replaceAll('”\n', '___QWER!@#”___');
-        text = text.replaceAll('\'\n', '___QWER!@#\'___');
-        text = text.replaceAll('’\n', '___QWER!@#’___');
-        text = text.replaceAll('.\n', '___QWER!@#!!___');
-        text = text.replaceAll('\n\n', '___QWER!@#___');
-        text = text.replaceAll('\n', '');
+        // text = text.replaceAll('___QWER!@#___', '\n\n');
+        // text = text.replaceAll('___QWER!@#!!___', '.\n\n');
+        // text = text.replaceAll('___QWER!@#’___', '’\n');
+        // text = text.replaceAll('___QWER!@#"___', '"\n');
+        // text = text.replaceAll('___QWER!@#”___', '”\n');
+        // text = text.replaceAll('___QWER!@#\'___', '\'\n');
 
-        text = text.replaceAll('___QWER!@#___', '\n\n');
-        text = text.replaceAll('___QWER!@#!!___', '.\n\n');
-        text = text.replaceAll('___QWER!@#’___', '’\n');
-        text = text.replaceAll('___QWER!@#"___', '"\n');
-        text = text.replaceAll('___QWER!@#”___', '”\n');
-        text = text.replaceAll('___QWER!@#\'___', '\'\n');
-
-        var arr = text.split('\n');
+        var arr = conv.split('\n');
         if (contents.isNotEmpty) {
           int len = contents.last.length - 1 ?? 0;
           if (contents.last
@@ -362,6 +371,30 @@ class MainCtl extends GetxController {
       ocrData.update('brun', (value) => 0);
       await FlutterBackground.disableBackgroundExecution();
     }
+  }
+
+  Future<String> _ocr(path) async {
+    String text = await FlutterTesseractOcr.extractText(path,
+        language: ((config['ocr'] as RxMap)['lang'] as List).join("+"),
+        args: {
+          "psm": "4",
+          "preserve_interword_spaces": "1",
+        });
+    text = text.replaceAll('"\n', '___QWER!@#"___');
+    text = text.replaceAll('”\n', '___QWER!@#”___');
+    text = text.replaceAll('\'\n', '___QWER!@#\'___');
+    text = text.replaceAll('’\n', '___QWER!@#’___');
+    text = text.replaceAll('.\n', '___QWER!@#!!___');
+    text = text.replaceAll('\n\n', '___QWER!@#___');
+    text = text.replaceAll('\n', '');
+
+    text = text.replaceAll('___QWER!@#___', '\n\n');
+    text = text.replaceAll('___QWER!@#!!___', '.\n\n');
+    text = text.replaceAll('___QWER!@#’___', '’\n');
+    text = text.replaceAll('___QWER!@#"___', '"\n');
+    text = text.replaceAll('___QWER!@#”___', '”\n');
+    text = text.replaceAll('___QWER!@#\'___', '\'\n');
+    return text;
   }
 
   setConfig(Map<String, dynamic> config, List history) {
