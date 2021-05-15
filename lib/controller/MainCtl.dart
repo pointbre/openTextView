@@ -309,6 +309,7 @@ class MainCtl extends GetxController {
         );
         File('${imgFiles[i].toString()}_ocr.jpg')
           ..writeAsBytesSync(im.encodeJpg(image));
+        // print(i);
         String conv = await _ocr('${imgFiles[i].toString()}_ocr.jpg');
         if (conv.split('   ').length > 3) {
           im.Image image =
