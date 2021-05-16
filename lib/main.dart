@@ -8,7 +8,21 @@ void main() {
   Get.lazyPut(() => MainCtl());
   runApp(AudioServiceWidget(
     child: GetMaterialApp(getPages: [
-      GetPage(name: '/', page: () => MainPage()),
+      GetPage(
+          name: '/',
+          page: () => WillPopScope(
+                child: MainPage(),
+                onWillPop: () async {
+                  var ctl = Get.find<MainCtl>();
+                  var rtn = true;
+                  rtn &= ctl.ocrData['brun'] == 0;
+                  rtn &= !AudioService.runningStream.value;
+
+                  ctl.update();
+                  print(rtn);
+                  return rtn;
+                },
+              )),
     ]),
   ));
 }
