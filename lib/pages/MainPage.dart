@@ -140,7 +140,7 @@ class MainPage extends GetView<MainCtl> {
                                   ((ctl.config['tts'] as RxMap)['groupcnt']);
                               int endpos = ctl.curPos.value + cnt;
                               if (index >= ctl.curPos.value && index < endpos) {
-                                return Text(
+                                return SelectableText(
                                   '${ctl.contents[index]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w700,
@@ -150,7 +150,8 @@ class MainPage extends GetView<MainCtl> {
                                 );
                               }
                             }
-                            return Text('${ctl.contents[index] ?? ""}');
+                            return SelectableText(
+                                '${ctl.contents[index] ?? ""}');
                           },
                           itemScrollController: ctl.itemScrollctl,
                           itemPositionsListener: ctl.itemPosListener,
