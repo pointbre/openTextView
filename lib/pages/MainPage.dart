@@ -7,51 +7,102 @@ import 'package:get/get.dart';
 import 'package:open_textview/component/BottomNav.dart';
 import 'package:open_textview/component/FloatingButton.dart';
 import 'package:open_textview/controller/MainCtl.dart';
+import 'package:open_textview/items/NavBtnItems.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MainPage extends GetView<MainCtl> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
+    // Map m = controller.config['picker'];
+    // print(' >>>>>>>>>>>>>>> : $m');
     return SafeArea(
         child: Scaffold(
-      appBar: null,
+      appBar: AppBar(
+          // centerTitle: true,
+          title: GetBuilder<MainCtl>(builder: (ctl) {
+            Map m = controller.config['picker'];
+            String fileName = '파일 을 열어주세요.';
+            if (m.isNotEmpty) {
+              fileName = m['name'];
+            }
+            return Text(
+              fileName,
+              style: TextStyle(fontSize: 15),
+            );
+          }),
+          leading: IconButton(
+            icon: const Icon(Icons.menu_book),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              NAVBUTTON.every((element) {
+                if (element.runtimeType.toString() == "Option_FilePicker") {
+                  element.openSetting();
+                  return false;
+                }
+                return true;
+              });
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //     const SnackBar(content: Text('This is a snackbar')));
+            },
+          ),
+          actions: [
+            Obx(() {
+              if (controller.contents.length <= 0) {
+                return Center(child: Text('0.0%'));
+              }
+              return Center(
+                  child: Text(
+                      '${(controller.curPos.value / controller.contents.length * 100).toPrecision(2)}%'));
+            }),
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      ...NAVBUTTON.map((el) {
+                        print(el.name);
+                        RxList nav = controller.config['nav'];
+                        String name = el.runtimeType.toString();
+                        return PopupMenuItem(
+                            value: "12",
+                            child: Obx(() => ListTileTheme(
+                                iconColor:
+                                    Theme.of(Get.context).iconTheme.color,
+                                child: ListTile(
+                                    leading: el.buildIcon(),
+                                    title: Text(el.name),
+                                    trailing: Checkbox(
+                                      value: nav
+                                          .where((e) => e.toString() == name)
+                                          .isNotEmpty,
+                                      onChanged: (value) {
+                                        if (value) {
+                                          nav.add(name);
+                                        } else {
+                                          nav.remove(name);
+                                        }
+                                        controller.update();
+                                      },
+                                    )))));
+                      }).toList(),
+                    ])
+          ]),
+      // Obx(() {
+      //               Map m = controller.config['picker'];
+      //               String fileName = '파일 을 열어주세요.';
+      //               if (m.isNotEmpty) {
+      //                 fileName = m['name'];
+      //               }
+      //               return AppBar( title: const Text('AppBar Demo'),)
+      //               // return Expanded(
+      //               //     child: Text(
+      //               //   fileName,
+      //               //   overflow: TextOverflow.ellipsis,
+      //               //   softWrap: false,
+      //               //   maxLines: 1,
+      //               // ));
+      //             }),
       body: Container(
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 5, right: 5, bottom: 3, top: 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(() {
-                    Map m = controller.config['picker'];
-                    String fileName = '파일 을 열어주세요.';
-                    if (m.isNotEmpty) {
-                      fileName = m['name'];
-                    }
-                    return Expanded(
-                        child: Text(
-                      fileName,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      maxLines: 1,
-                    ));
-                  }),
-                  GetBuilder<MainCtl>(
-                      id: 'scroll',
-                      builder: (ctl) {
-                        if (ctl.contents.length <= 0) {
-                          return Text('0.0%');
-                        }
-
-                        return Text(
-                            '${(ctl.curPos.value / ctl.contents.length * 100).toPrecision(2)}%');
-                      })
-                ],
-              ),
-            ),
             Obx(() {
               if (controller.ocrData['current'] !=
                       controller.ocrData['total'] &&

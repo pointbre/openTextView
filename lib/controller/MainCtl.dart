@@ -259,9 +259,9 @@ class MainCtl extends GetxController {
               }
             }
             if (File('${unzipDir.path}/${zipEntry.name}').existsSync()) {
-              return ExtractOperation.skip;
+              return ZipFileOperation.skipItem;
             }
-            return ExtractOperation.extract;
+            return ZipFileOperation.includeItem;
           });
       DateTime now = DateTime.now();
       DateFormat formatter = new DateFormat('yyyy-MM-dd hh-mm-ss');
