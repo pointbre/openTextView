@@ -67,21 +67,25 @@ class MainPage extends GetView<MainCtl> {
                                 iconColor:
                                     Theme.of(Get.context).iconTheme.color,
                                 child: ListTile(
-                                    leading: el.buildIcon(),
-                                    title: Text(el.name),
-                                    trailing: Checkbox(
-                                      value: nav
-                                          .where((e) => e.toString() == name)
-                                          .isNotEmpty,
-                                      onChanged: (value) {
-                                        if (value) {
-                                          nav.add(name);
-                                        } else {
-                                          nav.remove(name);
-                                        }
-                                        controller.update();
-                                      },
-                                    )))));
+                                  leading: el.buildIcon(),
+                                  title: Text(el.name),
+                                  trailing: Checkbox(
+                                    value: nav
+                                        .where((e) => e.toString() == name)
+                                        .isNotEmpty,
+                                    onChanged: (value) {
+                                      if (value) {
+                                        nav.add(name);
+                                      } else {
+                                        nav.remove(name);
+                                      }
+                                      controller.update();
+                                    },
+                                  ),
+                                  onTap: () {
+                                    el.openSetting();
+                                  },
+                                ))));
                       }).toList(),
                     ])
           ]),
