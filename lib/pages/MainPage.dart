@@ -58,7 +58,7 @@ class MainPage extends GetView<MainCtl> {
             PopupMenuButton(
                 itemBuilder: (context) => [
                       ...NAVBUTTON.map((el) {
-                        print(el.name);
+                        // print(el.name);
                         RxList nav = controller.config['nav'];
                         String name = el.runtimeType.toString();
                         return PopupMenuItem(

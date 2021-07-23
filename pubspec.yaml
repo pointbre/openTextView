@@ -58,7 +58,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter  
   flutter_oss_licenses: ^1.0.1 
-  flutter_tesseract_ocr:  
+  flutter_tesseract_ocr: ^0.4.2
    
 
 # For information on the generic Dart part of this file, see the

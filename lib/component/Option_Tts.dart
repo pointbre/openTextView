@@ -6,6 +6,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_spinbox/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/commonLibrary/HeroDialogRoute.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:open_textview/items/Languages.dart';
@@ -69,184 +70,196 @@ class Option_Tts extends OptionsBase {
 
   @override
   void openSetting() {
-    // openSettingLanguage();
+    // HeroPopup(
+    //   builder: (c) => Hero(
+    //       tag: "Option_Tts",
+    //       child: Stack(
+    //         children: [
+    //           Icon(
+    //             Icons.volume_mute_rounded,
+    //           ),
+    //           Container(
+    //               margin: EdgeInsets.only(left: 15, top: 4),
+    //               child: Icon(
+    //                 Icons.settings_rounded,
+    //                 size: 15,
+    //               )),
+    //         ],
+    //       )),
+    // );
 
-    showDialog(
-        context: Get.context,
-        // barrierColor: Colors.transparent,
-        // isDismissible: false,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-              title: Text(
-                name,
-                style: TextStyle(fontWeight: FontWeight.w700),
+    // showDialog(
+    //     context: Get.context,
+    //     // barrierColor: Colors.transparent,
+    //     // isDismissible: false,
+    //     builder: (BuildContext context) {
+    //       return
+    HeroPopup(
+        tag: "Option_Tts",
+        title: Row(children: [
+          // buildIcon(),
+          Text(
+            name,
+            style: TextStyle(fontWeight: FontWeight.w700),
+          )
+        ]),
+        children: [
+          Column(children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              child: GetBuilder<MainCtl>(
+                builder: (context) {
+                  String langCode =
+                      (controller.config['tts'] as Map)['language'];
+                  return Column(
+                    children: [
+                      // SizedBox(
+                      //     width: double.infinity,
+                      //     child: ElevatedButton(
+                      //       onPressed: () async {
+                      //         openSettingLanguage();
+                      //       },
+                      //       child: Text(
+                      //           '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
+                      //     )),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 2, child: Text('속도 : ')),
+                            Expanded(
+                              flex: 6,
+                              child: Slider(
+                                value: (controller.config['tts']
+                                    as Map)['speechRate'],
+                                min: 0,
+                                max: 5,
+                                divisions: 50,
+                                label: ((controller.config['tts']
+                                        as Map)['speechRate'] as double)
+                                    .toPrecision(1)
+                                    .toString(),
+                                onChanged: (double v) {
+                                  (controller.config['tts']
+                                      as Map)['speechRate'] = v;
+
+                                  controller.update();
+                                },
+                              ),
+                            ),
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 2, child: Text('볼륨 : ')),
+                            Expanded(
+                              flex: 6,
+                              child: Slider(
+                                value:
+                                    (controller.config['tts'] as Map)['volume'],
+                                min: 0,
+                                max: 1,
+                                divisions: 10,
+                                label: ((controller.config['tts']
+                                        as Map)['volume'] as double)
+                                    .toPrecision(1)
+                                    .toString(),
+                                onChanged: (double v) {
+                                  (controller.config['tts'] as Map)['volume'] =
+                                      v;
+
+                                  controller.update();
+                                },
+                              ),
+                            ),
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 2, child: Text('피치 : ')),
+                            Expanded(
+                              flex: 6,
+                              child: Slider(
+                                value:
+                                    (controller.config['tts'] as Map)['pitch'],
+                                min: 0.5,
+                                max: 2,
+                                divisions: 15,
+                                label: ((controller.config['tts']
+                                        as Map)['pitch'] as double)
+                                    .toPrecision(1)
+                                    .toString(),
+                                onChanged: (double v) {
+                                  (controller.config['tts'] as Map)['pitch'] =
+                                      v;
+
+                                  controller.update();
+                                },
+                              ),
+                            ),
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(flex: 2, child: Text('줄단위 읽기: ')),
+                            Expanded(
+                              flex: 6,
+                              child: SpinBox(
+                                min: 1,
+                                max: 10,
+                                incrementIcon: Icon(
+                                  Icons.add,
+                                  color: Theme.of(Get.context).iconTheme.color,
+                                ),
+                                decrementIcon: Icon(
+                                  Icons.remove,
+                                  color: Theme.of(Get.context).iconTheme.color,
+                                ),
+                                value: (controller.config['tts']
+                                            as Map)['groupcnt']
+                                        .toDouble() ??
+                                    1,
+                                onChanged: (value) {
+                                  (controller.config['tts']
+                                      as Map)['groupcnt'] = value.toInt();
+                                  controller.update();
+                                },
+                              ),
+                            ),
+                          ]),
+                      Divider(),
+                      CheckboxListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          title: Text('헤드셋 버튼 사용'),
+                          value: (controller.config['tts']
+                                  as Map)['headsetbutton'] ??
+                              false,
+                          onChanged: (b) {
+                            (controller.config['tts'] as Map)['headsetbutton'] =
+                                b;
+                            controller.update();
+                          }),
+                      CheckboxListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          title: Text('다른 플레이어 실행시 정지'),
+                          value: (controller.config['tts']
+                                  as Map)['audiosession'] ??
+                              false,
+                          onChanged: (b) {
+                            (controller.config['tts'] as Map)['audiosession'] =
+                                b;
+                            controller.update();
+                            // ctl.filterTmpCtl['expr'] = b;
+                            // ctl.update();
+                          }),
+                    ],
+                  );
+                },
               ),
-              children: [
-                SizedBox(
-                    height: Get.height * 0.7,
-                    width: Get.width * 0.9,
-                    child: Column(children: [
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        child: GetBuilder<MainCtl>(
-                          builder: (context) {
-                            String langCode =
-                                (controller.config['tts'] as Map)['language'];
-                            return Column(
-                              children: [
-                                // SizedBox(
-                                //     width: double.infinity,
-                                //     child: ElevatedButton(
-                                //       onPressed: () async {
-                                //         openSettingLanguage();
-                                //       },
-                                //       child: Text(
-                                //           '현재 설정 언어 : ${langCode} (${LANG[langCode]['ko']}) '),
-                                //     )),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(flex: 2, child: Text('속도 : ')),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Slider(
-                                          value: (controller.config['tts']
-                                              as Map)['speechRate'],
-                                          min: 0,
-                                          max: 5,
-                                          divisions: 50,
-                                          label: ((controller.config['tts']
-                                                      as Map)['speechRate']
-                                                  as double)
-                                              .toPrecision(1)
-                                              .toString(),
-                                          onChanged: (double v) {
-                                            (controller.config['tts']
-                                                as Map)['speechRate'] = v;
-
-                                            controller.update();
-                                          },
-                                        ),
-                                      ),
-                                    ]),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(flex: 2, child: Text('볼륨 : ')),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Slider(
-                                          value: (controller.config['tts']
-                                              as Map)['volume'],
-                                          min: 0,
-                                          max: 1,
-                                          divisions: 10,
-                                          label: ((controller.config['tts']
-                                                  as Map)['volume'] as double)
-                                              .toPrecision(1)
-                                              .toString(),
-                                          onChanged: (double v) {
-                                            (controller.config['tts']
-                                                as Map)['volume'] = v;
-
-                                            controller.update();
-                                          },
-                                        ),
-                                      ),
-                                    ]),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(flex: 2, child: Text('피치 : ')),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Slider(
-                                          value: (controller.config['tts']
-                                              as Map)['pitch'],
-                                          min: 0.5,
-                                          max: 2,
-                                          divisions: 15,
-                                          label: ((controller.config['tts']
-                                                  as Map)['pitch'] as double)
-                                              .toPrecision(1)
-                                              .toString(),
-                                          onChanged: (double v) {
-                                            (controller.config['tts']
-                                                as Map)['pitch'] = v;
-
-                                            controller.update();
-                                          },
-                                        ),
-                                      ),
-                                    ]),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                          flex: 2, child: Text('줄단위 읽기: ')),
-                                      Expanded(
-                                        flex: 6,
-                                        child: SpinBox(
-                                          min: 1,
-                                          max: 10,
-                                          incrementIcon: Icon(
-                                            Icons.add,
-                                            color: Theme.of(Get.context)
-                                                .iconTheme
-                                                .color,
-                                          ),
-                                          decrementIcon: Icon(
-                                            Icons.remove,
-                                            color: Theme.of(Get.context)
-                                                .iconTheme
-                                                .color,
-                                          ),
-                                          value: (controller.config['tts']
-                                                      as Map)['groupcnt']
-                                                  .toDouble() ??
-                                              1,
-                                          onChanged: (value) {
-                                            (controller.config['tts']
-                                                    as Map)['groupcnt'] =
-                                                value.toInt();
-                                            controller.update();
-                                          },
-                                        ),
-                                      ),
-                                    ]),
-                                Divider(),
-                                CheckboxListTile(
-                                    contentPadding: EdgeInsets.all(0),
-                                    title: Text('헤드셋 버튼 사용'),
-                                    value: (controller.config['tts']
-                                            as Map)['headsetbutton'] ??
-                                        false,
-                                    onChanged: (b) {
-                                      (controller.config['tts']
-                                          as Map)['headsetbutton'] = b;
-                                      controller.update();
-                                    }),
-                                CheckboxListTile(
-                                    contentPadding: EdgeInsets.all(0),
-                                    title: Text('다른 플레이어 실행시 정지'),
-                                    value: (controller.config['tts']
-                                            as Map)['audiosession'] ??
-                                        false,
-                                    onChanged: (b) {
-                                      (controller.config['tts']
-                                          as Map)['audiosession'] = b;
-                                      controller.update();
-                                      // ctl.filterTmpCtl['expr'] = b;
-                                      // ctl.update();
-                                    }),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ]))
-              ]);
-        }).whenComplete(() {});
+            ),
+          ])
+        ]);
+    // });
+    // .whenComplete(() {});
     // TODO: implement openSetting
   }
 
@@ -263,11 +276,13 @@ class Option_Tts extends OptionsBase {
   @override
   Widget build(BuildContext context) {
     // TESTopenSetting();
-    return IconButton(
-        onPressed: () {
-          openSetting();
-        },
-        icon: buildIcon());
+    return Hero(
+        tag: 'Option_Tts',
+        child: IconButton(
+            onPressed: () {
+              openSetting();
+            },
+            icon: buildIcon()));
   }
 
   @override
@@ -277,12 +292,12 @@ class Option_Tts extends OptionsBase {
         Icon(
           Icons.volume_mute_rounded,
         ),
-        Container(
-            margin: EdgeInsets.only(left: 15, top: 4),
-            child: Icon(
-              Icons.settings_rounded,
-              size: 15,
-            )),
+        // Container(
+        //     margin: EdgeInsets.only(left: 15, top: 4),
+        //     child: Icon(
+        //       Icons.settings_rounded,
+        //       size: 15,
+        //     )),
       ],
     );
   }
