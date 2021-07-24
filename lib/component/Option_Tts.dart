@@ -70,6 +70,22 @@ class Option_Tts extends OptionsBase {
 
   @override
   void openSetting() {
+    // Widget setting = Wrap(
+    //   children: [
+    //     Hero(
+    //         tag: "Option_Tts",
+    //         child: Material(
+    //             type: MaterialType.transparency, // likely needed
+    //             child: Row(children: [
+    //               Text(
+    //                 name,
+    //                 style: TextStyle(fontWeight: FontWeight.w700),
+    //               )
+    //             ])))
+    //   ],
+    // );
+
+    // Get.toNamed('/openSetting', arguments: {"child": setting});
     // HeroPopup(
     //   builder: (c) => Hero(
     //       tag: "Option_Tts",
@@ -94,8 +110,9 @@ class Option_Tts extends OptionsBase {
     //     // isDismissible: false,
     //     builder: (BuildContext context) {
     //       return
+    // return;
     HeroPopup(
-        tag: "Option_Tts",
+        tag: name,
         title: Row(children: [
           // buildIcon(),
           Text(
@@ -277,12 +294,14 @@ class Option_Tts extends OptionsBase {
   Widget build(BuildContext context) {
     // TESTopenSetting();
     return Hero(
-        tag: 'Option_Tts',
-        child: IconButton(
-            onPressed: () {
-              openSetting();
-            },
-            icon: buildIcon()));
+        tag: name,
+        child: Material(
+            type: MaterialType.transparency, // likely needed
+            child: IconButton(
+                onPressed: () {
+                  openSetting();
+                },
+                icon: buildIcon())));
   }
 
   @override
@@ -292,12 +311,12 @@ class Option_Tts extends OptionsBase {
         Icon(
           Icons.volume_mute_rounded,
         ),
-        // Container(
-        //     margin: EdgeInsets.only(left: 15, top: 4),
-        //     child: Icon(
-        //       Icons.settings_rounded,
-        //       size: 15,
-        //     )),
+        Container(
+            margin: EdgeInsets.only(left: 15, top: 4),
+            child: Icon(
+              Icons.settings_rounded,
+              size: 15,
+            )),
       ],
     );
   }

@@ -23,6 +23,12 @@ void main() {
                   return rtn;
                 },
               )),
+      GetPage(
+          name: '/openSetting',
+          page: () {
+            print(Get.arguments);
+            return SafeArea(child: Scaffold(body: Get.arguments["child"]));
+          })
     ]),
   ));
 }

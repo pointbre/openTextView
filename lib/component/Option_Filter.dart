@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/commonLibrary/HeroDialogRoute.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 
@@ -256,6 +257,120 @@ class Option_Filter extends OptionsBase {
     // test----
 
     // RxList filterlist = controller.config['filter'];
+    RxList filterlist = controller.config['filter'];
+    HeroPopup(
+        tag: name,
+        title: Row(children: [
+          // buildIcon(),
+          Text(
+            name,
+            style: TextStyle(fontWeight: FontWeight.w700),
+          )
+        ]),
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      openFilterList();
+                    },
+                    child: Text('제공 되는 TTS 필터 리스트 보기'),
+                  )),
+              Text(
+                '적용된 필터 목록 (좌우로 드래그하여 삭제)',
+                style: Get.context.textTheme.subtitle1,
+              ),
+              Divider(),
+              Expanded(
+                  // (
+                  //   children: [],
+                  // )
+                  child: ReorderableListView(
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        var item = (controller.config['filter'] as RxList)
+                            .removeAt(oldIndex);
+                        (controller.config['filter'] as RxList)
+                            .insert(newIndex, item);
+                        controller.update();
+                      },
+                      padding: EdgeInsets.all(5),
+                      children: [
+                    ...filterlist.map((e) {
+                      int idx = filterlist.indexOf(e);
+                      return Dismissible(
+                          key: UniqueKey(),
+                          background: Container(color: Colors.red),
+                          onDismissed: (direction) {
+                            controller.config.update('filter', (value) {
+                              (value as RxList).removeAt(idx);
+                              return value;
+                            });
+                            controller.update();
+                          },
+                          child: Card(
+                              child: Container(
+                            child: ListTile(
+                              title: Text(e['name'] ?? "---"),
+                              onTap: () {
+                                openCustomFilter(idx);
+                              },
+                              subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                              flex: 8,
+                                              child: Text(e['filter'] ?? "")),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Icon(Icons.arrow_right)),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                  child: Text(e['to'] != null &&
+                                                          e['to'] == ""
+                                                      ? '없음'
+                                                      : e['to'])))
+                                        ]),
+                                    Text(
+                                        '정규식 사용 여부 : ${e['expr'] != null && e['expr'] ? '사용' : '미사용'}'),
+                                  ]),
+                              trailing: Checkbox(
+                                  value: e['enable'] ?? false,
+                                  onChanged: (b) {
+                                    filterlist[idx]['enable'] = b;
+                                    controller.update();
+                                  }),
+                            ),
+                          )));
+                    }).toList()
+                  ])),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        openCustomFilter(-1);
+                      },
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )
+        ]);
+    return;
     showDialog(
         context: Get.context,
         // barrierColor: Colors.transparent,
@@ -400,12 +515,14 @@ class Option_Filter extends OptionsBase {
     // TESTopenSetting();
 
     // TODO: implement build
-    return IconButton(
-      onPressed: () {
-        openSetting();
-      },
-      icon: buildIcon(),
-    );
+    return Hero(
+        tag: name,
+        child: IconButton(
+          onPressed: () {
+            openSetting();
+          },
+          icon: buildIcon(),
+        ));
   }
 
   @override
