@@ -26,7 +26,7 @@ class BottomNav extends OptionsBase {
                   child: ListTileTheme(
                       iconColor: Theme.of(Get.context).iconTheme.color,
                       child: ListTile(
-                        leading: el.buildIcon(),
+                        leading: el,
                         title: Text(el.name),
                         trailing: Obx(() => Checkbox(
                               value: (controller.config['nav'] as RxList)

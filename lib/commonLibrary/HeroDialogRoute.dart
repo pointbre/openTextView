@@ -1,40 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class HeroPopup {
   HeroPopup({this.tag, this.children, this.title, this.titleTextStyle}) {
-    // IconButton
-    // Get.to(() {
-    //   return Hero(
-    //       tag: tag,
-    //       child: Card(
-    //           child: ListView(
-    //         shrinkWrap: true,
-    //         children: [
-    //           DefaultTextStyle(
-    //               style: titleTextStyle ??
-    //                   DialogTheme.of(Get.context).titleTextStyle ??
-    //                   Theme.of(Get.context).textTheme.headline6,
-    //               child: Semantics(
-    //                 container: true,
-    //                 child: title,
-    //               )),
-    //           Divider(),
-    //           ...children,
-    //         ],
-    //       )));
-    // }, opaque: false);
-
     Navigator.of(Get.context).push(HeroDialogRoute(builder: (context) {
       return Center(
           child: Hero(
               tag: tag,
+              flightShuttleBuilder: (
+                BuildContext flightContext,
+                Animation<double> animation,
+                HeroFlightDirection flightDirection,
+                BuildContext fromHeroContext,
+                BuildContext toHeroContext,
+              ) {
+                return Material(
+                  type: MaterialType.transparency,
+                  child: Card(
+                      child: flightDirection == HeroFlightDirection.push
+                          ? fromHeroContext.widget
+                          : toHeroContext.widget),
+                );
+              },
               child: Material(
                   type: MaterialType.transparency, // likely needed
                   child: Card(
-                      child: ListView(
-                    shrinkWrap: true,
+                      child: SingleChildScrollView(
+                          child: Column(
                     children: [
                       DefaultTextStyle(
                           style: titleTextStyle ??
@@ -43,13 +37,13 @@ class HeroPopup {
                           child: Semantics(
                             container: true,
                             child: Padding(
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                child: title),
+                                padding: EdgeInsets.all(10), child: title),
                           )),
                       Divider(),
                       ...children,
                     ],
-                  )))));
+                  ))))));
+      // );
     }));
   }
   // final WidgetBuilder builder;
@@ -72,7 +66,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 1000);
+  Duration get transitionDuration => const Duration(milliseconds: 500);
 
   @override
   bool get maintainState => true;

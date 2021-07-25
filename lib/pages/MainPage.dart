@@ -67,7 +67,7 @@ class MainPage extends GetView<MainCtl> {
                                 iconColor:
                                     Theme.of(Get.context).iconTheme.color,
                                 child: ListTile(
-                                  leading: el.buildIcon(),
+                                  leading: el,
                                   title: Text(el.name),
                                   trailing: Checkbox(
                                     value: nav
