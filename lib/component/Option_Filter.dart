@@ -273,7 +273,7 @@ class Option_Filter extends OptionsBase {
           onPressed: () async {
             openFilterList();
           },
-          child: Text('제공 되는 TTS 필터 리스트 보기dsafdsafdfdsf'),
+          child: Text('제공 되는 TTS 필터 리스트 보기'),
         ),
         Text(
           '적용된 필터 목록 (좌우로 드래그하여 삭제)',
@@ -281,7 +281,7 @@ class Option_Filter extends OptionsBase {
         ),
         Divider(),
         SizedBox(
-            height: Get.height * 0.5,
+            height: Get.height * 0.6,
             // width: Get.width * 0.9,
             child: GetBuilder<MainCtl>(builder: (ctl) {
               RxList filterlist = ctl.config['filter'];
@@ -299,7 +299,47 @@ class Option_Filter extends OptionsBase {
                   children: [
                     ...filterlist.map((e) {
                       int idx = filterlist.indexOf(e);
-                      return Dismissible(key: UniqueKey(), child: Text("asdf"));
+                      return Dismissible(
+                          key: UniqueKey(),
+                          child: Card(
+                              child: Container(
+                            child: ListTile(
+                              title: Text(e['name'] ?? "---"),
+                              onTap: () {
+                                openCustomFilter(idx);
+                              },
+                              subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                              flex: 8,
+                                              child: Text(e['filter'] ?? "")),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Icon(Icons.arrow_right)),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                  child: Text(e['to'] != null &&
+                                                          e['to'] == ""
+                                                      ? '없음'
+                                                      : e['to'])))
+                                        ]),
+                                    Text(
+                                        '정규식 사용 여부 : ${e['expr'] != null && e['expr'] ? '사용' : '미사용'}'),
+                                  ]),
+                              trailing: Checkbox(
+                                  value: e['enable'] ?? false,
+                                  onChanged: (b) {
+                                    filterlist[idx]['enable'] = b;
+                                    ctl.update();
+                                  }),
+                            ),
+                          )));
                     }).toList()
                   ]);
             })),
