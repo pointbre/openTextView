@@ -439,11 +439,28 @@ class MainCtl extends GetxController {
     int c1 = v[0];
     int c2 = v[1];
 
+    print('changeThemechangeThemechangeThemechangeTheme ${v}');
     Color color1 = Color(c1);
     Color color2 = Color(c2);
     Get.changeTheme(ThemeData(
         scaffoldBackgroundColor: color1,
         dialogBackgroundColor: color1,
+        appBarTheme: AppBarTheme(
+            backgroundColor: color1,
+            textTheme: TextTheme(
+              headline3: TextStyle(color: color2),
+              headline4: TextStyle(color: color2),
+              headline5: TextStyle(color: color2),
+              headline6: TextStyle(color: color2),
+              headline1: TextStyle(color: color2),
+              headline2: TextStyle(color: color2),
+              bodyText1: TextStyle(color: color2),
+              bodyText2: TextStyle(color: color2),
+              subtitle1: TextStyle(color: color2),
+              subtitle2: TextStyle(color: color2),
+              overline: TextStyle(color: color2),
+              caption: TextStyle(color: color2),
+            )),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: color1),
         cardTheme: CardTheme(color: getSwatchShade(color1, 400)), //
         hintColor: color2,

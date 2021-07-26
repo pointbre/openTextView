@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:open_textview/commonLibrary/HeroDialogRoute.dart';
 import 'package:open_textview/component/OptionsBase.dart';
 
 // 출처 : https://2colors.colorion.co/
@@ -96,85 +97,164 @@ class Option_Theme extends OptionsBase {
 
   @override
   void openSetting() {
-    showDialog(
-        context: Get.context,
-        // barrierColor: Colors.transparent,
-        // isDismissible: false,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-              title: Text(
-                name,
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-              children: [
-                SizedBox(
-                    height: Get.height * 0.75,
-                    width: Get.width * 0.9,
-                    child: Container(
-                        padding: EdgeInsets.all(5),
-                        child: Column(
-                          children: [
-                            Expanded(
-                                child: GridView.count(
-                                    shrinkWrap: true,
-                                    crossAxisCount: 1,
-                                    childAspectRatio: 7.0 / 1.0,
-                                    children: [
-                                  ...TWOCOLOR.map((e) {
-                                    int idx = TWOCOLOR.indexOf(e) + 1;
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                              padding:
-                                                  EdgeInsets.only(left: 20),
-                                              child: Text('${idx}번째 테마 : ')),
-                                        ),
-                                        Expanded(
-                                            child: MaterialButton(
-                                          // padding: EdgeInsets.all(0),
-                                          // minWidth: 0,
-                                          color: Color(e[0]),
-                                          child: Icon(
-                                            Icons.volume_up,
-                                            color: Color(e[1]),
-                                          ),
-                                          shape: CircleBorder(),
-                                          onPressed: () {
-                                            controller.config.update('theme',
-                                                (value) {
-                                              RxList list = value;
-                                              list.assignAll([e[0], e[1]]);
-                                              return value;
-                                            });
-                                          },
-                                        )),
-                                        Expanded(
-                                            child: MaterialButton(
-                                          // padding: EdgeInsets.all(0),
-                                          // minWidth: 0,
-                                          color: Color(e[1]),
-                                          child: Icon(Icons.volume_up,
-                                              color: Color(e[0])),
-                                          shape: CircleBorder(),
-                                          onPressed: () {
-                                            controller.config.update('theme',
-                                                (value) {
-                                              return (value as RxList)
-                                                ..assignAll([e[1], e[0]]);
-                                            });
-                                          },
-                                        )),
-                                      ],
-                                    );
-                                  }).toList()
-                                ]))
-                          ],
-                        )))
-              ]);
-        }).whenComplete(() {});
+    HeroPopup(
+        tag: name,
+        title: Row(children: [
+          // buildIcon(),
+          Text(
+            name,
+            style: TextStyle(fontWeight: FontWeight.w700),
+          )
+        ]),
+        callback: (completion) {},
+        children: [
+          SizedBox(
+              height: Get.height * 0.7,
+              // width: Get.width * 0.9,
+              child: Container(
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: GridView.count(
+                              shrinkWrap: true,
+                              crossAxisCount: 1,
+                              childAspectRatio: 7.0 / 1.0,
+                              children: [
+                            ...TWOCOLOR.map((e) {
+                              int idx = TWOCOLOR.indexOf(e) + 1;
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                        padding: EdgeInsets.only(left: 20),
+                                        child: Text('${idx}번째 테마 : ')),
+                                  ),
+                                  Expanded(
+                                      child: MaterialButton(
+                                    // padding: EdgeInsets.all(0),
+                                    // minWidth: 0,
+                                    color: Color(e[0]),
+                                    child: Icon(
+                                      Icons.volume_up,
+                                      color: Color(e[1]),
+                                    ),
+                                    shape: CircleBorder(),
+                                    onPressed: () {
+                                      controller.config.update('theme',
+                                          (value) {
+                                        print(e);
+                                        RxList list = value;
+                                        list.assignAll([e[0], e[1]]);
+                                        return value;
+                                      });
+                                      controller.update();
+                                    },
+                                  )),
+                                  Expanded(
+                                      child: MaterialButton(
+                                    // padding: EdgeInsets.all(0),
+                                    // minWidth: 0,
+                                    color: Color(e[1]),
+                                    child: Icon(Icons.volume_up,
+                                        color: Color(e[0])),
+                                    shape: CircleBorder(),
+                                    onPressed: () {
+                                      controller.config.update('theme',
+                                          (value) {
+                                        return (value as RxList)
+                                          ..assignAll([e[1], e[0]]);
+                                      });
+                                    },
+                                  )),
+                                ],
+                              );
+                            }).toList()
+                          ]))
+                    ],
+                  )))
+        ]);
+    // showDialog(
+    //     context: Get.context,
+    //     // barrierColor: Colors.transparent,
+    //     // isDismissible: false,
+    //     builder: (BuildContext context) {
+    //       return SimpleDialog(
+    //           title: Text(
+    //             name,
+    //             style: TextStyle(fontWeight: FontWeight.w700),
+    //           ),
+    //           children: [
+    //             SizedBox(
+    //                 height: Get.height * 0.75,
+    //                 width: Get.width * 0.9,
+    //                 child: Container(
+    //                     padding: EdgeInsets.all(5),
+    //                     child: Column(
+    //                       children: [
+    //                         Expanded(
+    //                             child: GridView.count(
+    //                                 shrinkWrap: true,
+    //                                 crossAxisCount: 1,
+    //                                 childAspectRatio: 7.0 / 1.0,
+    //                                 children: [
+    //                               ...TWOCOLOR.map((e) {
+    //                                 int idx = TWOCOLOR.indexOf(e) + 1;
+    //                                 return Row(
+    //                                   mainAxisAlignment:
+    //                                       MainAxisAlignment.spaceAround,
+    //                                   children: [
+    //                                     Expanded(
+    //                                       child: Container(
+    //                                           padding:
+    //                                               EdgeInsets.only(left: 20),
+    //                                           child: Text('${idx}번째 테마 : ')),
+    //                                     ),
+    //                                     Expanded(
+    //                                         child: MaterialButton(
+    //                                       // padding: EdgeInsets.all(0),
+    //                                       // minWidth: 0,
+    //                                       color: Color(e[0]),
+    //                                       child: Icon(
+    //                                         Icons.volume_up,
+    //                                         color: Color(e[1]),
+    //                                       ),
+    //                                       shape: CircleBorder(),
+    //                                       onPressed: () {
+    //                                         controller.config.update('theme',
+    //                                             (value) {
+    //                                           RxList list = value;
+    //                                           list.assignAll([e[0], e[1]]);
+    //                                           return value;
+    //                                         });
+    //                                       },
+    //                                     )),
+    //                                     Expanded(
+    //                                         child: MaterialButton(
+    //                                       // padding: EdgeInsets.all(0),
+    //                                       // minWidth: 0,
+    //                                       color: Color(e[1]),
+    //                                       child: Icon(Icons.volume_up,
+    //                                           color: Color(e[0])),
+    //                                       shape: CircleBorder(),
+    //                                       onPressed: () {
+    //                                         controller.config.update('theme',
+    //                                             (value) {
+    //                                           return (value as RxList)
+    //                                             ..assignAll([e[1], e[0]]);
+    //                                         });
+    //                                       },
+    //                                     )),
+    //                                   ],
+    //                                 );
+    //                               }).toList()
+    //                             ]))
+    //                       ],
+    //                     )))
+    //           ]);
+    //     }).whenComplete(() {});
   }
 
   void TESTopenSetting() {
@@ -193,11 +273,15 @@ class Option_Theme extends OptionsBase {
     // TESTopenSetting();
 
     // TODO: implement build
-    return IconButton(
-      onPressed: () {
-        openSetting();
-      },
-      icon: buildIcon(),
+    return Hero(
+      tag: name,
+      child: Material(
+          type: MaterialType.transparency, // likely needed
+          child: IconButton(
+              onPressed: () {
+                openSetting();
+              },
+              icon: buildIcon())),
     );
   }
 

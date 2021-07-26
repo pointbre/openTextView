@@ -4,26 +4,31 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class HeroPopup {
-  HeroPopup({this.tag, this.children, this.title, this.titleTextStyle}) {
+  HeroPopup(
+      {this.tag,
+      this.children,
+      this.title,
+      this.titleTextStyle,
+      this.callback}) {
     Navigator.of(Get.context).push(HeroDialogRoute(builder: (context) {
       return Center(
           child: Hero(
               tag: tag,
-              flightShuttleBuilder: (
-                BuildContext flightContext,
-                Animation<double> animation,
-                HeroFlightDirection flightDirection,
-                BuildContext fromHeroContext,
-                BuildContext toHeroContext,
-              ) {
-                return Material(
-                  type: MaterialType.transparency,
-                  child: Card(
-                      child: flightDirection == HeroFlightDirection.push
-                          ? fromHeroContext.widget
-                          : toHeroContext.widget),
-                );
-              },
+              // flightShuttleBuilder: (
+              //   BuildContext flightContext,
+              //   Animation<double> animation,
+              //   HeroFlightDirection flightDirection,
+              //   BuildContext fromHeroContext,
+              //   BuildContext toHeroContext,
+              // ) {
+              //   return Material(
+              //     type: MaterialType.transparency,
+              //     child: Card(
+              //         child: flightDirection == HeroFlightDirection.push
+              //             ? fromHeroContext.widget
+              //             : toHeroContext.widget),
+              //   );
+              // },
               child: Material(
                   type: MaterialType.transparency, // likely needed
                   child: Card(
@@ -44,13 +49,19 @@ class HeroPopup {
                     ],
                   ))))));
       // );
-    }));
+    })).then((completion) {
+      print("callback");
+      if (this.callback != null) {
+        this.callback(completion);
+      }
+    });
   }
   // final WidgetBuilder builder;
   final List<Widget> children;
   final Widget title;
   final TextStyle titleTextStyle;
   final String tag;
+  final Function callback;
 }
 
 class HeroDialogRoute<T> extends PageRoute<T> {

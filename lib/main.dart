@@ -6,8 +6,9 @@ import 'package:open_textview/pages/MainPage.dart';
 
 void main() {
   Get.lazyPut(() => MainCtl());
+
   runApp(AudioServiceWidget(
-    child: GetMaterialApp(getPages: [
+    child: GetMaterialApp(themeMode: ThemeMode.light, getPages: [
       GetPage(
           name: '/',
           page: () => WillPopScope(
@@ -23,12 +24,6 @@ void main() {
                   return rtn;
                 },
               )),
-      GetPage(
-          name: '/openSetting',
-          page: () {
-            print(Get.arguments);
-            return SafeArea(child: Scaffold(body: Get.arguments["child"]));
-          })
     ]),
   ));
 }

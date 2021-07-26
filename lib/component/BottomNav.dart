@@ -101,16 +101,16 @@ class BottomNav extends OptionsBase {
             // color: Theme.of(Get.context).colorScheme.surface,
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Expanded(
-            flex: 1,
-            child: IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                openOptions();
-              },
-              padding: EdgeInsets.zero,
-            ),
-          ),
+          // Expanded(
+          //   flex: 1,
+          //   child: IconButton(
+          //     icon: Icon(Icons.add),
+          //     onPressed: () {
+          //       openOptions();
+          //     },
+          //     padding: EdgeInsets.zero,
+          //   ),
+          // ),
           Expanded(
             flex: 8,
             child: SingleChildScrollView(
