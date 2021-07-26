@@ -25,7 +25,6 @@ class FindObj {
 class MainCtl extends GetxController {
   final itemScrollctl = ItemScrollController();
   final itemPosListener = ItemPositionsListener.create();
-
   final curPos = 0.obs;
 
   final contents = [].obs;
@@ -101,7 +100,7 @@ class MainCtl extends GetxController {
 
     AudioService.currentMediaItemStream.listen((event) {
       if (event?.extras != null) {
-        itemScrollctl.jumpTo(index: event.extras['pos']);
+        itemScrollctl.jumpTo(index: event.extras['pos'] as int);
         curPos.value = event.extras['pos'];
         curPos.update((val) {});
       }
@@ -201,7 +200,7 @@ class MainCtl extends GetxController {
                   {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
               itemScrollctl.jumpTo(index: 0);
             } else {
-              itemScrollctl.jumpTo(index: history[whereIdx]['pos']);
+              //itemScrollctl.jumpTo(index: history[whereIdx]['pos'] as int);
               history[whereIdx]['date'] = formatter.format(now);
             }
             itemPosListener.itemPositions.addListener(onScroll);

@@ -31,6 +31,7 @@ dependencies:
   get: 
   audio_service: ^0.17.1
   scrollable_positioned_list: ^0.1.10
+  
   flutter_picker: ^2.0.0
   flutter_tts: ^3.2.1
   url_launcher:

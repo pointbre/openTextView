@@ -16,6 +16,7 @@ class FloatingButton extends GetView<MainCtl> {
         stream: AudioService.runningStream,
         builder: (c, snapshot) {
           bool bplay = snapshot.data ?? false;
+
           return FloatingActionButton(
               elevation: 2.0,
               onPressed: () async {

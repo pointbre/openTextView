@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:open_textview/component/BottomNav.dart';
 import 'package:open_textview/component/FloatingButton.dart';
@@ -88,21 +89,6 @@ class MainPage extends GetView<MainCtl> {
                       }).toList(),
                     ])
           ]),
-      // Obx(() {
-      //               Map m = controller.config['picker'];
-      //               String fileName = '파일 을 열어주세요.';
-      //               if (m.isNotEmpty) {
-      //                 fileName = m['name'];
-      //               }
-      //               return AppBar( title: const Text('AppBar Demo'),)
-      //               // return Expanded(
-      //               //     child: Text(
-      //               //   fileName,
-      //               //   overflow: TextOverflow.ellipsis,
-      //               //   softWrap: false,
-      //               //   maxLines: 1,
-      //               // ));
-      //             }),
       body: Container(
         child: Column(
           children: [
@@ -135,6 +121,10 @@ class MainPage extends GetView<MainCtl> {
                         return ScrollablePositionedList.builder(
                           itemCount: ctl.contents.length,
                           itemBuilder: (context, index) {
+                            // return InkWell(
+                            //   child: Text("asdf"),
+                            //   onLongPress: () {},
+                            // );
                             if (index >= ctl.contents.length || index < 0) {
                               return Text('');
                             }
@@ -143,18 +133,57 @@ class MainPage extends GetView<MainCtl> {
                                   ((ctl.config['tts'] as RxMap)['groupcnt']);
                               int endpos = ctl.curPos.value + cnt;
                               if (index >= ctl.curPos.value && index < endpos) {
-                                return SelectableText(
-                                  '${ctl.contents[index]}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .surface),
-                                );
+                                return InkWell(
+                                    onLongPress: () {
+                                      Clipboard.setData(ClipboardData(
+                                          text: ctl.contents[index]));
+                                      final snackBar = SnackBar(
+                                        content: Text(
+                                          '[${ctl.contents[index]}]\n클립보드에 복사됨.',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).cardTheme.color,
+                                        duration: Duration(milliseconds: 1000),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    },
+                                    child: Text(
+                                      '${ctl.contents[index]}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        // backgroundColor: Theme.of(context)
+                                        //     .colorScheme
+                                        //     .surface
+                                      ),
+                                    ));
                               }
                             }
-                            return SelectableText(
-                                '${ctl.contents[index] ?? ""}');
+                            return InkWell(
+                              child: Text('${ctl.contents[index] ?? ""}'),
+                              onLongPress: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: ctl.contents[index]));
+                                final snackBar = SnackBar(
+                                  content: Text(
+                                    '[${ctl.contents[index]}]\n클립보드에 복사됨.',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                  backgroundColor:
+                                      Theme.of(context).cardTheme.color,
+                                  duration: Duration(milliseconds: 1000),
+                                );
+
+                                // Find the ScaffoldMessenger in the widget tree
+                                // and use it to show a SnackBar.
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
+                            );
                           },
                           itemScrollController: ctl.itemScrollctl,
                           itemPositionsListener: ctl.itemPosListener,
