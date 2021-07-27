@@ -112,6 +112,10 @@ class Option_Filter extends OptionsBase {
   BuildContext context = null;
   ScrollController scrollController = ScrollController();
 
+  Widget test(Function ontap) {
+    return GestureDetector(onTap: ontap, child: Text("test"));
+  }
+
   @override
   void openSetting() {
     HeroPopup(
