@@ -479,6 +479,7 @@ class MainCtl extends GetxController {
         iconTheme: IconThemeData(color: color2),
         // accentIconTheme: IconThemeData(color: color2),
         primaryIconTheme: IconThemeData(color: color2),
+        popupMenuTheme: PopupMenuThemeData(color: getSwatchShade(color1, 400)),
         checkboxTheme: CheckboxThemeData(
             fillColor: MaterialStateProperty.all(color2),
             checkColor: MaterialStateProperty.all(color1)),
