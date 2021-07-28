@@ -20,7 +20,6 @@ void main() {
                   rtn &= !AudioService.runningStream.value;
 
                   ctl.update();
-                  print(rtn);
                   return rtn;
                 },
               )),
