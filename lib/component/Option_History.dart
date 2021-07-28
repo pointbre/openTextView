@@ -10,7 +10,14 @@ import 'package:open_textview/component/OptionsBase.dart';
 import 'package:open_textview/controller/MainCtl.dart';
 import 'package:path_provider/path_provider.dart';
 
+class Option_History_ctl extends GetxController {
+  String strFindHistry = "";
+}
+
 class Option_History extends OptionsBase {
+  Option_History() {
+    Get.put(Option_History_ctl());
+  }
   @override
   String get name => '히스토리';
 
@@ -29,35 +36,55 @@ class Option_History extends OptionsBase {
             style: TextStyle(fontWeight: FontWeight.w700),
           )
         ]),
-        callback: (completion) {},
+        callback: (completion) {
+          var ctl = Get.find<Option_History_ctl>();
+          ctl.strFindHistry = "";
+        },
         children: [
+          TextField(
+            decoration: InputDecoration(
+              labelText: "검색할 단어 / 문장을 입력해 주세요.",
+            ),
+            onSubmitted: (value) {
+              var ctl = Get.find<Option_History_ctl>();
+              ctl.strFindHistry = value;
+              ctl.update();
+            },
+          ),
           SizedBox(
-              height: Get.height * 0.5,
+              height: Get.height * 0.6,
               child: GetBuilder<MainCtl>(builder: (ctl) {
-                RxList filterlist = controller.config['filter'];
-                List copyList = [...ctl.history];
-                copyList.sort((a, b) {
-                  return b['date'].compareTo(a['date']);
+                return GetBuilder<Option_History_ctl>(builder: (findctl) {
+                  List copyList = [...ctl.history];
+                  copyList.sort((a, b) {
+                    return b['date'].compareTo(a['date']);
+                  });
+                  if (findctl.strFindHistry.length > 0) {
+                    copyList = copyList.where((el) {
+                      return el['name'].indexOf(findctl.strFindHistry) >= 0;
+                    }).toList();
+                  }
+                  return Container(
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: ListView(
+                        children: [
+                          ...copyList.map((element) {
+                            return Card(
+                              child: ListTile(
+                                title: Text(element['name']),
+                                subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('위치 : ${element['pos']}'),
+                                      Text('마지막 갱신 시간 : ${element['date']}')
+                                    ]),
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      ));
                 });
-                return Container(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    child: ListView(
-                      children: [
-                        ...copyList.map((element) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(element['name']),
-                              subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('위치 : ${element['pos']}'),
-                                    Text('마지막 갱신 시간 : ${element['date']}')
-                                  ]),
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ));
               }))
         ]);
     // showDialog(

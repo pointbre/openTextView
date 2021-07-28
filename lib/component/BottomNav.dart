@@ -99,137 +99,41 @@ class BottomNav extends OptionsBase {
         // notchedShape: CircularNotchedRectangle(),
         child: Container(
             // color: Theme.of(Get.context).colorScheme.surface,
+            height: 50,
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          // Expanded(
-          //   flex: 1,
-          //   child: IconButton(
-          //     icon: Icon(Icons.add),
-          //     onPressed: () {
-          //       openOptions();
-          //     },
-          //     padding: EdgeInsets.zero,
-          //   ),
-          // ),
-          Expanded(
-            flex: 8,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Obx(() {
-                // List<Widget> navList =
-                return Row(
-                  children: [
-                    ...(controller.config['nav'] as RxList).map((cmpName) {
-                      List<OptionsBase> tmp = NAVBUTTON
-                          .where((element) =>
-                              element.runtimeType.toString() == cmpName)
-                          .toList();
-                      if (tmp.isNotEmpty) {
-                        return tmp.first;
+              Expanded(
+                flex: 8,
+                child: Obx(() {
+                  return ReorderableListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
                       }
-                      return SizedBox();
-                    }),
-                  ],
-                );
-              }),
-            ),
-          ),
-          Expanded(flex: 2, child: SizedBox()),
-        ])));
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [
-    //     IconButton(
-    //       icon: Icon(Icons.add),
-    //       onPressed: () {
-    //         // controller.contents.clear();
-    //         // controller.update();
-    //         // for (int i = 0; i < 500; i++) {
-    //         //   controller.contents.add('Item00 $i');
-    //         // }
-    //       },
-    //     ),
-    //     Expanded(
-    //         child: ListView.builder(
-    //       scrollDirection: Axis.horizontal,
-    //       itemCount: 10,
-    //       itemBuilder: (context, index) => Text('asdf'),
-    //     ))
-    //     // SizedBox(
-    //     //   width: double.infinity,
-    //     //   child: ListView.builder(
-    //     //     // scrollDirection: Axis.horizontal,
-    //     //     // shrinkWrap: true,
-    //     //     itemCount: 10,
-    //     //     itemBuilder: (context, index) => Text('asdf'),
-    //     //     //   (){
-    //     //     //     return element
-    //     //     //   })
-    //     //     // (
-    //     //     //     scrollDirection: Axis.horizontal,
-    //     //     //     shrinkWrap: true,
-    //     //     //     children: [
-    //     //     //   ...controller.bottomNavBtns.map((element) => element).toList(),
-    //     //     // ]
-    //     //   ),
-    //     // ),
-    //     // IconButton(
-    //     //   icon: Icon(Icons.volume_up),
-    //     //   onPressed: () {},
-    //     // ),
-    //   ],
-    // );
-    // TESTopenSetting();
-    //   return BottomAppBar(
-    //     shape: CircularNotchedRectangle(),
-    //     child: Obx(
-    //       () => Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: [
-    //           IconButton(
-    //             icon: Icon(Icons.add),
-    //             onPressed: () {
-    //               // controller.contents.clear();
-    //               // controller.update();
-    //               // for (int i = 0; i < 500; i++) {
-    //               //   controller.contents.add('Item00 $i');
-    //               // }
-    //             },
-    //             padding: EdgeInsets.zero,
-    //           ),
-    //           // IconButton(
-    //           //   icon: Icon(Icons.settings),
-    //           //   onPressed: () {},
-    //           //   padding: EdgeInsets.zero,
-    //           // ),
-    //           SizedBox(
-    //               height: 10,
-    //               width: double.infinity,
-    //               child: Container(color: Colors.red)),
-    //           // ListView(
-    //           //   children: [
-    //           //     ...controller.bottomNavBtns
-    //           //         .map((element) => element)
-    //           //         .toList(),
-    //           //   ],
-    //           // ),
-
-    //           // ...controller.bottomNavBtns.map((element) => element).toList(),
-    //           // ...controller.bottomNavBtns.map((element) => element).toList(),
-    //           IconButton(
-    //             icon: Icon(Icons.volume_up),
-    //             onPressed: () {},
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //     // showSelectedLabels: false,
-    //     // showUnselectedLabels: false,
-    //     // items: [
-    //     //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
-    //     //   BottomNavigationBarItem(icon: Icon(Icons.settings), label: '')
-    //     // ],
-    //   );
+                      RxList navList = controller.config['nav'];
+                      var item = navList.removeAt(oldIndex);
+                      navList.insert(newIndex, item);
+                      controller.update();
+                    },
+                    children: [
+                      ...(controller.config['nav'] as RxList).map((cmpName) {
+                        List<OptionsBase> tmp = NAVBUTTON
+                            .where((element) =>
+                                element.runtimeType.toString() == cmpName)
+                            .toList();
+                        if (tmp.isNotEmpty) {
+                          return Container(key: UniqueKey(), child: tmp.first);
+                        }
+                        return SizedBox();
+                      }),
+                    ],
+                  );
+                }),
+              ),
+              Expanded(flex: 2, child: SizedBox()),
+            ])));
   }
 
   @override
