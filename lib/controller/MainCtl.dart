@@ -200,7 +200,7 @@ class MainCtl extends GetxController {
                   {'name': v['name'], 'pos': 0, 'date': formatter.format(now)});
               itemScrollctl.jumpTo(index: 0);
             } else {
-              //itemScrollctl.jumpTo(index: history[whereIdx]['pos'] as int);
+              itemScrollctl.jumpTo(index: history[whereIdx]['pos'] as int);
               history[whereIdx]['date'] = formatter.format(now);
             }
             itemPosListener.itemPositions.addListener(onScroll);
