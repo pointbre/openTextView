@@ -181,6 +181,7 @@ class TextPlayerTask extends BackgroundAudioTask {
         processingState: AudioProcessingState.buffering,
         position: Duration(seconds: i),
       );
+
       await tts.speak(speakText);
       saveState(i);
     }
