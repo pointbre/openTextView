@@ -41,21 +41,24 @@ class Option_History extends OptionsBase {
           ctl.strFindHistry = "";
         },
         children: [
-          TextField(
-            decoration: InputDecoration(
-              labelText: "검색할 단어 / 문장을 입력해 주세요.",
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: "검색할 단어 / 문장을 입력해 주세요.",
+              ),
+              onSubmitted: (value) {
+                var ctl = Get.find<Option_History_ctl>();
+                ctl.strFindHistry = value;
+                ctl.update();
+              },
             ),
-            onSubmitted: (value) {
-              var ctl = Get.find<Option_History_ctl>();
-              ctl.strFindHistry = value;
-              ctl.update();
-            },
           ),
           SizedBox(
               height: Get.height * 0.6,
               child: GetBuilder<MainCtl>(builder: (ctl) {
                 return GetBuilder<Option_History_ctl>(builder: (findctl) {
-                  List copyList = [...ctl.history];
+                  List copyList = List.from(ctl.history);
                   copyList.sort((a, b) {
                     return b['date'].compareTo(a['date']);
                   });
@@ -65,22 +68,35 @@ class Option_History extends OptionsBase {
                     }).toList();
                   }
                   return Container(
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      padding: EdgeInsets.only(top: 0, left: 10, right: 10),
                       child: ListView(
                         children: [
                           ...copyList.map((element) {
-                            return Card(
-                              child: ListTile(
-                                title: Text(element['name']),
-                                subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('위치 : ${element['pos']}'),
-                                      Text('마지막 갱신 시간 : ${element['date']}')
-                                    ]),
-                              ),
-                            );
+                            int idx = ctl.history.indexOf(element);
+
+                            return Dismissible(
+                                key: UniqueKey(),
+                                background: Container(color: Colors.red),
+                                onDismissed: (direction) {
+                                  // e.deleteSync(recursive: true);
+                                  print("idxidx  : ${idx}");
+                                  ctl.history.removeAt(idx);
+                                  ctl.update();
+                                  return ctl.history;
+                                  // ctl.update();
+                                },
+                                child: Card(
+                                  child: ListTile(
+                                    title: Text(element['name']),
+                                    subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('위치 : ${element['pos']}'),
+                                          Text('마지막 갱신 시간 : ${element['date']}')
+                                        ]),
+                                  ),
+                                ));
                           }).toList(),
                         ],
                       ));

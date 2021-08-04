@@ -17,100 +17,8 @@ class Option_Tts extends OptionsBase {
   @override
   String get name => 'TTS 설정';
 
-  // void openSettingLanguage() async {
-  //   List<dynamic> langs = [];
-  //   // 4월 23 일 :
-  //   // 3월 31 일자 구글 tts 패치후 음성 1번 의 경우 남녀 목소리가 같이 나오는 버그로 인해.
-  //   // 강제로 버전을 다운그레이드 하여 tts 엔진 사용시 지원 언어가나오지 않는 현상으로 인하여 우회 처리 로직 추가
-
-  //   try {
-  //     langs =
-  //         await flutterTts.getLanguages.timeout(Duration(milliseconds: 300));
-  //   } catch (e) {
-  //     langs = LANG.keys.toList();
-  //   }
-
-  //   Picker(
-  //       backgroundColor: Theme.of(Get.context).scaffoldBackgroundColor,
-  //       headerColor: Theme.of(Get.context).scaffoldBackgroundColor,
-  //       selecteds: [
-  //         langs.indexOf((controller.config['tts'] as Map)['language'])
-  //       ],
-  //       height: 300,
-  //       adapter: PickerDataAdapter<String>(
-  //         data: langs.map((e) {
-  //           var tmplang = LANG[e.toString()];
-  //           return PickerItem(
-  //             text: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Expanded(
-  //                     child: Align(
-  //                   alignment: Alignment.center,
-  //                   child: Text(e.toString(),
-  //                       style: TextStyle(
-  //                           color: Theme.of(Get.context).accentColor)),
-  //                 )),
-  //                 Expanded(
-  //                     child: Text(tmplang['ko'],
-  //                         style: TextStyle(
-  //                             color: Theme.of(Get.context).accentColor))),
-  //               ],
-  //             ),
-  //             value: e.toString(),
-  //           );
-  //         }).toList(),
-  //       ),
-  //       selectedTextStyle: TextStyle(color: Colors.blue),
-  //       onConfirm: (Picker picker, List value) {
-  //         (controller.config['tts'] as Map)['language'] = langs[value[0]];
-  //         controller.update();
-  //       }).showModal(Get.overlayContext);
-  // }
-
   @override
   void openSetting() {
-    // Widget setting = Wrap(
-    //   children: [
-    //     Hero(
-    //         tag: "Option_Tts",
-    //         child: Material(
-    //             type: MaterialType.transparency, // likely needed
-    //             child: Row(children: [
-    //               Text(
-    //                 name,
-    //                 style: TextStyle(fontWeight: FontWeight.w700),
-    //               )
-    //             ])))
-    //   ],
-    // );
-
-    // Get.toNamed('/openSetting', arguments: {"child": setting});
-    // HeroPopup(
-    //   builder: (c) => Hero(
-    //       tag: "Option_Tts",
-    //       child: Stack(
-    //         children: [
-    //           Icon(
-    //             Icons.volume_mute_rounded,
-    //           ),
-    //           Container(
-    //               margin: EdgeInsets.only(left: 15, top: 4),
-    //               child: Icon(
-    //                 Icons.settings_rounded,
-    //                 size: 15,
-    //               )),
-    //         ],
-    //       )),
-    // );
-
-    // showDialog(
-    //     context: Get.context,
-    //     // barrierColor: Colors.transparent,
-    //     // isDismissible: false,
-    //     builder: (BuildContext context) {
-    //       return
-    // return;
     HeroPopup(
         tag: name,
         title: Row(children: [
@@ -142,7 +50,19 @@ class Option_Tts extends OptionsBase {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: Text('속도 : ')),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                    '속도 : ${((controller.config['tts'] as Map)['speechRate'] as double).toPrecision(2).toString()}')),
+                            Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      (controller.config['tts']
+                                          as Map)['speechRate'] -= 0.01;
+                                      controller.update();
+                                    },
+                                    icon: Icon(Icons.navigate_before_sharp))),
                             Expanded(
                               flex: 6,
                               child: Slider(
@@ -150,24 +70,39 @@ class Option_Tts extends OptionsBase {
                                     as Map)['speechRate'],
                                 min: 0,
                                 max: 5,
-                                divisions: 50,
+                                divisions: 500,
                                 label: ((controller.config['tts']
                                         as Map)['speechRate'] as double)
-                                    .toPrecision(1)
+                                    .toPrecision(2)
                                     .toString(),
                                 onChanged: (double v) {
+                                  print('vvv : ${v.toPrecision(2)}');
                                   (controller.config['tts']
-                                      as Map)['speechRate'] = v;
+                                      as Map)['speechRate'] = v.toPrecision(2);
 
                                   controller.update();
                                 },
                               ),
                             ),
+                            Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  onPressed: () {
+                                    (controller.config['tts']
+                                        as Map)['speechRate'] += 0.01;
+
+                                    controller.update();
+                                  },
+                                  icon: Icon(Icons.navigate_next_sharp),
+                                )),
                           ]),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: Text('볼륨 : ')),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                    '볼륨 : ${((controller.config['tts'] as Map)['volume'] as double).toPrecision(1).toString()}')),
                             Expanded(
                               flex: 6,
                               child: Slider(
@@ -192,7 +127,10 @@ class Option_Tts extends OptionsBase {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: Text('피치 : ')),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                    '피치 : ${((controller.config['tts'] as Map)['pitch'] as double).toPrecision(1).toString()}')),
                             Expanded(
                               flex: 6,
                               child: Slider(
@@ -222,7 +160,7 @@ class Option_Tts extends OptionsBase {
                               flex: 6,
                               child: SpinBox(
                                 min: 1,
-                                max: 10,
+                                max: 20,
                                 incrementIcon: Icon(
                                   Icons.add,
                                   color: Theme.of(Get.context).iconTheme.color,

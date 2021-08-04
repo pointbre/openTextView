@@ -31,23 +31,26 @@ class HeroPopup {
               // },
               child: Material(
                   type: MaterialType.transparency, // likely needed
-                  child: Card(
-                      child: SingleChildScrollView(
-                          child: Column(
-                    children: [
-                      DefaultTextStyle(
-                          style: titleTextStyle ??
-                              DialogTheme.of(context).titleTextStyle ??
-                              Theme.of(context).textTheme.headline6,
-                          child: Semantics(
-                            container: true,
-                            child: Padding(
-                                padding: EdgeInsets.all(10), child: title),
-                          )),
-                      Divider(),
-                      ...children,
-                    ],
-                  ))))));
+                  child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 20, right: 20, top: 100, bottom: 100),
+                      child: Card(
+                          child: SingleChildScrollView(
+                              child: Column(
+                        children: [
+                          DefaultTextStyle(
+                              style: titleTextStyle ??
+                                  DialogTheme.of(context).titleTextStyle ??
+                                  Theme.of(context).textTheme.headline6,
+                              child: Semantics(
+                                container: true,
+                                child: Padding(
+                                    padding: EdgeInsets.all(10), child: title),
+                              )),
+                          Divider(),
+                          ...children,
+                        ],
+                      )))))));
       // );
     })).then((completion) {
       print("callback");
